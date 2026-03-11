@@ -1,98 +1,119 @@
 import type { SiteConfig, SiteContent } from "../types";
 
 export const SITE_CONFIG: SiteConfig = {
-  title: "Matt Ghoreishi — Mobile & Web Developer",
-  author: "Alejandro Múnez Cuntez",
+  title: "Matt Ghoreishi | Product Leader in AI, Data, and Genomics",
+  author: "Matt Ghoreishi",
   description:
-    "Software Engineer based in San Francisco, USA. I specialize in UI design, web and mobile application development and maintenance.",
+    "Product leader based in Hamburg, Germany, with 10+ years of experience across AI, SaaS, platforms, and data-driven products. I build and scale products that connect strategy, execution, and measurable business impact.",
   lang: "en",
-  siteLogo: "/alejandro-small.jpg",
+  siteLogo: "/matt-small.jpg",
   navLinks: [
     { text: "Experience", href: "#experience" },
     { text: "Projects", href: "#projects" },
     { text: "About", href: "#about" },
   ],
   socialLinks: [
-    { text: "Twitter", href: "https://github.com/immois/astro-zen" },
-    { text: "LinkedIn", href: "https://github.com/immois/astro-zen" },
-    { text: "Github", href: "https://github.com/immois/astro-zen" },
-    { text: "Youtube", href: "https://github.com/immois/astro-zen" },
-    { text: "Dribbble", href: "https://github.com/immois/astro-zen" },
+    { text: "LinkedIn", href: "https://www.linkedin.com/in/mattghoreishi/" },
+    { text: "Medium", href: "https://medium.com/@ghoreishi" },
+    { text: "GitHub", href: "https://github.com/mattghoreishi" },
+    { text: "X", href: "https://x.com/mahdighoreish" },
   ],
-  socialImage: "/zen-og.png",
-  canonicalURL: "https://astro-zen.vercel.app",
+  socialImage: "/og-matt.png",
+  canonicalURL: "https://mattghoreishi.com",
 };
 
 export const SITE_CONTENT: SiteContent = {
   hero: {
     name: "Matt Ghoreishi",
-    specialty: "Mobile & Web Developer",
+    specialty: "Senior Product Manager | AI, Data, SaaS, and Genomics",
     summary:
-      "Developer based in San Francisco, USA. I specialize in UI design, web and mobile application development and maintenance.",
-    email: "example@email.com",
+      "I build products at the intersection of AI, data, and business strategy. With 10+ years of experience across product management, platform thinking, and digital innovation, I focus on turning ambiguity into execution, aligning teams around measurable outcomes, and shipping products that create real value.",
+    email: "sedmgh [at] gmail [dot] com",
   },
   experience: [
     {
-      company: "Zalmart",
-      position: "Lead Android Developer",
-      startDate: "May 2018",
-      endDate: "Sept 2020",
+      company: "micro1",
+      position: "AI Annotation and Quality Operations",
+      startDate: "Recent",
+      endDate: "Present",
       summary: [
-        "Implemented advanced memory management and code optimization techniques, resulting in a reduction in application load time by 40% and a decrease in crashes by 25%. This significantly improved user experience and increased user retention by 20%.",
-        "I led a team of developers in building and integrating new features using Jetpack Android components such as LiveData and ViewModel. This enabled us to build scalable and maintainable applications, reducing the crash rate by 20% and speeding up the time to delivery of new features by 15%.",
-        "Integrated Google Pay for in-app purchases, resulting in a 35% increase in mobile transaction revenue. Additionally, implemented Firebase Analytics to gain insights into user behavior, enabling data-driven optimizations and a 30% increase in user retention.",
+        "Worked in quality-critical AI annotation and review workflows, contributing to structured evaluation processes and human-in-the-loop systems.",
+        "Built strong intuition around model behavior, ambiguity handling, consistency standards, and scalable quality operations.",
+        "Deepened hands-on understanding of how AI systems succeed or fail in real operational environments.",
       ],
     },
     {
-      company: "Bankit",
-      position: "Mobile Developer",
-      startDate: "Feb 2017",
-      endDate: "May 2018",
+      company: "Albatec GmbH",
+      position: "Product Development Manager",
+      startDate: "Hamburg",
+      endDate: "Germany",
       summary: [
-        "I designed and developed a mobile application using Flutter, allowing it to be deployed on both Android and iOS with a single codebase. This reduced development time by 50% and maintenance costs by 30%, facilitating a consistent user experience on both platforms.",
-        "I integrated biometric authentication and data encryption, significantly improving the security of user data. This implementation resulted in a 40% increase in user trust and a 25% reduction in unauthorized access attempts.",
+        "Contributed to product and platform strategy in industrial safety and IoT-related environments, connecting business priorities with practical execution.",
+        "Worked on digital product direction, reporting, and solution structuring for industrial monitoring and safety-focused products.",
+        "Helped shape product narratives around usability, operational visibility, and business value.",
       ],
     },
     {
-      company: "Driveer",
-      position: "Frontend Developer",
-      startDate: "Jun 2015",
-      endDate: "Oct 2016",
-      summary:
-        "Developed and integrated a real-time vehicle tracking system using WebSockets, improving accuracy and data update in the application. This functionality increased user satisfaction by 30% and reduced customer service inquiries by 25%.",
+      company: "Sotoon",
+      position: "Product Manager",
+      startDate: "Earlier",
+      endDate: "Role",
+      summary: [
+        "Played a key role in shifting the business from services toward a more scalable AI product direction.",
+        "Helped transform the offering into a Contact Center AI product with clearer value, stronger repeatability, and lower operational effort.",
+        "Aligned technical work with business outcomes, ensuring the product delivered measurable customer and commercial impact.",
+      ],
+    },
+    {
+      company: "Cafe Bazaar",
+      position: "Product Manager",
+      startDate: "Earlier",
+      endDate: "Role",
+      summary: [
+        "Worked on large-scale digital product initiatives for one of the region’s major consumer platforms.",
+        "Contributed to monetization and platform improvements, including Direct Carrier Billing initiatives that drove significant revenue growth.",
+        "Balanced growth, stakeholder alignment, and execution discipline in a complex, high-scale product environment.",
+      ],
     },
   ],
   projects: [
     {
-      name: "Spotifu Music",
-      summary: "A music streaming app that emulates Spotify's core features.",
-      linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/spotifu.png",
+      name: "AI Product Strategy Writing",
+      summary:
+        "Long-form writing on AI adoption, product strategy, and how to move from hype to measurable business value.",
+      linkPreview: "https://medium.com/@ghoreishi",
+      linkSource: "https://medium.com/@ghoreishi",
+      image: "/project-ai-writing.png",
     },
     {
-      name: "Shopp App",
-      summary: "An e-commerce platform that replicates Shopify's key features.",
+      name: "Raitec Guardian App",
+      summary:
+        "A digital industrial safety and gas monitoring platform concept focused on real-time visibility, reporting, and operational usability.",
       linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/shopify-clon.png",
+      linkSource: "https://github.com/mattghoreishi",
+      image: "/project-raitec-guardian.png",
     },
     {
-      name: "ClonTagram",
-      summary: "A social network that replicates the features of Instagram",
+      name: "Personal Labs",
+      summary:
+        "A growing collection of experiments around dashboards, AI utilities, product thinking, lightweight tools, and genomics-related ideas.",
       linkPreview: "/",
-      linkSource: "https://github.com/immois/astro-zen",
-      image: "/clone-ig.png",
+      linkSource: "https://github.com/mattghoreishi",
+      image: "/project-personal-labs.png",
     },
   ],
   about: {
     description: `
-      Hi, I’m Alejandro Múnez, a passionate Mobile and Web Developer with a knack for crafting seamless digital experiences. With a strong background in both Android and iOS development, as well as front-end web technologies, I thrive in the intersection where creativity meets technology.
+      Hi, I’m Matt Ghoreishi, a product leader based in Hamburg, Germany.
 
-      Over the years, I’ve honed my skills in building robust, user-friendly applications that not only meet the needs of users but also push the boundaries of what’s possible. My projects range from innovative mobile applications to responsive web designs, all with a focus on performance, security, and scalability.
+      My background sits at a rare intersection: over a decade of product work across platforms, AI, SaaS, and digital products, combined with a strong interest in genomics, data science, and emerging technology. I enjoy working where strategy meets execution, especially in environments where teams need clarity, prioritization, and a strong product voice.
+
+      I have worked across high-scale consumer platforms, AI-driven products, operational systems, and industrial product environments. Over time, I have developed a product style that is analytical, business-aware, and deeply execution-focused. I care about clear thinking, measurable outcomes, strong product storytelling, and building things that are genuinely useful.
+
+      Right now, I am especially interested in AI product management, data-heavy systems, B2B SaaS, health and genomics-related opportunities, and practical tools that create leverage for both companies and end users.
+
+      This site is my base on the internet: part portfolio, part lab, and part long-term playground for ideas, writing, tools, and experiments.
     `,
-    image: "/alejandro-big.jpg",
+    image: "/matt-big.jpg",
   },
 };
-
-// #5755ff
