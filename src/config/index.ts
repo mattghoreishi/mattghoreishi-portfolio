@@ -1,10 +1,10 @@
 import type { SiteConfig, SiteContent } from "../types";
 
 export const SITE_CONFIG: SiteConfig = {
-  title: "Matt Ghoreishi | Product Leader in AI, Data, and Genomics",
+  title: "Matt Ghoreishi | Senior Product Manager in AI, SaaS, and Data Platforms",
   author: "Matt Ghoreishi",
   description:
-    "Product leader based in Hamburg, Germany, with 10+ years of experience across AI, SaaS, platforms, and data-driven products. I build and scale products that connect strategy, execution, and measurable business impact.",
+    "Senior Product Manager based in Hamburg, Germany, with 10+ years of experience across AI, SaaS, platforms, and data-driven products. I build and scale products that connect strategy, execution, and measurable business impact.",
   lang: "en",
   siteLogo: "/matt-small.jpg",
   navLinks: [
@@ -18,101 +18,97 @@ export const SITE_CONFIG: SiteConfig = {
     { text: "GitHub", href: "https://github.com/mattghoreishi" },
     { text: "X", href: "https://x.com/mahdighoreish" },
   ],
-  socialImage: "/og-matt.png",
+  socialImage: "/matt-big.jpg",
   canonicalURL: "https://mattghoreishi.com",
 };
 
 export const SITE_CONTENT: SiteContent = {
   hero: {
     name: "Matt Ghoreishi",
-    specialty: "Senior Product Manager | AI, Data, SaaS, and Genomics",
+    specialty: "Senior Product Manager | AI, SaaS, and Data Platforms",
     summary:
-      "I build products at the intersection of AI, data, and business strategy. With 10+ years of experience across product management, platform thinking, and digital innovation, I focus on turning ambiguity into execution, aligning teams around measurable outcomes, and shipping products that create real value.",
+      "I build products where AI, data, and business outcomes meet. Over the past 10+ years, I have worked across SaaS, platforms, AI-driven systems, and large-scale digital products, turning ambiguity into execution and helping teams ship products that improve revenue, efficiency, and adoption.",
     email: "sedmgh [at] gmail [dot] com",
   },
   experience: [
     {
       company: "micro1",
-      position: "AI Annotation and Quality Operations",
-      startDate: "Recent",
+      position: "AI Evaluation Reviewer and Quality Specialist",
+      startDate: "Dec 2025",
       endDate: "Present",
       summary: [
-        "Worked in quality-critical AI annotation and review workflows, contributing to structured evaluation processes and human-in-the-loop systems.",
-        "Built strong intuition around model behavior, ambiguity handling, consistency standards, and scalable quality operations.",
-        "Deepened hands-on understanding of how AI systems succeed or fail in real operational environments.",
+        "Worked on high-complexity multimodal and video evaluation workflows for AI labs, with a strong focus on quality, consistency, and edge-case handling.",
+        "Improved annotation workflows and QA gates, helping reduce rework and handling time while maintaining strong quality outcomes.",
       ],
     },
     {
       company: "Albatec GmbH",
       position: "Product Development Manager",
-      startDate: "Hamburg",
-      endDate: "Germany",
+      startDate: "Jan 2024",
+      endDate: "Jun 2025",
       summary: [
-        "Contributed to product and platform strategy in industrial safety and IoT-related environments, connecting business priorities with practical execution.",
-        "Worked on digital product direction, reporting, and solution structuring for industrial monitoring and safety-focused products.",
-        "Helped shape product narratives around usability, operational visibility, and business value.",
+        "Owned product direction for industrial monitoring and gas safety solutions, bridging technical execution with commercial goals.",
+        "Shipped dashboard and SaaS-oriented product work around monitoring, incident visibility, and predictive maintenance use cases.",
       ],
     },
     {
       company: "Sotoon",
-      position: "Product Manager",
-      startDate: "Earlier",
-      endDate: "Role",
+      position: "Director of Product Management",
+      startDate: "Sep 2021",
+      endDate: "Jan 2023",
       summary: [
-        "Played a key role in shifting the business from services toward a more scalable AI product direction.",
-        "Helped transform the offering into a Contact Center AI product with clearer value, stronger repeatability, and lower operational effort.",
-        "Aligned technical work with business outcomes, ensuring the product delivered measurable customer and commercial impact.",
+        "Led AI product strategy and multi-product roadmaps across cloud and AI services.",
+        "Scaled contact center AI and NLP-based solutions for enterprise clients, connecting technical capability to measurable customer and business impact.",
+      ],
+    },
+    {
+      company: "Sotoon",
+      position: "Senior Product Manager",
+      startDate: "Oct 2020",
+      endDate: "Sep 2021",
+      summary: [
+        "Shipped the Contact Center AI MVP and helped turn strong technical capability into a clearer, more repeatable product offering.",
       ],
     },
     {
       company: "Cafe Bazaar",
-      position: "Product Manager",
-      startDate: "Earlier",
-      endDate: "Role",
+      position: "Product Development Manager, Payments and VOD",
+      startDate: "Oct 2016",
+      endDate: "Oct 2020",
       summary: [
-        "Worked on large-scale digital product initiatives for one of the region’s major consumer platforms.",
-        "Contributed to monetization and platform improvements, including Direct Carrier Billing initiatives that drove significant revenue growth.",
-        "Balanced growth, stakeholder alignment, and execution discipline in a complex, high-scale product environment.",
+        "Led product initiatives across payments and content on one of the region’s largest digital platforms.",
+        "Integrated Direct Carrier Billing, contributing to major revenue growth and millions of new paying users.",
+      ],
+    },
+    {
+      company: "Cafe Bazaar",
+      position: "Product Marketing Manager, Ads Monetization",
+      startDate: "Sep 2014",
+      endDate: "Oct 2016",
+      summary: [
+        "Scaled ad monetization and growth initiatives across a high-volume digital ad network.",
       ],
     },
   ],
   projects: [
     {
-      name: "AI Product Strategy Writing",
+      name: "Writing on AI Product Execution",
       summary:
-        "Long-form writing on AI adoption, product strategy, and how to move from hype to measurable business value.",
+        "Practical writing on AI pilots, product strategy, and how to move from hype to measurable business value.",
       linkPreview: "https://medium.com/@ghoreishi",
       linkSource: "https://medium.com/@ghoreishi",
-      image: "/project-ai-writing.png",
-    },
-    {
-      name: "Raitec Guardian App",
-      summary:
-        "A digital industrial safety and gas monitoring platform concept focused on real-time visibility, reporting, and operational usability.",
-      linkPreview: "/",
-      linkSource: "https://github.com/mattghoreishi",
-      image: "/project-raitec-guardian.png",
-    },
-    {
-      name: "Personal Labs",
-      summary:
-        "A growing collection of experiments around dashboards, AI utilities, product thinking, lightweight tools, and genomics-related ideas.",
-      linkPreview: "/",
-      linkSource: "https://github.com/mattghoreishi",
-      image: "/project-personal-labs.png",
+      image: "/matt-big.jpg",
     },
   ],
   about: {
     description: `
       Hi, I’m Matt Ghoreishi, a product leader based in Hamburg, Germany.
 
-      My background sits at a rare intersection: over a decade of product work across platforms, AI, SaaS, and digital products, combined with a strong interest in genomics, data science, and emerging technology. I enjoy working where strategy meets execution, especially in environments where teams need clarity, prioritization, and a strong product voice.
+      I have spent the past 10+ years building and scaling products across AI, SaaS, platforms, and data-driven systems. My background spans consumer platforms, enterprise AI, monetization, and operational products, with a strong focus on turning complex ideas into practical execution.
 
-      I have worked across high-scale consumer platforms, AI-driven products, operational systems, and industrial product environments. Over time, I have developed a product style that is analytical, business-aware, and deeply execution-focused. I care about clear thinking, measurable outcomes, strong product storytelling, and building things that are genuinely useful.
+      I care about clear thinking, measurable outcomes, strong product storytelling, and products that create real value. Alongside my core work in product, I am also exploring new ideas at the intersection of AI, decision systems, and genomics.
 
-      Right now, I am especially interested in AI product management, data-heavy systems, B2B SaaS, health and genomics-related opportunities, and practical tools that create leverage for both companies and end users.
-
-      This site is my base on the internet: part portfolio, part lab, and part long-term playground for ideas, writing, tools, and experiments.
+      This site is my base on the internet: part portfolio, part writing hub, and part lab for the next set of tools and experiments I want to bring to life.
     `,
     image: "/matt-big.jpg",
   },
