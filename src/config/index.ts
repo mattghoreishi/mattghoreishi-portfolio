@@ -97,7 +97,7 @@ export const SITE_CONTENT: SiteContent = {
         "A practical interactive tool to assess whether an AI initiative is ready to move beyond demo mode.",
       linkPreview: "/ai-pilot-scorecard",
       linkSource: "https://medium.com/@ghoreishi",
-      image: "/ai-pilot-scorecard-cover.jpg",
+      image: "/ai-pilot-scorecard-cover.png",
     },
   ],
   about: {
