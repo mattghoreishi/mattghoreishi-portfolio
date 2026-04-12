@@ -33,12 +33,12 @@ export const SITE_CONTENT: SiteContent = {
   experience: [
     {
       company: "micro1",
-      position: "AI Evaluation Reviewer and Quality Specialist",
+      position: "AI Evaluation and Quality Specialist",
       startDate: "Dec 2025",
       endDate: "Present",
       summary: [
-        "Worked on high-complexity multimodal and video evaluation workflows for AI labs, with a strong focus on quality, consistency, and edge-case handling.",
-        "Improved annotation workflows and QA gates, helping reduce rework and handling time while maintaining strong quality outcomes.",
+        "Work on multimodal evaluation and review workflows for advanced AI systems, with a strong focus on quality, consistency, and edge-case handling.",
+        "Contribute to structured QA processes and human-in-the-loop operations in quality-critical AI environments.",
       ],
     },
     {
