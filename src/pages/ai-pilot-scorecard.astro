@@ -3,42 +3,50 @@ const questions = [
   {
     id: "business_value",
     title: "Clear business value",
-    description: "Is there a specific business problem, metric, or workflow this AI initiative is expected to improve?",
+    description:
+      "Is there a specific business problem, metric, or workflow this AI initiative is expected to improve?",
   },
   {
     id: "unique_data",
     title: "Useful data advantage",
-    description: "Does the product have access to data that meaningfully improves relevance, performance, or defensibility?",
+    description:
+      "Does the product have access to data that meaningfully improves relevance, performance, or defensibility?",
   },
   {
     id: "workflow_fit",
     title: "Workflow fit",
-    description: "Will this solution live inside a real user workflow instead of sitting beside it as a disconnected demo?",
+    description:
+      "Will this solution live inside a real user workflow instead of sitting beside it as a disconnected demo?",
   },
   {
     id: "evaluation",
     title: "Evaluation readiness",
-    description: "Do you know how success will be measured in production, not just in a test or demo setting?",
+    description:
+      "Do you know how success will be measured in production, not just in a test or demo setting?",
   },
   {
     id: "adoption",
     title: "Adoption path",
-    description: "Is there a realistic plan for onboarding, trust, change management, and internal buy-in?",
+    description:
+      "Is there a realistic plan for onboarding, trust, change management, and internal buy-in?",
   },
   {
     id: "governance",
     title: "Governance and risk",
-    description: "Have privacy, safety, compliance, and escalation paths been considered early enough?",
+    description:
+      "Have privacy, safety, compliance, and escalation paths been considered early enough?",
   },
   {
     id: "economics",
     title: "Economics at scale",
-    description: "Can the solution remain useful and financially sensible as usage grows?",
+    description:
+      "Can the solution remain useful and financially sensible as usage grows?",
   },
   {
     id: "ownership",
     title: "Clear ownership",
-    description: "Is there a clear product owner who will make trade-offs, prioritize work, and drive execution?",
+    description:
+      "Is there a clear product owner who will make trade-offs, prioritize work, and drive execution?",
   },
 ];
 ---
@@ -235,23 +243,26 @@ const questions = [
 
       <h1>AI Pilot Scorecard</h1>
       <p class="lead">
-        A practical tool to assess whether an AI initiative is ready to move beyond demo mode. This is a simple decision aid for product teams.
+        A practical tool to assess whether an AI initiative is ready to move
+        beyond demo mode. This is a simple decision aid for product teams.
       </p>
 
       <div class="panel">
-        {questions.map((q) => (
-          <div class="question">
-            <h3>{q.title}</h3>
-            <p>{q.description}</p>
-            <div class="options">
-              <label><input type="radio" name={q.id} value="0" /> 0</label>
-              <label><input type="radio" name={q.id} value="1" /> 1</label>
-              <label><input type="radio" name={q.id} value="2" /> 2</label>
-              <label><input type="radio" name={q.id} value="3" /> 3</label>
-              <label><input type="radio" name={q.id} value="4" /> 4</label>
+        {
+          questions.map((q) => (
+            <div class="question">
+              <h3>{q.title}</h3>
+              <p>{q.description}</p>
+              <div class="options">
+                <label><input type="radio" name={q.id} value="0" /> 0</label>
+                <label><input type="radio" name={q.id} value="1" /> 1</label>
+                <label><input type="radio" name={q.id} value="2" /> 2</label>
+                <label><input type="radio" name={q.id} value="3" /> 3</label>
+                <label><input type="radio" name={q.id} value="4" /> 4</label>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        }
 
         <div class="actions">
           <button class="primary" id="calculateBtn">Calculate score</button>
@@ -267,12 +278,22 @@ const questions = [
       </div>
 
       <p class="footer-note">
-        Version one is intentionally simple. No login, no backend, and no stored user account data.
+        Version one is intentionally simple. No login, no backend, and no stored
+        user account data.
       </p>
     </div>
 
-    <script>
-      const questionIds = [
+    <script lang="ts">
+      type Assessment = {
+        label: string;
+        badgeClass: "good" | "mid" | "bad";
+        text: string;
+        notes: string;
+      };
+
+      type StoredAnswers = Record<string, string>;
+
+      const questionIds: string[] = [
         "business_value",
         "unique_data",
         "workflow_fit",
@@ -285,32 +306,61 @@ const questions = [
 
       const STORAGE_KEY = "ai-pilot-scorecard-v1";
 
-      function saveState() {
-        const data = {};
+      const calculateBtn = document.getElementById("calculateBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const resultBox = document.getElementById("resultBox");
+      const scoreText = document.getElementById("scoreText");
+      const statusBadge = document.getElementById("statusBadge");
+      const statusText = document.getElementById("statusText");
+      const notesText = document.getElementById("notesText");
+
+      function getCheckedInput(name: string): HTMLInputElement | null {
+        return document.querySelector(
+          `input[name="${name}"]:checked`,
+        ) as HTMLInputElement | null;
+      }
+
+      function getSpecificInput(
+        name: string,
+        value: string,
+      ): HTMLInputElement | null {
+        return document.querySelector(
+          `input[name="${name}"][value="${value}"]`,
+        ) as HTMLInputElement | null;
+      }
+
+      function saveState(): void {
+        const data: StoredAnswers = {};
+
         questionIds.forEach((id) => {
-          const checked = document.querySelector(`input[name="${id}"]:checked`);
+          const checked = getCheckedInput(id);
           data[id] = checked ? checked.value : "";
         });
+
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       }
 
-      function loadState() {
+      function loadState(): void {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
-        const data = JSON.parse(raw);
+
+        const data = JSON.parse(raw) as StoredAnswers;
+
         questionIds.forEach((id) => {
-          if (!data[id] && data[id] !== "0") return;
-          const input = document.querySelector(`input[name="${id}"][value="${data[id]}"]`);
+          const savedValue = data[id];
+          if (savedValue === undefined || savedValue === "") return;
+
+          const input = getSpecificInput(id, savedValue);
           if (input) input.checked = true;
         });
       }
 
-      function getScore() {
+      function getScore(): { total: number; answered: number } {
         let total = 0;
         let answered = 0;
 
         questionIds.forEach((id) => {
-          const checked = document.querySelector(`input[name="${id}"]:checked`);
+          const checked = getCheckedInput(id);
           if (checked) {
             total += Number(checked.value);
             answered += 1;
@@ -320,7 +370,7 @@ const questions = [
         return { total, answered };
       }
 
-      function getAssessment(score) {
+      function getAssessment(score: number): Assessment {
         if (score >= 25) {
           return {
             label: "Strong foundation",
@@ -350,40 +400,53 @@ const questions = [
         };
       }
 
-      document.querySelectorAll('input[type="radio"]').forEach((input) => {
-        input.addEventListener("change", saveState);
-      });
-
-      document.getElementById("calculateBtn").addEventListener("click", () => {
-        const { total, answered } = getScore();
-
-        if (answered < questionIds.length) {
-          alert("Please answer all questions before calculating the score.");
-          return;
-        }
-
-        const assessment = getAssessment(total);
-        const resultBox = document.getElementById("resultBox");
-        const badge = document.getElementById("statusBadge");
-
-        document.getElementById("scoreText").textContent = `${total} / 32`;
-        document.getElementById("statusText").textContent = assessment.text;
-        document.getElementById("notesText").textContent = assessment.notes;
-
-        badge.textContent = assessment.label;
-        badge.className = `badge ${assessment.badgeClass}`;
-
-        resultBox.classList.add("show");
-        resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-
-      document.getElementById("resetBtn").addEventListener("click", () => {
-        localStorage.removeItem(STORAGE_KEY);
-        document.querySelectorAll('input[type="radio"]').forEach((input) => {
-          input.checked = false;
+      document
+        .querySelectorAll<HTMLInputElement>('input[type="radio"]')
+        .forEach((input) => {
+          input.addEventListener("change", saveState);
         });
-        document.getElementById("resultBox").classList.remove("show");
-      });
+
+      if (
+        calculateBtn &&
+        resetBtn &&
+        resultBox &&
+        scoreText &&
+        statusBadge &&
+        statusText &&
+        notesText
+      ) {
+        calculateBtn.addEventListener("click", () => {
+          const { total, answered } = getScore();
+
+          if (answered < questionIds.length) {
+            alert("Please answer all questions before calculating the score.");
+            return;
+          }
+
+          const assessment = getAssessment(total);
+
+          scoreText.textContent = `${total} / 32`;
+          statusText.textContent = assessment.text;
+          notesText.textContent = assessment.notes;
+          statusBadge.textContent = assessment.label;
+          statusBadge.className = `badge ${assessment.badgeClass}`;
+
+          resultBox.classList.add("show");
+          resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        resetBtn.addEventListener("click", () => {
+          localStorage.removeItem(STORAGE_KEY);
+
+          document
+            .querySelectorAll<HTMLInputElement>('input[type="radio"]')
+            .forEach((input) => {
+              input.checked = false;
+            });
+
+          resultBox.classList.remove("show");
+        });
+      }
 
       loadState();
     </script>
