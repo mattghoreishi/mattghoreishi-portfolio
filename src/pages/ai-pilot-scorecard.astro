@@ -1,0 +1,386 @@
+---
+const questions = [
+  {
+    id: "business_value",
+    title: "Clear business value",
+    description: "Is there a specific business problem, metric, or workflow this AI pilot is expected to improve?",
+  },
+  {
+    id: "unique_data",
+    title: "Unique or valuable data",
+    description: "Does the product have access to data that creates a meaningful advantage or improves relevance?",
+  },
+  {
+    id: "workflow_fit",
+    title: "Workflow integration",
+    description: "Will this live inside a real user workflow instead of sitting beside it as a disconnected demo?",
+  },
+  {
+    id: "evaluation",
+    title: "Evaluation readiness",
+    description: "Do you know how success will be measured in production, not just in a demo environment?",
+  },
+  {
+    id: "adoption",
+    title: "Adoption path",
+    description: "Is there a realistic plan for onboarding, trust, behavior change, and internal buy-in?",
+  },
+  {
+    id: "governance",
+    title: "Governance and risk",
+    description: "Have privacy, safety, compliance, and escalation paths been thought through early enough?",
+  },
+  {
+    id: "economics",
+    title: "Economics and scale",
+    description: "Can the solution remain useful and financially sensible when usage grows?",
+  },
+  {
+    id: "owner",
+    title: "Product ownership",
+    description: "Is there a clear owner who will make decisions, prioritize trade-offs, and drive execution?",
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Pilot Scorecard | Matt Ghoreishi</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: #0d1726;
+        --panel-2: #122033;
+        --text: #e8eef9;
+        --muted: #9fb0c7;
+        --accent: #2f6df6;
+        --border: rgba(255, 255, 255, 0.08);
+        --good: #1f9d55;
+        --mid: #d9a441;
+        --bad: #d64545;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 48px 20px 80px;
+      }
+
+      .back {
+        display: inline-block;
+        margin-bottom: 24px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1.05;
+        margin: 0 0 12px;
+      }
+
+      .lead {
+        color: var(--muted);
+        max-width: 760px;
+        font-size: 1.05rem;
+        margin-bottom: 32px;
+      }
+
+      .panel {
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+
+      .question {
+        margin-bottom: 18px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .question:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+
+      .question h3 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .question p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .options label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+        cursor: pointer;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .result {
+        display: none;
+      }
+
+      .result.show {
+        display: block;
+      }
+
+      .score {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0 0 8px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .badge.good {
+        background: rgba(31, 157, 85, 0.16);
+        color: #8de0ae;
+      }
+
+      .badge.mid {
+        background: rgba(217, 164, 65, 0.16);
+        color: #f0cf84;
+      }
+
+      .badge.bad {
+        background: rgba(214, 69, 69, 0.16);
+        color: #f1a0a0;
+      }
+
+      .notes {
+        color: var(--muted);
+        margin-top: 16px;
+      }
+
+      .footer-note {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="back" href="/">← Back to home</a>
+
+      <h1>AI Pilot Scorecard</h1>
+      <p class="lead">
+        A practical tool to assess whether an AI initiative is ready to move beyond demo mode. This is a simple decision aid for product teams, not legal or financial advice.
+      </p>
+
+      <div class="panel">
+        {questions.map((q) => (
+          <div class="question">
+            <h3>{q.title}</h3>
+            <p>{q.description}</p>
+            <div class="options">
+              <label><input type="radio" name={q.id} value="0" /> 0</label>
+              <label><input type="radio" name={q.id} value="1" /> 1</label>
+              <label><input type="radio" name={q.id} value="2" /> 2</label>
+              <label><input type="radio" name={q.id} value="3" /> 3</label>
+              <label><input type="radio" name={q.id} value="4" /> 4</label>
+            </div>
+          </div>
+        ))}
+
+        <div class="actions">
+          <button class="primary" id="calculateBtn">Calculate score</button>
+          <button class="secondary" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel result" id="resultBox">
+        <div class="score" id="scoreText">0 / 32</div>
+        <div class="badge mid" id="statusBadge">Needs work</div>
+        <p id="statusText"></p>
+        <div class="notes" id="notesText"></div>
+      </div>
+
+      <p class="footer-note">
+        Tip: version one should stay simple. No backend, no login, and no data storage beyond the browser.
+      </p>
+    </div>
+
+    <script>
+      const questionIds = [
+        "business_value",
+        "unique_data",
+        "workflow_fit",
+        "evaluation",
+        "adoption",
+        "governance",
+        "economics",
+        "owner",
+      ];
+
+      const STORAGE_KEY = "ai-pilot-scorecard-v1";
+
+      function saveState() {
+        const data = {};
+        questionIds.forEach((id) => {
+          const checked = document.querySelector(`input[name="${id}"]:checked`);
+          data[id] = checked ? checked.value : "";
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        questionIds.forEach((id) => {
+          if (!data[id] && data[id] !== "0") return;
+          const input = document.querySelector(`input[name="${id}"][value="${data[id]}"]`);
+          if (input) input.checked = true;
+        });
+      }
+
+      function getScore() {
+        let total = 0;
+        let answered = 0;
+
+        questionIds.forEach((id) => {
+          const checked = document.querySelector(`input[name="${id}"]:checked`);
+          if (checked) {
+            total += Number(checked.value);
+            answered += 1;
+          }
+        });
+
+        return { total, answered };
+      }
+
+      function getAssessment(score) {
+        if (score >= 25) {
+          return {
+            label: "Strong foundation",
+            badgeClass: "good",
+            text: "This pilot has a strong chance of becoming a real product if execution remains disciplined.",
+            notes:
+              "Your strongest next move is to validate adoption behavior, cost at scale, and production measurement.",
+          };
+        }
+
+        if (score >= 17) {
+          return {
+            label: "Needs work",
+            badgeClass: "mid",
+            text: "There is real potential here, but important product risks still need to be resolved before scaling.",
+            notes:
+              "Focus first on workflow fit, measurable value, and clear ownership. These usually matter more than model polish.",
+          };
+        }
+
+        return {
+          label: "Demo risk",
+          badgeClass: "bad",
+          text: "This looks more like a promising demo than a production-ready AI product.",
+          notes:
+            "Tighten the business case, workflow integration, and evaluation plan before investing heavily in scale or automation.",
+        };
+      }
+
+      document.querySelectorAll('input[type="radio"]').forEach((input) => {
+        input.addEventListener("change", saveState);
+      });
+
+      document.getElementById("calculateBtn").addEventListener("click", () => {
+        const { total, answered } = getScore();
+
+        if (answered < questionIds.length) {
+          alert("Please answer all questions before calculating the score.");
+          return;
+        }
+
+        const assessment = getAssessment(total);
+        const resultBox = document.getElementById("resultBox");
+        const badge = document.getElementById("statusBadge");
+
+        document.getElementById("scoreText").textContent = `${total} / 32`;
+        document.getElementById("statusText").textContent = assessment.text;
+        document.getElementById("notesText").textContent = assessment.notes;
+
+        badge.textContent = assessment.label;
+        badge.className = `badge ${assessment.badgeClass}`;
+
+        resultBox.classList.add("show");
+        resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEY);
+        document.querySelectorAll('input[type="radio"]').forEach((input) => {
+          input.checked = false;
+        });
+        document.getElementById("resultBox").classList.remove("show");
+      });
+
+      loadState();
+    </script>
+  </body>
+</html>
