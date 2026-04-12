@@ -92,12 +92,12 @@ export const SITE_CONTENT: SiteContent = {
   ],
   projects: [
     {
-      name: "Writing on AI Product Execution",
+      name: "AI Pilot Scorecard",
       summary:
-        "Practical writing on AI pilots, product strategy, and how to move from hype to measurable business value.",
-      linkPreview: "https://medium.com/@ghoreishi",
+        "A practical interactive tool to assess whether an AI initiative is ready to move beyond demo mode.",
+      linkPreview: "/ai-pilot-scorecard",
       linkSource: "https://medium.com/@ghoreishi",
-      image: "/matt-big.jpg",
+      image: "/ai-pilot-scorecard-cover.jpg",
     },
   ],
   about: {
