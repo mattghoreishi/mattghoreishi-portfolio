@@ -31,65 +31,65 @@ export const SITE_CONTENT: SiteContent = {
     email: "sedmgh [at] gmail [dot] com",
   },
   experience: [
-    {
-      company: "micro1",
-      position: "AI Evaluation and Quality Specialist",
-      startDate: "Dec 2025",
-      endDate: "Present",
-      summary: [
-        "Work on multimodal evaluation and review workflows for advanced AI systems, with a strong focus on quality, consistency, and edge-case handling.",
-        "Contribute to structured QA processes and human-in-the-loop operations in quality-critical AI environments.",
-      ],
-    },
-    {
-      company: "Albatec GmbH",
-      position: "Product Development Manager",
-      startDate: "Jan 2024",
-      endDate: "Jun 2025",
-      summary: [
-        "Owned product direction for industrial monitoring and gas safety solutions, bridging technical execution with commercial goals.",
-        "Shipped dashboard and SaaS-oriented product work around monitoring, incident visibility, and predictive maintenance use cases.",
-      ],
-    },
-    {
-      company: "Sotoon",
-      position: "Director of Product Management",
-      startDate: "Sep 2021",
-      endDate: "Jan 2023",
-      summary: [
-        "Led AI product strategy and multi-product roadmaps across cloud and AI services.",
-        "Scaled contact center AI and NLP-based solutions for enterprise clients, connecting technical capability to measurable customer and business impact.",
-      ],
-    },
-    {
-      company: "Sotoon",
-      position: "Senior Product Manager",
-      startDate: "Oct 2020",
-      endDate: "Sep 2021",
-      summary: [
-        "Shipped the Contact Center AI MVP and helped turn strong technical capability into a clearer, more repeatable product offering.",
-      ],
-    },
-    {
-      company: "Cafe Bazaar",
-      position: "Product Development Manager, Payments and VOD",
-      startDate: "Oct 2016",
-      endDate: "Oct 2020",
-      summary: [
-        "Led product initiatives across payments and content on one of the region’s largest digital platforms.",
-        "Integrated Direct Carrier Billing, contributing to major revenue growth and millions of new paying users.",
-      ],
-    },
-    {
-      company: "Cafe Bazaar",
-      position: "Product Marketing Manager, Ads Monetization",
-      startDate: "Sep 2014",
-      endDate: "Oct 2016",
-      summary: [
-        "Scaled ad monetization and growth initiatives across a high-volume digital ad network.",
-      ],
-    },
-  ],
+  {
+    company: "micro1",
+    position: "AI Evaluation and Quality Specialist",
+    startDate: "Dec 2025",
+    endDate: "Present",
+    summary: [
+      "Work on multimodal evaluation and review workflows for advanced AI systems, with a strong focus on quality, consistency, and edge-case handling.",
+      "Contribute to structured QA processes and human-in-the-loop operations in quality-critical AI environments.",
+    ],
+  },
+  {
+    company: "Albatec GmbH",
+    position: "Product Development Manager",
+    startDate: "Jan 2024",
+    endDate: "Jun 2025",
+    summary: [
+      "Owned product direction for industrial monitoring and gas safety solutions, bridging technical execution with commercial goals.",
+      "Shipped monitoring dashboards and SaaS-oriented product work that improved incident visibility and supported predictive maintenance use cases.",
+    ],
+  },
+  {
+    company: "Sotoon",
+    position: "Director of Product Management",
+    startDate: "Sep 2021",
+    endDate: "Jan 2023",
+    summary: [
+      "Led AI product strategy and multi-product roadmaps across cloud and enterprise AI services.",
+      "Scaled contact center AI and NLP-based solutions for enterprise clients, connecting technical delivery to measurable customer and business impact.",
+    ],
+  },
+  {
+    company: "Sotoon",
+    position: "Senior Product Manager",
+    startDate: "Oct 2020",
+    endDate: "Sep 2021",
+    summary: [
+      "Shipped the Contact Center AI MVP and helped turn strong technical capability into a clearer, more repeatable product offering.",
+    ],
+  },
+  {
+    company: "Cafe Bazaar",
+    position: "Product Development Manager, Payments and VOD",
+    startDate: "Oct 2016",
+    endDate: "Oct 2020",
+    summary: [
+      "Led product initiatives across payments and content on one of the region’s largest digital platforms.",
+      "Integrated Direct Carrier Billing, contributing to major revenue growth and millions of new paying users.",
+    ],
+  },
+  {
+    company: "Cafe Bazaar",
+    position: "Product Marketing Manager, Ads Monetization",
+    startDate: "Sep 2014",
+    endDate: "Oct 2016",
+    summary: [
+      "Scaled ad monetization and growth initiatives across a high-volume mobile ad network.",
+    ],
+  },
+],
   projects: [
     {
       name: "AI Pilot Scorecard",
