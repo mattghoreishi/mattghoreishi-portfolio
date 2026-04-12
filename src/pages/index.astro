@@ -9,9 +9,21 @@ import About from "@components/About.astro";
 import "../styles/global.css";
 ---
 
+
 <Layout>
   <Hero {...SITE_CONTENT.hero} />
   <Experience experience={SITE_CONTENT.experience} />
   <Projects projects={SITE_CONTENT.projects} />
   <About {...SITE_CONTENT.about} name={SITE_CONTENT.hero.name} />
 </Layout>
+
+projects: [
+  {
+    name: "AI Pilot Scorecard",
+    summary:
+      "A practical interactive tool to assess whether an AI initiative is ready to move beyond demo mode.",
+    linkPreview: "/ai-pilot-scorecard",
+    linkSource: "https://medium.com/@ghoreishi",
+    image: "/matt-big.jpg",
+  },
+],
