@@ -20,6 +20,7 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    mattAnalyticsConsentGranted?: boolean;
   }
 }
 
@@ -48,6 +49,13 @@ export function trackEvent(eventName: AnalyticsEventName, params: AnalyticsParam
     }).filter(([, value]) => hasAnalyticsValue(value))
   );
 
+  if (window.mattAnalyticsConsentGranted !== true) {
+    if (debugEnabled) {
+      console.info("[analytics skipped: consent]", eventName, cleanParams);
+    }
+    return false;
+  }
+
   if (typeof window.gtag === "function") {
     window.gtag("event", eventName, cleanParams);
   } else {
@@ -65,7 +73,13 @@ export function trackEvent(eventName: AnalyticsEventName, params: AnalyticsParam
 }
 
 export function trackPageView(path: string, title = document.title) {
-  if (typeof window === "undefined" || typeof window.gtag !== "function") return false;
+  if (
+    typeof window === "undefined" ||
+    window.mattAnalyticsConsentGranted !== true ||
+    typeof window.gtag !== "function"
+  ) {
+    return false;
+  }
   const debugEnabled = isAnalyticsDebugEnabled();
 
   window.gtag("event", "page_view", {

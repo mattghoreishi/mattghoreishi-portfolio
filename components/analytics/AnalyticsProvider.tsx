@@ -13,17 +13,34 @@ const preferencesEventName = "analytics-preferences:open";
 
 type AnalyticsConsent = "granted" | "denied" | "unset";
 
+function applyAnalyticsConsent(consent: AnalyticsConsent) {
+  if (typeof window === "undefined") return;
+
+  const granted = consent === "granted";
+  window.mattAnalyticsConsentGranted = granted;
+  (window as unknown as Record<string, boolean>)[`ga-disable-${gaMeasurementId}`] = !granted;
+
+  if (typeof window.gtag === "function") {
+    window.gtag("consent", "update", {
+      analytics_storage: granted ? "granted" : "denied"
+    });
+  }
+}
+
 function RouteAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const trackedInitialPageView = useRef(false);
+  const lastTrackedPath = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!gaMeasurementId || !pathname || trackedInitialPageView.current) return;
+    if (!gaMeasurementId || !pathname) return;
 
     const query = searchParams.toString();
-    trackPageView(query ? `${pathname}?${query}` : pathname);
-    trackedInitialPageView.current = true;
+    const pagePath = query ? `${pathname}?${query}` : pathname;
+    if (lastTrackedPath.current === pagePath) return;
+
+    trackPageView(pagePath);
+    lastTrackedPath.current = pagePath;
   }, [pathname, searchParams]);
 
   return null;
@@ -72,6 +89,7 @@ function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent
     function readConsent() {
       const storedConsent = window.localStorage.getItem(consentStorageKey);
       if (storedConsent === "granted" || storedConsent === "denied") {
+        applyAnalyticsConsent(storedConsent);
         onConsentChange(storedConsent);
         setVisible(false);
         if (isAnalyticsDebugEnabled()) {
@@ -81,6 +99,7 @@ function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent
       }
 
       setVisible(true);
+      applyAnalyticsConsent("unset");
       onConsentChange("unset");
       if (isAnalyticsDebugEnabled()) {
         console.info("[analytics] consent state: unset");
@@ -103,6 +122,7 @@ function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent
 
   function saveConsent(consent: Exclude<AnalyticsConsent, "unset">) {
     window.localStorage.setItem(consentStorageKey, consent);
+    applyAnalyticsConsent(consent);
     onConsentChange(consent);
     setVisible(false);
     if (isAnalyticsDebugEnabled()) {
