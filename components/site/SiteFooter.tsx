@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AnalyticsPreferencesButton } from "@/components/analytics/AnalyticsPreferencesButton";
 import { profile } from "@/data/site";
 
 export function SiteFooter() {
@@ -26,6 +27,7 @@ export function SiteFooter() {
           </a>
           <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">GitHub</a>
           <a href={profile.mediumUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">Medium</a>
+          <AnalyticsPreferencesButton />
         </div>
       </div>
     </footer>
