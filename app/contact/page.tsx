@@ -54,6 +54,8 @@ export default function ContactPage() {
                   href={profile.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-analytics-event="click_contact"
+                  data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "contact_page_primary" })}
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
                 >
                   Connect on LinkedIn

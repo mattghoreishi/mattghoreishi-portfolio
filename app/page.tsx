@@ -58,6 +58,8 @@ export default function HomePage() {
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/projects"
+                data-analytics-event="click_primary_cta"
+                data-analytics-params={JSON.stringify({ cta_name: "view_my_work", cta_location: "home_hero", destination_path: "/projects" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
               >
                 View my work
@@ -65,12 +67,16 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/writing/the-agentic-ai-product-gap"
+                data-analytics-event="click_primary_cta"
+                data-analytics-params={JSON.stringify({ cta_name: "read_latest_article", cta_location: "home_hero", destination_path: "/writing/the-agentic-ai-product-gap" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-cyan-300/25 px-5 text-sm font-semibold text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
               >
                 Read latest article
               </Link>
               <Link
                 href="/mapper"
+                data-analytics-event="play_demo"
+                data-analytics-params={JSON.stringify({ demo_name: "agentic_product_stack_mapper", cta_location: "home_hero", destination_path: "/mapper" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white transition hover:border-cyan-200 hover:bg-cyan-300/10"
               >
                 Try the Agentic Product Stack Mapper
@@ -79,6 +85,8 @@ export default function HomePage() {
                 href={profile.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-analytics-event="click_contact"
+                data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "home_hero" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white transition hover:border-cyan-200 hover:bg-cyan-300/10"
               >
                 Connect on LinkedIn
@@ -111,7 +119,12 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
-            <Link href="/writing/the-agentic-ai-product-gap" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100">
+            <Link
+              href="/writing/the-agentic-ai-product-gap"
+              data-analytics-event="open_case_study"
+              data-analytics-params={JSON.stringify({ case_study_slug: featuredArticle.slug, content_type: "article", cta_location: "home_featured_writing" })}
+              className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100"
+            >
               Open article page
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -139,7 +152,12 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
-            <Link href="/tools/agentic-product-stack-mapper" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100">
+            <Link
+              href="/tools/agentic-product-stack-mapper"
+              data-analytics-event="open_case_study"
+              data-analytics-params={JSON.stringify({ case_study_slug: featuredTool.slug, content_type: "tool", cta_location: "home_featured_tool" })}
+              className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100"
+            >
               View tool details
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -180,7 +198,13 @@ export default function HomePage() {
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {projectThemes.map((item) => (
-              <Link key={item.title} href={item.href} className="rounded-xl border border-white/10 bg-[#07111f] p-5 transition hover:border-cyan-300/30 hover:bg-white/[0.055]">
+              <Link
+                key={item.title}
+                href={item.href}
+                data-analytics-event="open_case_study"
+                data-analytics-params={JSON.stringify({ case_study_slug: item.title.toLowerCase().replaceAll(" ", "_"), content_type: "project_theme", cta_location: "home_project_themes" })}
+                className="rounded-xl border border-white/10 bg-[#07111f] p-5 transition hover:border-cyan-300/30 hover:bg-white/[0.055]"
+              >
                 <CheckCircle2 className="h-5 w-5 text-cyan-200" />
                 <p className="mt-4 font-semibold text-white">{item.title}</p>
                 <p className="mt-3 text-sm leading-6 text-slate-400">{item.description}</p>
@@ -253,6 +277,8 @@ export default function HomePage() {
                   href={profile.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-analytics-event="click_contact"
+                  data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "home_contact_band" })}
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
                 >
                   Connect on LinkedIn

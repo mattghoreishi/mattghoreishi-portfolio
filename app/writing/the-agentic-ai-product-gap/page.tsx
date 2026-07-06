@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Copy, Quote } from "lucide-react";
+import { ArticleEngagement } from "@/components/analytics/ArticleEngagement";
 import { AgenticStackVisual } from "@/components/site/AgenticStackVisual";
 import { BrandCard } from "@/components/site/BrandCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -40,7 +41,8 @@ export default function AgenticAiProductGapPage() {
   return (
     <main className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
-      <article>
+      <article data-article-content>
+        <ArticleEngagement articleSlug={article.slug} />
         <section className="px-5 py-16 md:px-8 md:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
@@ -56,6 +58,8 @@ export default function AgenticAiProductGapPage() {
                   href={article.mediumUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-analytics-event="click_primary_cta"
+                  data-analytics-params={JSON.stringify({ cta_name: "read_on_medium", cta_location: "article_hero", article_slug: article.slug, destination_domain: "medium.com" })}
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
                 >
                   Read on Medium
@@ -63,6 +67,8 @@ export default function AgenticAiProductGapPage() {
                 </a>
                 <Link
                   href="/mapper"
+                  data-analytics-event="play_demo"
+                  data-analytics-params={JSON.stringify({ demo_name: "agentic_product_stack_mapper", cta_location: "article_hero", article_slug: article.slug, destination_path: "/mapper" })}
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
                 >
                   Try the tool
@@ -118,6 +124,8 @@ export default function AgenticAiProductGapPage() {
                     href={article.mediumUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-analytics-event="click_primary_cta"
+                    data-analytics-params={JSON.stringify({ cta_name: "read_full_article_on_medium", cta_location: "article_reference_card", article_slug: article.slug, destination_domain: "medium.com" })}
                     className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
                   >
                     Read full article on Medium
@@ -125,6 +133,8 @@ export default function AgenticAiProductGapPage() {
                   </a>
                   <Link
                     href="/tools/agentic-product-stack-mapper"
+                    data-analytics-event="open_case_study"
+                    data-analytics-params={JSON.stringify({ case_study_slug: "agentic-product-stack-mapper", content_type: "tool", cta_location: "article_reference_card" })}
                     className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
                   >
                     Learn about the mapper

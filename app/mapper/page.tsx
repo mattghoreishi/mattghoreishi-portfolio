@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { domainTemplates, emptyState, sampleSupportRefundAgent } from "@/data/templates";
+import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { generateBrief } from "@/lib/briefGenerator";
 import { asList } from "@/lib/utils";
 import type { AutonomyLevel, Facing, MapperState } from "@/types";
@@ -72,7 +73,19 @@ function TextList({
       <div className="flex items-center justify-between gap-3">
         <Label>{label}</Label>
         {suggestion && (
-          <Button type="button" size="sm" variant="ghost" onClick={() => onChange(suggestion)}>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              trackEvent(analyticsEvents.expandRationale, {
+                rationale_slug: label.toLowerCase().replaceAll(" ", "_"),
+                demo_name: "agentic_product_stack_mapper",
+                source: "suggested_answer"
+              });
+              onChange(suggestion);
+            }}
+          >
             Use suggested answer
           </Button>
         )}
@@ -151,6 +164,11 @@ export default function MapperPage() {
     if (params.get("sample") === "refund") {
       setState(sampleSupportRefundAgent);
       setActiveStep("brief");
+      trackEvent(analyticsEvents.playDemo, {
+        demo_name: "agentic_product_stack_mapper",
+        sample_name: "support_refund_agent",
+        source: "url_param"
+      });
       setLoaded(true);
       return;
     }
@@ -173,6 +191,17 @@ export default function MapperPage() {
   const currentIndex = steps.findIndex((step) => step.id === activeStep);
   const template = domainTemplates[state.quickStart.workflowDomain as keyof typeof domainTemplates] || domainTemplates.other;
 
+  function selectStep(stepId: string, source = "mapper") {
+    setActiveStep(stepId);
+    trackEvent(analyticsEvents.switchDemoTab, {
+      demo_name: "agentic_product_stack_mapper",
+      tab_id: stepId,
+      tab_label: steps.find((step) => step.id === stepId)?.label || stepId,
+      previous_tab_id: activeStep,
+      source
+    });
+  }
+
   function patch(patchState: Partial<MapperState>) {
     setState((current) => ({ ...current, ...patchState }));
   }
@@ -187,17 +216,17 @@ export default function MapperPage() {
   }
 
   function next() {
-    setActiveStep(steps[Math.min(currentIndex + 1, steps.length - 1)].id);
+    selectStep(steps[Math.min(currentIndex + 1, steps.length - 1)].id, "next_button");
   }
 
   function previous() {
-    setActiveStep(steps[Math.max(currentIndex - 1, 0)].id);
+    selectStep(steps[Math.max(currentIndex - 1, 0)].id, "previous_button");
   }
 
   function reset() {
     window.localStorage.removeItem(storageKey);
     setState(emptyState);
-    setActiveStep("quick");
+    selectStep("quick", "reset");
   }
 
   const livePreview = (
@@ -234,7 +263,18 @@ export default function MapperPage() {
         preview={livePreview}
       >
         <div className="mb-5 flex flex-wrap gap-2">
-          <Button type="button" variant="accent" onClick={() => setState(sampleSupportRefundAgent)}>
+          <Button
+            type="button"
+            variant="accent"
+            onClick={() => {
+              setState(sampleSupportRefundAgent);
+              trackEvent(analyticsEvents.playDemo, {
+                demo_name: "agentic_product_stack_mapper",
+                sample_name: "support_refund_agent",
+                source: "quick_start"
+              });
+            }}
+          >
             <Sparkles className="h-4 w-4" />
             Try with sample support refund agent
           </Button>
@@ -243,6 +283,12 @@ export default function MapperPage() {
             variant="outline"
             onClick={() => {
               const suggested = domainTemplates[state.quickStart.workflowDomain as keyof typeof domainTemplates] || domainTemplates.other;
+              trackEvent(analyticsEvents.expandRationale, {
+                rationale_slug: "domain_suggestions",
+                demo_name: "agentic_product_stack_mapper",
+                workflow_domain: state.quickStart.workflowDomain,
+                source: "quick_start"
+              });
               patch({
                 quickStart: {
                   ...state.quickStart,
@@ -357,7 +403,7 @@ export default function MapperPage() {
             type="button"
             onClick={() => {
               complete("quick");
-              setActiveStep("brief");
+              selectStep("brief", "generate_first_draft");
             }}
           >
             Generate first draft brief
@@ -376,7 +422,7 @@ export default function MapperPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {steps.slice(2, 12).map((step) => (
-                <Button key={step.id} type="button" variant="outline" className="w-full justify-start" onClick={() => setActiveStep(step.id)}>
+                <Button key={step.id} type="button" variant="outline" className="w-full justify-start" onClick={() => selectStep(step.id, "brief_module_picker")}>
                   {step.label}
                 </Button>
               ))}
@@ -394,11 +440,22 @@ export default function MapperPage() {
         <div className="space-y-5">
           <BriefPreview brief={brief} />
           <div className="no-print flex flex-wrap gap-2">
-            <Button type="button" onClick={() => setActiveStep("export")}>
+            <Button type="button" onClick={() => selectStep("export", "continue_to_export")}>
               Continue to export
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button type="button" variant="outline" onClick={() => setActiveStep("workflow")}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                trackEvent(analyticsEvents.expandRationale, {
+                  rationale_slug: "deepen_brief",
+                  demo_name: "agentic_product_stack_mapper",
+                  source: "brief_preview"
+                });
+                selectStep("workflow", "deepen_brief");
+              }}
+            >
               Deepen this brief
             </Button>
           </div>
@@ -716,7 +773,7 @@ export default function MapperPage() {
             <Textarea value={state.businessValueLoop.valueImpact} onChange={(event) => patch({ businessValueLoop: { ...state.businessValueLoop, valueImpact: event.target.value } })} placeholder="Explain the loop from agent behavior to business outcome." />
           </div>
         </div>
-        <ModuleActions current="value" onComplete={complete} onNext={() => setActiveStep("brief")} />
+        <ModuleActions current="value" onComplete={complete} onNext={() => selectStep("brief", "value_complete")} />
       </WizardLayout>
     ),
     export: (
@@ -740,7 +797,18 @@ export default function MapperPage() {
             <p className="mt-1 text-muted-foreground">Local autosave is on. No login needed.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" onClick={() => setState(sampleSupportRefundAgent)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setState(sampleSupportRefundAgent);
+                trackEvent(analyticsEvents.playDemo, {
+                  demo_name: "agentic_product_stack_mapper",
+                  sample_name: "support_refund_agent",
+                  source: "mapper_header"
+                });
+              }}
+            >
               <Sparkles className="h-4 w-4" />
               Load sample
             </Button>
@@ -759,7 +827,7 @@ export default function MapperPage() {
           steps={steps}
           current={activeStep}
           completed={["quick", ...state.completedModules]}
-          onSelect={setActiveStep}
+          onSelect={(stepId) => selectStep(stepId, "progress_stepper")}
         />
 
         {stepContent[activeStep]}
@@ -770,7 +838,7 @@ export default function MapperPage() {
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <Button type="button" variant="ghost" onClick={() => setActiveStep("brief")}>
+            <Button type="button" variant="ghost" onClick={() => selectStep("brief", "view_live_brief")}>
               View live brief
               <ArrowRight className="h-4 w-4" />
             </Button>

@@ -53,6 +53,8 @@ export default function AgenticProductStackMapperPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/mapper"
+                data-analytics-event="play_demo"
+                data-analytics-params={JSON.stringify({ demo_name: "agentic_product_stack_mapper", cta_location: "tool_detail_hero", destination_path: "/mapper" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
               >
                 Start the mapper
@@ -60,6 +62,8 @@ export default function AgenticProductStackMapperPage() {
               </Link>
               <Link
                 href="/writing/the-agentic-ai-product-gap"
+                data-analytics-event="expand_rationale"
+                data-analytics-params={JSON.stringify({ rationale_slug: "agentic_product_stack_framework", cta_location: "tool_detail_hero", destination_path: "/writing/the-agentic-ai-product-gap" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
               >
                 Read the framework

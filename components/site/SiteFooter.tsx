@@ -14,7 +14,16 @@ export function SiteFooter() {
           <Link href="/projects" className="hover:text-white">Projects</Link>
           <Link href="/writing" className="hover:text-white">Writing</Link>
           <Link href="/tools" className="hover:text-white">Tools</Link>
-          <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">LinkedIn</a>
+          <a
+            href={profile.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-analytics-event="click_contact"
+            data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "site_footer" })}
+            className="hover:text-white"
+          >
+            LinkedIn
+          </a>
           <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">GitHub</a>
           <a href={profile.mediumUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">Medium</a>
         </div>

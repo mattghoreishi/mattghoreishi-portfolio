@@ -67,6 +67,10 @@ The service role key is used only in server route handlers. It is never imported
 - Simple in-memory rate limiting is applied to the submission endpoint.
 - Supabase RLS is enabled, with service-role-only policies for stored data.
 
+## Analytics
+
+Analytics are documented in [`docs/analytics.md`](docs/analytics.md). The site supports Cloudflare Web Analytics, GA4 pageviews and custom events, Search Console verification, route-change tracking, debug mode, and a small custom event utility.
+
 ## Vercel Deployment
 
 1. Push the repo to GitHub.

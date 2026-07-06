@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { siteUrl } from "@/data/site";
 import "./globals.css";
+
+// Set these in production:
+// NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XWVT59N0JV"
+// NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN="your-cloudflare-token"
+// NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="your-search-console-token"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -13,7 +19,10 @@ export const metadata: Metadata = {
   applicationName: "Matt Ghoreishi",
   authors: [{ name: "Matt Ghoreishi" }],
   creator: "Matt Ghoreishi",
-  publisher: "Matt Ghoreishi"
+  publisher: "Matt Ghoreishi",
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined
+  }
 };
 
 export default function RootLayout({
@@ -23,7 +32,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AnalyticsProvider />
+        {children}
+      </body>
     </html>
   );
 }

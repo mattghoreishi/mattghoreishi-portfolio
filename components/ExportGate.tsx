@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DownloadButtons } from "@/components/DownloadButtons";
+import { analyticsEvents, trackEvent } from "@/lib/analytics";
 
 export function ExportGate({
   state,
@@ -49,9 +50,24 @@ export function ExportGate({
     }
     setStatus("ready");
     setMessage("Export unlocked. Your brief is ready to download.");
+    trackEvent(analyticsEvents.submitContactForm, {
+      form_name: "mapper_export_gate",
+      role: lead.role,
+      company_size: lead.companySize,
+      main_use_case: lead.mainUseCase,
+      contact_consent: lead.contactConsent,
+      agent_name: brief.title
+    });
   }
 
   async function sendFeedback(kind: string) {
+    trackEvent(analyticsEvents.clickPrimaryCta, {
+      cta_name: `download_mapper_${kind}`,
+      cta_location: "mapper_export_gate",
+      content_type: kind,
+      agent_name: brief.title
+    });
+
     await fetch("/api/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -37,6 +37,8 @@ export function SiteNav() {
             href={profile.linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
+            data-analytics-event="click_contact"
+            data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "site_nav" })}
             className="inline-flex items-center gap-2 rounded-md border border-cyan-300/25 px-3 py-2 text-sm font-semibold text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
           >
             LinkedIn

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArticleEngagement } from "@/components/analytics/ArticleEngagement";
 import { BrandCard } from "@/components/site/BrandCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
@@ -44,7 +45,8 @@ export default function FromHypeToValuePage() {
   return (
     <main className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
-      <article className="px-5 py-16 md:px-8 md:py-24">
+      <article data-article-content className="px-5 py-16 md:px-8 md:py-24">
+        <ArticleEngagement articleSlug={article.slug} />
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
             <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.date}</span>
@@ -58,6 +60,8 @@ export default function FromHypeToValuePage() {
               href={article.mediumUrl}
               target="_blank"
               rel="noopener noreferrer"
+              data-analytics-event="click_primary_cta"
+              data-analytics-params={JSON.stringify({ cta_name: "read_on_medium", cta_location: "article_hero", article_slug: article.slug, destination_domain: "medium.com" })}
               className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
             >
               Read on Medium
@@ -65,6 +69,8 @@ export default function FromHypeToValuePage() {
             </a>
             <Link
               href={`/writing/${related.slug}`}
+              data-analytics-event="open_case_study"
+              data-analytics-params={JSON.stringify({ case_study_slug: related.slug, content_type: "article", cta_location: "article_hero_related" })}
               className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
             >
               Read the agentic AI follow-up
