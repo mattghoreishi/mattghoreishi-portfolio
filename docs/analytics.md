@@ -10,6 +10,8 @@ Deployment note: Cloudflare Pages production builds run from `main` with `pnpm r
 - Google Analytics 4: loaded through `gtag.js` after consent. The production default is `G-XWVT59N0JV`, and `NEXT_PUBLIC_GA_MEASUREMENT_ID` can override it.
 - Google Search Console: verification meta tag reads from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
+GA4 is configured with `send_page_view: false` so the site can send exactly one consent-time initial `page_view`. SPA route-change pageviews are handled by GA4 Enhanced Measurement browser-history tracking in the GA4 web stream; do not add a second manual App Router pageview emitter unless Enhanced Measurement is disabled in GA4.
+
 Add these production environment variables:
 
 ```bash

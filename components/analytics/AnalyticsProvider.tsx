@@ -27,20 +27,20 @@ function applyAnalyticsConsent(consent: AnalyticsConsent) {
   }
 }
 
-function RouteAnalytics() {
+function InitialPageViewTracking() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const lastTrackedPath = useRef<string | null>(null);
+  const hasTrackedInitialPage = useRef(false);
 
   useEffect(() => {
     if (!gaMeasurementId || !pathname) return;
+    if (hasTrackedInitialPage.current) return;
 
     const query = searchParams.toString();
     const pagePath = query ? `${pathname}?${query}` : pathname;
-    if (lastTrackedPath.current === pagePath) return;
 
     trackPageView(pagePath);
-    lastTrackedPath.current = pagePath;
+    hasTrackedInitialPage.current = true;
   }, [pathname, searchParams]);
 
   return null;
@@ -222,7 +222,7 @@ export function AnalyticsProvider() {
 
       {shouldLoadGa && (
         <Suspense fallback={null}>
-          <RouteAnalytics />
+          <InitialPageViewTracking />
         </Suspense>
       )}
       <DelegatedEventTracking />
