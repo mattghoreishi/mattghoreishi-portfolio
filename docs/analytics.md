@@ -2,6 +2,8 @@
 
 This site uses a small, privacy-aware analytics layer for `mattghoreishi.com`.
 
+Deployment note: Cloudflare Pages production builds run from `main` with `pnpm run build`.
+
 ## Providers
 
 - Cloudflare Web Analytics: loaded only when `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` is set.
