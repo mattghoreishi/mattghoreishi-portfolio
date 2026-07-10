@@ -9,7 +9,11 @@ export const analyticsEvents = {
   downloadResume: "download_resume",
   submitContactForm: "submit_contact_form",
   articleRead50: "article_read_50",
-  articleRead90: "article_read_90"
+  articleRead90: "article_read_90",
+  ccaiRunTriage: "ccai_run_triage",
+  ccaiEraSwitch: "ccai_era_switch",
+  ccaiAutonomyMode: "ccai_autonomy_mode",
+  ccaiReviewAction: "ccai_review_action"
 } as const;
 
 export type AnalyticsEventName = (typeof analyticsEvents)[keyof typeof analyticsEvents];

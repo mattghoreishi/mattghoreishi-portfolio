@@ -27,7 +27,7 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 
 | Event | Recommended parameters | Fires from | Test |
 | --- | --- | --- | --- |
-| `open_case_study` | `case_study_slug`, `content_type`, `cta_location` | Featured writing/tool cards, project theme links, article related links | Click the card/link and confirm event params in GA4 DebugView. |
+| `open_case_study` | `case_study`, `case_study_slug`, `content_type`, `source_surface`, `destination_path`, `cta_location` | Work and Home Contact Center AI cards, featured writing/tool cards, project theme links, article related links | Click the card/link and confirm event params in GA4 DebugView. Contact Center AI should send `case_study: "contact_center_ai_2020_today"`, `source_surface: "home"` or `"work"`, and `destination_path: "/work/contact-center-ai"`. |
 | `expand_rationale` | `rationale_slug`, `demo_name`, `source`, `workflow_domain` | Mapper suggestions, deepen-brief flow, framework rationale link | Click suggestion/deepen controls and confirm one event per click. |
 | `switch_demo_tab` | `demo_name`, `tab_id`, `tab_label`, `previous_tab_id`, `source` | Mapper progress stepper, next/back buttons, module picker | Move between mapper modules and confirm tab IDs are correct. |
 | `play_demo` | `demo_name`, `sample_name`, `source`, `destination_path` | Start mapper CTAs, sample-load buttons, `?sample=refund` | Start the mapper or load sample and confirm source value. |
@@ -38,6 +38,10 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 | `submit_contact_form` | `form_name`, `role`, `company_size`, `main_use_case`, `contact_consent` | Mapper export gate submission | Submit the export form and confirm no email address is sent to GA4. |
 | `article_read_50` | `article_slug`, `page_path`, `scroll_depth` | Article pages at 50% read depth | Scroll halfway through an article and confirm it fires once. |
 | `article_read_90` | `article_slug`, `page_path`, `scroll_depth` | Article pages at 90% read depth | Scroll near the end and confirm it fires once. |
+| `ccai_run_triage` | `synthetic_result`, `calls_processed`, `calls_surfaced` | Contact Center AI V3 triage transformation | Click “Process all 100 and prioritize review” and confirm synthetic-only parameters. These values describe the demo state, not historical operating metrics. |
+| `ccai_review_action` | `synthetic_call_id`, `action`, `demo` | Contact Center AI V3 QA workflow action buttons | Click a QA action and confirm no transcript or free text is sent. |
+| `ccai_era_switch` | `era` | Contact Center AI V3 2020 / today product logic comparison | Switch between 2020 and today. |
+| `ccai_autonomy_mode` | `mode` | Contact Center AI V3 Observe / Recommend / Act control | Switch modes and confirm no PII is sent. |
 
 ## What This Teaches
 
@@ -46,6 +50,7 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 - CTA effectiveness: compare `click_primary_cta` and `click_contact` by `cta_location`.
 - Article discovery: compare GA4 landing pages, Search Console queries, and article read-depth events by `article_slug`.
 - Mapper drop-off: inspect `play_demo`, `switch_demo_tab`, `expand_rationale`, and export-gate completion.
+- Contact Center AI proof-page drop-off: inspect `ccai_run_triage`, `switch_demo_tab`, `ccai_review_action`, `ccai_era_switch`, `ccai_autonomy_mode`, article CTA, and contact CTA events.
 
 ## Validation Checklist
 

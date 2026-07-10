@@ -29,6 +29,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.75
     },
+    {
+      url: `${siteUrl}/work`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85
+    },
+    {
+      url: `${siteUrl}/work/contact-center-ai`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85
+    },
     ...articles
       .filter((article) => article.mediumUrl)
       .map((article) => ({

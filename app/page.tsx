@@ -57,9 +57,9 @@ export default function HomePage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                href="/projects"
+                href="/work"
                 data-analytics-event="click_primary_cta"
-                data-analytics-params={JSON.stringify({ cta_name: "view_my_work", cta_location: "home_hero", destination_path: "/projects" })}
+                data-analytics-params={JSON.stringify({ cta_name: "view_my_work", cta_location: "home_hero", destination_path: "/work" })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
               >
                 View my work
@@ -95,6 +95,44 @@ export default function HomePage() {
             </div>
           </div>
           <LeadershipSnapshot />
+        </div>
+      </section>
+
+      <section className="px-5 py-12 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <Link
+            href="/work/contact-center-ai"
+            data-analytics-event="open_case_study"
+            data-analytics-params={JSON.stringify({
+              case_study: "contact_center_ai_2020_today",
+              source_surface: "home",
+              destination_path: "/work/contact-center-ai"
+            })}
+            className="group block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+          >
+            <BrandCard className="grid gap-6 p-6 transition group-hover:border-cyan-300/30 group-hover:bg-white/[0.075] md:p-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-100">Selected work</p>
+                <h2 className="mt-4 text-3xl font-semibold text-white">Contact Center AI: 2020 → today</h2>
+                <p className="mt-4 text-lg leading-8 text-slate-300">
+                  How I helped turn ASR and NLP capabilities into a quality-review product, and what I would change with modern AI.
+                </p>
+              </div>
+              <div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {["18K+ daily ASR calls", "35% review/reporting throughput improvement", "2.15x scoring accuracy improvement"].map((signal) => (
+                    <span key={signal} className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300">
+                      {signal}
+                    </span>
+                  ))}
+                </div>
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 group-hover:text-cyan-100">
+                  Explore the case
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </div>
+            </BrandCard>
+          </Link>
         </div>
       </section>
 

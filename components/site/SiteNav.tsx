@@ -4,10 +4,8 @@ import { profile } from "@/data/site";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/experience", label: "Experience" },
-  { href: "/projects", label: "Projects" },
+  { href: "/work", label: "Work" },
   { href: "/writing", label: "Writing" },
-  { href: "/tools", label: "Tools" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" }
 ];

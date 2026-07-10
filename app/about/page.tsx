@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { BrandCard } from "@/components/site/BrandCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
@@ -72,6 +73,19 @@ export default function AboutPage() {
               Connect on LinkedIn
               <ArrowUpRight className="h-4 w-4" />
             </a>
+          </BrandCard>
+        </div>
+        <div className="mx-auto mt-10 max-w-7xl">
+          <BrandCard className="p-6 md:p-8">
+            <h2 className="text-3xl font-semibold">Career background</h2>
+            <p className="mt-4 leading-8 text-slate-400">
+              My product work has moved through ads monetization, payments and large-scale content products, ASR/NLP and
+              Contact Center AI workflows, data-heavy industrial monitoring, and current AI evaluation and workflow design.
+            </p>
+            <Link href="/experience" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100">
+              View experience themes
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </BrandCard>
         </div>
       </section>

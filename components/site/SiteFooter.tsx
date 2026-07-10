@@ -11,10 +11,10 @@ export function SiteFooter() {
           <p className="mt-1">© 2026 Matt Ghoreishi. Built in Hamburg.</p>
         </div>
         <div className="flex flex-wrap gap-4">
-          <Link href="/experience" className="hover:text-white">Experience</Link>
-          <Link href="/projects" className="hover:text-white">Projects</Link>
+          <Link href="/work" className="hover:text-white">Work</Link>
           <Link href="/writing" className="hover:text-white">Writing</Link>
-          <Link href="/tools" className="hover:text-white">Tools</Link>
+          <Link href="/about" className="hover:text-white">About</Link>
+          <Link href="/contact" className="hover:text-white">Contact</Link>
           <a
             href={profile.linkedinUrl}
             target="_blank"
