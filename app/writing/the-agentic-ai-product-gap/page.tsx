@@ -6,9 +6,9 @@ import { AgenticStackVisual } from "@/components/site/AgenticStackVisual";
 import { BrandCard } from "@/components/site/BrandCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
-import { articles, siteUrl, stackLayers } from "@/data/site";
+import { getArticleBySlug, siteUrl, stackLayers } from "@/data/site";
 
-const article = articles[0];
+const article = getArticleBySlug("the-agentic-ai-product-gap");
 
 export const metadata: Metadata = {
   title: `${article.title} | Matt Ghoreishi`,
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description: article.subtitle,
     url: `${siteUrl}/writing/${article.slug}`,
     type: "article",
-    publishedTime: "2026-05",
+    publishedTime: article.publishedAt,
     authors: ["Matt Ghoreishi"],
     tags: article.tags,
     images: [{ url: "/writing/the-agentic-ai-product-gap/opengraph-image", width: 1200, height: 630 }]
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
 export default function AgenticAiProductGapPage() {
   const shareText =
-    "Matt Ghoreishi, The Agentic AI Product Gap: Why the hard part starts after an agent gets the first task right, 2026.";
+    "Matt Ghoreishi, The Agentic AI Product Gap: Why the hard part starts after an agent gets the first task right, May 4, 2026.";
 
   return (
     <main className="min-h-screen bg-[#050914] text-white">
@@ -47,7 +47,7 @@ export default function AgenticAiProductGapPage() {
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
-                <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.date}</span>
+                <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.displayDate}</span>
                 <span className="rounded-full bg-white/[0.07] px-3 py-1">{article.readingTime}</span>
               </div>
               <h1 className="mt-6 text-5xl font-semibold tracking-normal text-white md:text-7xl">{article.title}</h1>

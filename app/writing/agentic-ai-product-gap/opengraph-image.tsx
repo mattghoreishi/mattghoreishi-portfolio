@@ -36,7 +36,7 @@ export default function Image() {
             ))}
           </div>
         </div>
-        <div style={{ fontSize: 28, color: "#cbd5e1" }}>Matt Ghoreishi · May 2026</div>
+        <div style={{ fontSize: 28, color: "#cbd5e1" }}>Matt Ghoreishi · May 4, 2026</div>
       </div>
     ),
     size

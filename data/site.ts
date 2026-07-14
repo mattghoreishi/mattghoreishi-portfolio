@@ -111,33 +111,84 @@ export const projectThemes = [
   }
 ];
 
-export const articles = [
+export type Article = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  publishedAt: string;
+  displayDate: string;
+  readingTime: string;
+  tags: string[];
+  mediumUrl: string;
+  summary: string;
+  featured: boolean;
+};
+
+export const articles: Article[] = [
+  {
+    slug: "before-i-trust-an-ai-feature",
+    title: "Before I Trust an AI Feature",
+    subtitle: "Why the PRD needs a readiness layer for behavior, failure, evaluation, and control",
+    publishedAt: "2026-06-01",
+    displayDate: "June 1, 2026",
+    readingTime: "8 min read",
+    tags: ["AI Product Management", "AI Evaluation", "Product Readiness", "PRDs"],
+    mediumUrl: "https://medium.com/@ghoreishi/before-i-trust-an-ai-feature-863acda2f3f2",
+    summary:
+      "AI features are not ready when the demo works. They are ready when teams can define expected behavior, understand failure, evaluate quality, and control what happens after launch.",
+    featured: true
+  },
   {
     slug: "the-agentic-ai-product-gap",
     title: "The Agentic AI Product Gap",
     subtitle: "Why the hard part starts after an agent gets the first task right",
-    date: "2026",
+    publishedAt: "2026-05-04",
+    displayDate: "May 4, 2026",
     readingTime: "13 min read",
     tags: ["Agentic AI", "Product Management", "AI Products", "Workflows"],
     mediumUrl: "https://medium.com/@ghoreishi/the-agentic-ai-product-gap-c919311393ea",
     summary:
       "A practical argument that agentic AI becomes product work when systems move from answering to acting. The article introduces the Agentic Product Stack as a way to reason about workflow fit, risk, autonomy, evals, monitoring, governance, and value.",
-    featured: true
+    featured: false
   },
   {
     slug: "from-hype-to-value",
     title: "From Hype to Value: Why Most AI Pilots Fail and How to Ship Real ROI",
     subtitle:
       "Most AI pilots stall before production. The teams that get value tend to connect unique data, workflow integration, rigorous evaluation, and early governance.",
-    date: "Sep 21, 2025",
+    publishedAt: "2025-09-21",
+    displayDate: "Sep 21, 2025",
     readingTime: "7 min read",
     tags: ["AI Strategy", "AI Pilots", "ROI", "Product Execution"],
     mediumUrl:
       "https://medium.com/@ghoreishi/from-hype-to-value-why-most-ai-pilots-fail-and-how-to-ship-real-roi-04d3b8c0a357",
     summary:
-      "A pragmatic playbook for moving AI pilots from impressive demos to production systems that affect workflows, metrics, governance, and business outcomes."
+      "A pragmatic playbook for moving AI pilots from impressive demos to production systems that affect workflows, metrics, governance, and business outcomes.",
+    featured: false
   }
 ];
+
+export const writingArticles = [...articles].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
+
+export function getFeaturedArticle() {
+  const featured = articles.filter((article) => article.featured);
+
+  if (featured.length !== 1) {
+    throw new Error("Exactly one featured article is required.");
+  }
+
+  return featured[0];
+}
+
+export function getArticleBySlug(slug: string) {
+  const article = articles.find((item) => item.slug === slug);
+
+  if (!article) {
+    throw new Error(`Unknown article: ${slug}`);
+  }
+
+  return article;
+}
 
 export const tools = [
   {

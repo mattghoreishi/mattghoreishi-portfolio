@@ -5,10 +5,10 @@ import { ArticleEngagement } from "@/components/analytics/ArticleEngagement";
 import { BrandCard } from "@/components/site/BrandCard";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
-import { articles, siteUrl } from "@/data/site";
+import { getArticleBySlug, siteUrl } from "@/data/site";
 
-const article = articles[1];
-const related = articles[0];
+const article = getArticleBySlug("from-hype-to-value");
+const related = getArticleBySlug("the-agentic-ai-product-gap");
 
 export const metadata: Metadata = {
   title: `${article.title} | Matt Ghoreishi`,
@@ -49,7 +49,7 @@ export default function FromHypeToValuePage() {
         <ArticleEngagement articleSlug={article.slug} />
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
-            <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.date}</span>
+            <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.displayDate}</span>
             <span className="rounded-full bg-white/[0.07] px-3 py-1">{article.readingTime}</span>
           </div>
           <h1 className="mt-6 text-5xl font-semibold tracking-normal md:text-7xl">{article.title}</h1>

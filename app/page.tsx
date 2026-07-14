@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { BrandCard } from "@/components/site/BrandCard";
 import { LeadershipSnapshot } from "@/components/site/LeadershipSnapshot";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
-import { articles, credibilityAreas, experienceThemes, profile, projectThemes, siteUrl, tools } from "@/data/site";
+import { credibilityAreas, experienceThemes, getFeaturedArticle, profile, siteUrl, tools } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Matt Ghoreishi | Senior Product Manager for AI, SaaS, and Data Platforms",
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   }
 };
 
-const featuredArticle = articles[0];
+const featuredArticle = getFeaturedArticle();
 const featuredTool = tools[0];
 
 export default function HomePage() {
@@ -66,32 +67,18 @@ export default function HomePage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/writing/the-agentic-ai-product-gap"
+                href={`/writing/${featuredArticle.slug}`}
                 data-analytics-event="click_primary_cta"
-                data-analytics-params={JSON.stringify({ cta_name: "read_latest_article", cta_location: "home_hero", destination_path: "/writing/the-agentic-ai-product-gap" })}
+                data-analytics-params={JSON.stringify({
+                  cta_name: "read_latest_article",
+                  cta_location: "home_hero",
+                  article_slug: featuredArticle.slug,
+                  destination_path: `/writing/${featuredArticle.slug}`
+                })}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-cyan-300/25 px-5 text-sm font-semibold text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
               >
                 Read latest article
               </Link>
-              <Link
-                href="/mapper"
-                data-analytics-event="play_demo"
-                data-analytics-params={JSON.stringify({ demo_name: "agentic_product_stack_mapper", cta_location: "home_hero", destination_path: "/mapper" })}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white transition hover:border-cyan-200 hover:bg-cyan-300/10"
-              >
-                Try the Agentic Product Stack Mapper
-              </Link>
-              <a
-                href={profile.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-analytics-event="click_contact"
-                data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "home_hero" })}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white transition hover:border-cyan-200 hover:bg-cyan-300/10"
-              >
-                Connect on LinkedIn
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
             </div>
           </div>
           <LeadershipSnapshot />
@@ -158,9 +145,15 @@ export default function HomePage() {
               ))}
             </div>
             <Link
-              href="/writing/the-agentic-ai-product-gap"
+              href={`/writing/${featuredArticle.slug}`}
               data-analytics-event="open_case_study"
-              data-analytics-params={JSON.stringify({ case_study_slug: featuredArticle.slug, content_type: "article", cta_location: "home_featured_writing" })}
+              data-analytics-params={JSON.stringify({
+                case_study_slug: featuredArticle.slug,
+                content_type: "article",
+                source_surface: "home",
+                destination_path: `/writing/${featuredArticle.slug}`,
+                cta_location: "home_featured_writing"
+              })}
               className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 hover:text-cyan-100"
             >
               Open article page
@@ -225,33 +218,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="projects" className="border-y border-white/10 bg-white/[0.025] px-5 py-16 md:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-200">From strategy to shipped systems</p>
-            <h2 className="mt-4 text-4xl font-semibold text-white">Selected product themes.</h2>
-            <p className="mt-4 text-lg leading-8 text-slate-400">
-              A few examples of the product work, tools, and writing I use to make product judgment concrete.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {projectThemes.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                data-analytics-event="open_case_study"
-                data-analytics-params={JSON.stringify({ case_study_slug: item.title.toLowerCase().replaceAll(" ", "_"), content_type: "project_theme", cta_location: "home_project_themes" })}
-                className="rounded-xl border border-white/10 bg-[#07111f] p-5 transition hover:border-cyan-300/30 hover:bg-white/[0.055]"
-              >
-                <CheckCircle2 className="h-5 w-5 text-cyan-200" />
-                <p className="mt-4 font-semibold text-white">{item.title}</p>
-                <p className="mt-3 text-sm leading-6 text-slate-400">{item.description}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="px-5 py-16 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
@@ -278,9 +244,19 @@ export default function HomePage() {
 
       <section id="about" className="px-5 py-16 md:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
+          <div className="flex items-start gap-4">
+            <Image
+              src="/assets/profile/matt-ghoreishi-profile.webp"
+              alt="Portrait of Matt Ghoreishi."
+              width={112}
+              height={112}
+              sizes="(max-width: 768px) 88px, 112px"
+              className="h-[88px] w-[88px] shrink-0 rounded-xl border border-cyan-100/30 object-cover shadow-[0_14px_36px_rgba(0,0,0,0.28)] md:h-28 md:w-28"
+            />
+            <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-200">About</p>
             <h2 className="mt-4 text-4xl font-semibold text-white">Practical product leadership for AI-shaped work.</h2>
+            </div>
           </div>
           <div className="space-y-5 text-lg leading-8 text-slate-400">
             <p>

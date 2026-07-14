@@ -26,11 +26,11 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 
 | Event | Recommended parameters | Fires from | Test |
 | --- | --- | --- | --- |
-| `open_case_study` | `case_study`, `case_study_slug`, `content_type`, `source_surface`, `destination_path`, `cta_location` | Work and Home Contact Center AI cards, featured writing/tool cards, project theme links, article related links | Click the card/link and confirm event params in GA4 DebugView. Contact Center AI should send `case_study: "contact_center_ai_2020_today"`, `source_surface: "home"` or `"work"`, and `destination_path: "/work/contact-center-ai"`. |
+| `open_case_study` | `case_study`, `case_study_slug`, `content_type`, `source_surface`, `destination_path`, `cta_location` | Work and Home Contact Center AI cards, featured writing/tool cards, and article related links | Click the card/link and confirm event params in GA4 DebugView. Contact Center AI should send `case_study: "contact_center_ai_2020_today"`, `source_surface: "home"` or `"work"`, and `destination_path: "/work/contact-center-ai"`. Before I Trust an AI Feature should send `content_type: "article"`, `case_study_slug: "before-i-trust-an-ai-feature"`, `source_surface: "home"` or `"writing"`, and `destination_path: "/writing/before-i-trust-an-ai-feature"`. |
 | `expand_rationale` | `rationale_slug`, `demo_name`, `source`, `workflow_domain` | Mapper suggestions, deepen-brief flow, framework rationale link | Click suggestion/deepen controls and confirm one event per click. |
 | `switch_demo_tab` | `demo_name`, `tab_id`, `tab_label`, `previous_tab_id`, `source` | Mapper progress stepper, next/back buttons, module picker | Move between mapper modules and confirm tab IDs are correct. |
 | `play_demo` | `demo_name`, `sample_name`, `source`, `destination_path` | Start mapper CTAs, sample-load buttons, `?sample=refund` | Start the mapper or load sample and confirm source value. |
-| `click_primary_cta` | `cta_name`, `cta_location`, `destination_path`, `destination_domain`, `article_slug` | Hero CTAs, Medium article CTAs, mapper downloads | Click each primary action and confirm destination/context. |
+| `click_primary_cta` | `cta_name`, `cta_location`, `destination_path`, `destination_domain`, `article_slug` | Hero CTAs, Medium article CTAs, mapper downloads | Click each primary action and confirm destination/context. Before I Trust an AI Feature sends `cta_name: "read_on_medium"`, its article slug, CTA location, and `destination_domain: "medium.com"`; it never sends article text or visitor data. |
 | `click_contact` | `contact_method`, `cta_location`, `destination_url` | LinkedIn CTAs in nav, footer, home, contact page | Click LinkedIn CTAs and confirm location differentiates them. |
 | `copy_email` | `email_location`, `page_path` | Reserved for a future email-copy button | Add `trackEvent(analyticsEvents.copyEmail, ...)` to the copy handler. |
 | `download_resume` | `asset_name`, `asset_format`, `cta_location` | Reserved for a future resume download link | Add `data-analytics-event="download_resume"` to the resume link. |
@@ -58,7 +58,7 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 3. Navigate between internal routes and confirm exactly one `page_view` per route change.
 4. In DebugView, click home hero CTAs and confirm `click_primary_cta` params.
 5. Open a featured article/tool and confirm `open_case_study`.
-6. Scroll both article pages to 50% and 90%; confirm each read-depth event fires once.
+6. Scroll each article page, including Before I Trust an AI Feature, to 50% and 90%; confirm each read-depth event fires once.
 7. Start the mapper, switch several modules, and confirm `play_demo` plus `switch_demo_tab`.
 8. Use mapper suggestions and confirm `expand_rationale`.
 9. Submit the export gate and confirm `submit_contact_form` without email or free-text content in GA4.
