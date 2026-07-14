@@ -5,7 +5,6 @@ import "./globals.css";
 
 // Set these in production:
 // NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XWVT59N0JV"
-// NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN="your-cloudflare-token"
 // NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="your-search-console-token"
 
 export const metadata: Metadata = {

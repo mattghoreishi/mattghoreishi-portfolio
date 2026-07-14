@@ -7,7 +7,6 @@ import { isAnalyticsDebugEnabled, type AnalyticsEventName, trackEvent, trackPage
 
 const productionGaMeasurementId = "G-XWVT59N0JV";
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || productionGaMeasurementId;
-const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 const consentStorageKey = "matt_analytics_consent";
 const preferencesEventName = "analytics-preferences:open";
 
@@ -211,15 +210,6 @@ export function AnalyticsProvider() {
           </Script>
         </>
       )}
-
-      {cloudflareAnalyticsToken && (
-        <Script
-          src="https://static.cloudflareinsights.com/beacon.min.js"
-          strategy="afterInteractive"
-          data-cf-beacon={JSON.stringify({ token: cloudflareAnalyticsToken })}
-        />
-      )}
-
       {shouldLoadGa && (
         <Suspense fallback={null}>
           <InitialPageViewTracking />

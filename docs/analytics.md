@@ -6,7 +6,7 @@ Deployment note: Cloudflare Pages production builds run from `main` with `pnpm r
 
 ## Providers
 
-- Cloudflare Web Analytics: loaded only when `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` is set.
+- Cloudflare Web Analytics: injected natively by Cloudflare Pages after it is enabled in the project's Metrics settings. It is independent of the GA4 consent control and must not be added through application code.
 - Google Analytics 4: loaded through `gtag.js` after consent. The production default is `G-XWVT59N0JV`, and `NEXT_PUBLIC_GA_MEASUREMENT_ID` can override it.
 - Google Search Console: verification meta tag reads from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
@@ -16,7 +16,6 @@ Add these production environment variables:
 
 ```bash
 NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XWVT59N0JV"
-NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN="your-cloudflare-token"
 NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="your-search-console-token"
 NEXT_PUBLIC_ANALYTICS_DEBUG="false"
 ```
@@ -63,4 +62,4 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 7. Start the mapper, switch several modules, and confirm `play_demo` plus `switch_demo_tab`.
 8. Use mapper suggestions and confirm `expand_rationale`.
 9. Submit the export gate and confirm `submit_contact_form` without email or free-text content in GA4.
-10. Check Cloudflare Web Analytics after deployment for page-level traffic, independent of GA4 events.
+10. Confirm the production DOM contains exactly one Cloudflare Pages Web Analytics beacon. It is independent of GA4 consent and should not have an application-managed duplicate.
