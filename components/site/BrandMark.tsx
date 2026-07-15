@@ -7,7 +7,7 @@ type BrandMarkProps = {
 export function BrandMark({ className }: BrandMarkProps) {
   return (
     <Image
-      src="/assets/brand/mg-monogram.svg"
+      src="/assets/brand/mg-architect.svg"
       alt=""
       aria-hidden="true"
       width={27}
