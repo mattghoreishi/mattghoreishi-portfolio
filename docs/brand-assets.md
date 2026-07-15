@@ -1,43 +1,43 @@
 # Brand Assets
 
+## Approved identity
+
+MG Architect is the approved faithful vector reconstruction of Matt Ghoreishi's monogram. The supplied vector paths are the source of truth and must not be redrawn or optimized in a way that changes their geometry.
+
 ## Canonical assets
 
-The approved MG Brand Asset Pack is the source for all monogram and favicon files. Repository copies are used verbatim:
-
-- Navigation: `public/assets/brand/mg-monogram.svg`
-- Monochrome: `public/assets/brand/mg-monogram-white.svg`
-- Browser icon: `public/icon.svg`, using the rounded-square favicon artwork
-- Browser fallback: `public/favicon.ico`
+- Canonical source: `public/assets/brand/source/MG_Architect_Final_B_Canonical.svg`
+- Navigation: `public/assets/brand/mg-architect.svg`
+- Monochrome fallback: `public/assets/brand/mg-architect-white.svg`
+- Favicon master: `public/icon.svg`
+- ICO fallback: `public/favicon.ico`
 - Apple touch icon: `public/apple-touch-icon.png`
 
-The root metadata declares these three files exactly once. Public locations are used because the current Cloudflare Pages build adapter cannot emit the Next.js `favicon.ico` and `apple-icon.png` metadata routes together.
-
-The review preview and unused raster source sizes do not ship as duplicate public assets.
+The root metadata declares the SVG favicon, ICO fallback, and Apple touch icon exactly once. Public locations remain in use because the current Cloudflare Pages adapter cannot emit the Next.js `favicon.ico` and `apple-icon.png` metadata routes together.
 
 ## Approved colors
 
-- Deep background: `#050914`
+- Structural M: `#63E6F4`
+- Open G: `#F8FAFC`
 - Favicon background: `#06111F`
-- Cyan: `#78E6F4`
-- Soft cyan: `#A5F3FC`
-- Border: `#2C6572`
-- White: `#F8FAFC`
+- Favicon border: `#2C6572`
 
-## Allowed placements
+## Approved placements
 
-- Top-left navigation
+- Top-left global navigation
 - Browser favicon system
 - Apple touch icon
-- A restrained future footer signature
-- A small future Open Graph signature
 
 ## Prohibited treatments
 
-- Giant homepage logo or repeated section watermark
-- Animation, glow effects, rotation, 3D rendering, or arbitrary gradients
-- Placement over Matt's portrait or inside every article/project card
-- Modifying the letter geometry
+- Homepage hero, footer, portrait, article cards, Work cards, product UI, backgrounds, headings, loading states, or Open Graph images
+- Animation, glow, shadow, rotation, 3D rendering, gradients, corner rounding, or color swapping
+- Changing the G opening, M proportions, path geometry, aspect ratio, or container relationship
 
 ## Accessibility
 
-The navigation mark is decorative because the enclosing home link has the accessible name `Matt Ghoreishi home`. Favicon and touch-icon artwork is non-textual browser chrome and does not add page-level announcements.
+The navigation image is decorative and hidden from assistive technology. Its enclosing home link retains the accessible name `Matt Ghoreishi home`, avoiding duplicate announcements. Browser and touch icons add no page-level announcement.
+
+## Rollback
+
+The previous production MG identity remains preserved in Git history at commit `f28a8a0688e36aa1d85232fbdadc2c01db772a83`. Reverting the eventual Architect identity merge restores that state.
