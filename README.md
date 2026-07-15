@@ -1,107 +1,81 @@
-# Agentic Product Stack Mapper
+# Matt Ghoreishi Portfolio
 
-A free public web tool for turning a rough AI-agent idea into an exportable, source-backed Agent Product Brief.
+A product portfolio and proof hub covering AI product case studies, current product builds, writing, and the operating decisions behind them.
 
-The MVP is built to run without login, paid AI APIs, or paid infrastructure. Users can create a quick first draft in 3 to 5 minutes, then optionally deepen the brief with workflow fit, risk, autonomy, evals, human control, monitoring, rollback, governance, and value modules.
+Live site: [mattghoreishi.com](https://mattghoreishi.com)
 
-## Stack
+## What is included
 
-- Next.js App Router
-- TypeScript
+- Contact Center AI: 2020 → today
+- Before I Trust an AI Feature
+- The Agentic AI Product Gap
+- From Hype to Value
+- Agentic Product Stack Mapper
+- Supporting experience, Work, About, and Contact pages
+
+## Architecture
+
+- Next.js App Router and TypeScript
 - Tailwind CSS
-- Local shadcn-style UI primitives
-- Recharts
-- Supabase for consented submissions, events, and feedback
-- Client-side Markdown and JSON export
-- Print stylesheet PDF fallback through the browser Save as PDF flow
+- Shared content and data model
+- Server-rendered editorial and case-study pages
+- Client components only where browser interactions are required
+- Supabase-backed optional Mapper submissions
+- GA4 consent-aware analytics
+- Native Cloudflare Web Analytics
+- Cloudflare Pages deployment
 
-## Local Setup
+See [docs/architecture.md](docs/architecture.md) for the route, analytics, privacy, and deployment boundaries.
 
-1. Install dependencies:
+## Repository structure
+
+- `app/`: routes, metadata, API handlers, sitemap, and robots rules
+- `components/`: shared site UI, case-study interactions, analytics, and Mapper UI
+- `data/`: portfolio content, article records, and curated Mapper knowledge
+- `lib/`: analytics, Supabase, validation, and shared utilities
+- `public/`: owned portfolio assets and static files
+- `docs/`: architecture, analytics, and durable product decisions
+- `supabase/`: optional submission storage schema
+
+## Local development
+
+Use Node 22 and npm.
 
 ```bash
-npm install
-```
-
-2. Copy environment variables:
-
-```bash
+npm ci
 cp .env.example .env.local
-```
-
-3. Add Supabase values to `.env.local`.
-
-The app still unlocks downloads if Supabase is not configured, but submissions will not be stored.
-
-4. Run the app:
-
-```bash
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Supabase variables are optional for local portfolio browsing; without them, optional Mapper submissions are not stored. Use placeholders in `.env.example` and keep real values only in local or Cloudflare-managed environment settings.
 
-## Supabase Setup
-
-1. Create a Supabase project.
-2. Open the SQL editor.
-3. Run `supabase/schema.sql`.
-4. Add these environment variables in Vercel or `.env.local`:
+## Quality checks
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+npm run typecheck
+npm run lint
+npm run next:build
 ```
 
-The service role key is used only in server route handlers. It is never imported into client components.
+An end-to-end test script is not implemented yet. The planned focused browser smoke suite is documented in [docs/architecture.md](docs/architecture.md#test-strategy).
 
-## Privacy and Security Notes
+## Analytics and privacy
 
-- No login is required.
-- Progress is saved in `localStorage`.
-- Export submission requires explicit consent.
-- UI warns users not to enter confidential, regulated, or customer-identifying data.
-- Submission endpoint validates email and consent.
-- Basic bot protection includes a honeypot field and minimum timing check.
-- Simple in-memory rate limiting is applied to the submission endpoint.
-- Supabase RLS is enabled, with service-role-only policies for stored data.
+- GA4 loads only after a visitor accepts analytics consent.
+- Cloudflare Web Analytics is the native Cloudflare Pages integration.
+- Custom GA4 events use structured, non-PII parameters.
+- Optional Mapper submissions require explicit consent.
 
-## Analytics
+See [docs/analytics.md](docs/analytics.md) for the event inventory, consent flow, and verification steps.
 
-Analytics are documented in [`docs/analytics.md`](docs/analytics.md). The site supports Cloudflare Web Analytics, GA4 pageviews and custom events, Search Console verification, route-change tracking, debug mode, and a small custom event utility.
+## Deployment
 
-## Vercel Deployment
+Cloudflare Pages is the production deployment system. The established GitHub integration builds the production branch with `npm run build`; `wrangler.toml` configures the generated Pages output. GitHub Actions CI validates pull requests and `main`, but does not deploy or receive production secrets.
 
-1. Push the repo to GitHub.
-2. Import it into Vercel.
-3. Set the framework preset to Next.js.
-4. Add Supabase environment variables.
-5. Deploy on Vercel Hobby.
+## Product decisions
 
-No paid runtime AI API is required.
+Durable product and portfolio decisions are captured in [docs/product-decisions.md](docs/product-decisions.md).
 
-## Product Flow
+## Content and asset rights
 
-1. Landing page
-2. Quick Start Mode
-3. First Agent Product Brief preview
-4. Optional Deep Brief modules
-5. Export gate
-6. PDF, Markdown, and JSON downloads
-7. Feedback capture
-
-## Knowledge Base
-
-Curated source cards live in `data/knowledgeBase.ts`. They are not live search results and should be reviewed periodically. Initial categories include agent capability shift, enterprise adoption, ROI and scaling gap, workflow redesign, agent evaluation, autonomy and excessive agency, governance and risk, security and prompt injection, human-in-the-loop, and business-value measurement.
-
-## Future Improvements
-
-- Add richer PDF generation with a dedicated renderer.
-- Add shareable read-only brief links with expiration.
-- Add more domain-specific templates and eval case libraries.
-- Add source freshness checks and admin review workflow.
-- Add CSV export for health signals and permission matrices.
-- Add optional anonymous benchmarking across submitted briefs.
-- Add stronger distributed rate limiting for high traffic.
-- Add Supabase Edge Function support for teams that prefer serverless isolation.
+Application code is reusable only if an applicable license or explicit permission grants it. Matt Ghoreishi's personal writing, case-study materials, portrait, brand elements, and historical artifacts are not granted for reuse by any code permission. Historical work is reconstructed with sanitized or synthetic material and must not be treated as source material for other projects.
