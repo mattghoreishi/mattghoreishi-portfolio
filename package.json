@@ -1,13 +1,18 @@
 {
-  "name": "agentic-product-stack-mapper",
-  "version": "0.1.0",
+  "name": "matt-ghoreishi-portfolio",
+  "version": "1.1.0",
+  "description": "Product portfolio and proof hub for Matt Ghoreishi, featuring AI product case studies, tools, and writing.",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0 <23"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next-on-pages",
     "next:build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.105.1",
