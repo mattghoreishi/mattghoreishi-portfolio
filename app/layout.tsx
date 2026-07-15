@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   authors: [{ name: "Matt Ghoreishi" }],
   creator: "Matt Ghoreishi",
   publisher: "Matt Ghoreishi",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16" }
+    ],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }]
+  },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined
   }

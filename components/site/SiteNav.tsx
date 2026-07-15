@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { BrandMark } from "@/components/site/BrandMark";
 import { profile } from "@/data/site";
 
 const links = [
@@ -15,9 +16,9 @@ export function SiteNav() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050914]/82 backdrop-blur-xl">
       <nav aria-label="Primary navigation" className="mx-auto max-w-7xl px-5 py-4 md:px-8">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="group flex items-center gap-3">
+          <Link href="/" aria-label="Matt Ghoreishi home" className="group flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/25 bg-cyan-300/10 text-sm font-semibold text-cyan-100">
-              MG
+              <BrandMark />
             </span>
             <span>
               <span className="block text-sm font-semibold text-white">{profile.name}</span>
