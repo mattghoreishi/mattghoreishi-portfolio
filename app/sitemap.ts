@@ -9,75 +9,85 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: siteUrl,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 1
+      priority: 1,
     },
     {
       url: `${siteUrl}/writing`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.8
+      priority: 0.8,
     },
     {
       url: `${siteUrl}/experience`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.75
+      priority: 0.75,
     },
     {
       url: `${siteUrl}/projects`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.75
+      priority: 0.75,
     },
     {
       url: `${siteUrl}/work`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.85
+      priority: 0.85,
     },
     {
       url: `${siteUrl}/work/contact-center-ai`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.85
+      priority: 0.85,
     },
+    ...[
+      "/work/inline-apps-to-video",
+      "/work/direct-carrier-billing",
+      "/resume",
+    ].map((path) => ({
+      url: `${siteUrl}${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...articles
       .filter((article) => article.mediumUrl)
       .map((article) => ({
         url: `${siteUrl}/writing/${article.slug}`,
         lastModified: now,
         changeFrequency: "monthly" as const,
-        priority: 0.75
+        priority: 0.75,
       })),
     {
       url: `${siteUrl}/tools`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.8
+      priority: 0.8,
     },
     ...tools.map((tool) => ({
       url: `${siteUrl}/tools/${tool.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
-      priority: 0.75
+      priority: 0.75,
     })),
     {
       url: `${siteUrl}/mapper`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.65
+      priority: 0.65,
     },
     {
       url: `${siteUrl}/about`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.7
+      priority: 0.7,
     },
     {
       url: `${siteUrl}/contact`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.7
-    }
+      priority: 0.7,
+    },
   ];
 }

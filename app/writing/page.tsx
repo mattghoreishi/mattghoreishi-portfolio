@@ -34,7 +34,7 @@ const moreWriting = writingArticles.filter((article) => !article.featured);
 
 export default function WritingPage() {
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto max-w-7xl">

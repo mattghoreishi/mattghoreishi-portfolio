@@ -12,7 +12,8 @@
     "next:build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:analytics": "node scripts/check-analytics.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.105.1",

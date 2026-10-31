@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function AgenticProductStackMapperPage() {
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">

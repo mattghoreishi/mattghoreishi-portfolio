@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function ContactCenterAIPage() {
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <ContactCenterAICase />
       <SiteFooter />

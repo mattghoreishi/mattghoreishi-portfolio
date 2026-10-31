@@ -785,7 +785,7 @@ export default function MapperPage() {
   } as Record<string, ReactElement>;
 
   return (
-    <main className="min-h-screen px-5 py-5 md:px-8">
+    <main id="main-content" className="min-h-screen px-5 py-5 md:px-8">
       <div className="mx-auto max-w-7xl space-y-5">
         <div className="no-print flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>

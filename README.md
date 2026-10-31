@@ -7,6 +7,8 @@ Live site: [mattghoreishi.com](https://mattghoreishi.com)
 ## What is included
 
 - Contact Center AI: 2020 → today
+- Inline Apps to video and Direct Carrier Billing case studies
+- Career timeline and public CV (HTML / PDF)
 - Before I Trust an AI Feature
 - The Agentic AI Product Gap
 - From Hype to Value
@@ -54,6 +56,7 @@ Open [http://localhost:3000](http://localhost:3000). Supabase variables are opti
 ```bash
 npm run typecheck
 npm run lint
+npm run check:analytics
 npm run next:build
 ```
 
@@ -79,3 +82,5 @@ Durable product and portfolio decisions are captured in [docs/product-decisions.
 ## Content and asset rights
 
 Application code is reusable only if an applicable license or explicit permission grants it. Matt Ghoreishi's personal writing, case-study materials, portrait, brand elements, and historical artifacts are not granted for reuse by any code permission. Historical work is reconstructed with sanitized or synthetic material and must not be treated as source material for other projects.
+
+See [the October 2026 portfolio revision](docs/personal-portfolio-revision.md) for content sources, validation, and rollback.

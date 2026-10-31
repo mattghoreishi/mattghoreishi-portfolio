@@ -13,12 +13,16 @@ export const analyticsEvents = {
   ccaiRunTriage: "ccai_run_triage",
   ccaiEraSwitch: "ccai_era_switch",
   ccaiAutonomyMode: "ccai_autonomy_mode",
-  ccaiReviewAction: "ccai_review_action"
+  ccaiReviewAction: "ccai_review_action",
 } as const;
 
-export type AnalyticsEventName = (typeof analyticsEvents)[keyof typeof analyticsEvents];
+export type AnalyticsEventName =
+  (typeof analyticsEvents)[keyof typeof analyticsEvents];
 
-export type AnalyticsParams = Record<string, string | number | boolean | null | undefined>;
+export type AnalyticsParams = Record<
+  string,
+  string | number | boolean | null | undefined
+>;
 
 declare global {
   interface Window {
@@ -28,29 +32,70 @@ declare global {
   }
 }
 
+export function readAnalyticsStorage(key: string) {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function writeAnalyticsStorage(key: string, value: string) {
+  if (typeof window === "undefined") return false;
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Never send a contact address or mail subject/body as analytics metadata.
+export function safeLinkMetadata(
+  href: string | undefined,
+  text: string | undefined,
+) {
+  if (href && /^(mailto|tel):/i.test(href)) {
+    return { link_text: undefined, destination_url: undefined };
+  }
+  const destination = href?.split(/[?#]/)[0];
+  return {
+    link_text: text?.trim().slice(0, 120),
+    destination_url: destination,
+  };
+}
+
 export function isAnalyticsDebugEnabled() {
   if (typeof window === "undefined") return false;
 
   return (
     process.env.NEXT_PUBLIC_ANALYTICS_DEBUG === "true" ||
     new URLSearchParams(window.location.search).has("analytics_debug") ||
-    window.localStorage.getItem("analytics_debug") === "true"
+    readAnalyticsStorage("analytics_debug") === "true"
   );
 }
 
 function hasAnalyticsValue(value: AnalyticsParams[string]) {
-  return value !== undefined && value !== null && (typeof value !== "string" || value !== "");
+  return (
+    value !== undefined &&
+    value !== null &&
+    (typeof value !== "string" || value !== "")
+  );
 }
 
-export function trackEvent(eventName: AnalyticsEventName, params: AnalyticsParams = {}) {
+export function trackEvent(
+  eventName: AnalyticsEventName,
+  params: AnalyticsParams = {},
+) {
   if (typeof window === "undefined") return false;
   const debugEnabled = isAnalyticsDebugEnabled();
 
   const cleanParams = Object.fromEntries(
     Object.entries({
       ...params,
-      debug_mode: debugEnabled || undefined
-    }).filter(([, value]) => hasAnalyticsValue(value))
+      debug_mode: debugEnabled || undefined,
+    }).filter(([, value]) => hasAnalyticsValue(value)),
   );
 
   if (window.mattAnalyticsConsentGranted !== true) {
@@ -76,7 +121,7 @@ export function trackEvent(eventName: AnalyticsEventName, params: AnalyticsParam
   return true;
 }
 
-export function trackPageView(path: string, title = document.title) {
+export function trackPageView(path: string, title?: string) {
   if (
     typeof window === "undefined" ||
     window.mattAnalyticsConsentGranted !== true ||
@@ -89,12 +134,16 @@ export function trackPageView(path: string, title = document.title) {
   window.gtag("event", "page_view", {
     page_location: window.location.href,
     page_path: path,
-    page_title: title,
-    debug_mode: debugEnabled || undefined
+    page_title: title ?? document.title,
+    debug_mode: debugEnabled || undefined,
   });
 
   if (debugEnabled) {
-    console.info("[analytics]", "page_view", { page_path: path, page_title: title, debug_mode: true });
+    console.info("[analytics]", "page_view", {
+      page_path: path,
+      page_title: title ?? document.title,
+      debug_mode: true,
+    });
   }
 
   return true;

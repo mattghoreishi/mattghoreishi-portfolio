@@ -43,7 +43,7 @@ export default function FromHypeToValuePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <article data-article-content className="px-5 py-16 md:px-8 md:py-24">
         <ArticleEngagement articleSlug={article.slug} />
