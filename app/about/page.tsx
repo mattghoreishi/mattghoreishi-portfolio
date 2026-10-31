@@ -15,7 +15,7 @@ export default function AboutPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <section className="portfolio-wrap about-intro">
           <div>
             <p className="portfolio-eyebrow">About me</p>

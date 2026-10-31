@@ -14,7 +14,7 @@ export default function ToolsPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro label="Tools" title="Putting an idea to work.">
           <p>
             Sometimes I want to take an argument further than an essay. This

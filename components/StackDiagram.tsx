@@ -2,38 +2,39 @@ import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const layers = [
-  "Workflow Fit",
-  "Risk Shape",
-  "Action Surface",
-  "Autonomy Boundaries",
-  "Evaluation Gates",
-  "Human Control Design",
-  "Runtime Health Signals",
-  "Damage Control and Rollback",
-  "Governance Evidence",
-  "Business Value Loop"
+  { id: "workflow", label: "Workflow Fit" },
+  { id: "risk", label: "Risk Shape" },
+  { id: "actions", label: "Action Surface" },
+  { id: "autonomy", label: "Autonomy Boundaries" },
+  { id: "evals", label: "Evaluation Gates" },
+  { id: "human", label: "Human Control Design" },
+  { id: "health", label: "Runtime Health Signals" },
+  { id: "rollback", label: "Damage Control and Rollback" },
+  { id: "governance", label: "Governance Evidence" },
+  { id: "value", label: "Business Value Loop" }
 ];
 
 export function StackDiagram({ completed = [] }: { completed?: string[] }) {
   return (
-    <div className="grid gap-2">
-      {layers.map((layer, index) => {
-        const active = completed.length > index;
+    <ol className="grid gap-2" aria-label="Module completion">
+      {layers.map((layer) => {
+        const active = completed.includes(layer.id);
         return (
-          <div
-            key={layer}
+          <li
+            key={layer.id}
             className={cn(
               "flex items-center justify-between rounded-md border px-3 py-2 text-sm transition",
               active ? "border-primary/30 bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground"
             )}
           >
-            <span className="font-semibold">{layer}</span>
-            <span className="flex items-center gap-2 text-xs">
-              {active ? <CheckCircle2 className="h-4 w-4" /> : `Layer ${index + 1}`}
+            <span className="font-semibold">{layer.label}</span>
+            <span className="flex shrink-0 items-center gap-1.5 text-xs">
+              {active && <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
+              {active ? "Saved" : "Not saved"}
             </span>
-          </div>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 }

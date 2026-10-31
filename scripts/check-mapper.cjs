@@ -6,7 +6,11 @@ const ts = require("typescript");
 
 function loadModule(path, dependencies = {}) {
   const compiled = ts.transpileModule(fs.readFileSync(path, "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+      jsx: ts.JsxEmit.ReactJSX,
+    },
   }).outputText;
   const context = { exports: {}, require: (name) => {
     assert.ok(name in dependencies, `Unexpected dependency: ${name}`);
@@ -49,6 +53,17 @@ context.window = { localStorage: {
 assert.equal(api.readMapperDraft().recovered, false);
 assert.equal(api.saveMapperDraft(templates.sampleSupportRefundAgent), true);
 assert.equal(api.readMapperDraft().state.quickStart.agentName, "Refund Resolution Copilot");
+const personal = JSON.parse(JSON.stringify(templates.emptyState));
+personal.quickStart.agentName = "My existing draft";
+assert.equal(api.persistMapperSession(personal, "draft"), "saved");
+const beforeExample = values.get(api.mapperStorageKey);
+const editedExample = JSON.parse(raw);
+editedExample.quickStart.agentName = "An edited example";
+for (const example of [templates.sampleSupportRefundAgent, editedExample, templates.emptyState]) {
+  assert.equal(api.persistMapperSession(example, "sample"), "sample");
+  assert.equal(values.get(api.mapperStorageKey), beforeExample, "Opening, editing, or resetting an example must not replace a saved draft");
+}
+assert.equal(api.readMapperDraft().state.quickStart.agentName, "My existing draft");
 values.set(api.mapperStorageKey, '{"quickStart":null}');
 assert.equal(api.readMapperDraft().recovered, true);
 assert.equal(api.readMapperDraft().state.quickStart.agentName, "");
@@ -62,4 +77,51 @@ context.window.localStorage = {
 assert.equal(api.readMapperDraft().available, false);
 assert.equal(api.saveMapperDraft(templates.emptyState), false);
 assert.equal(api.clearMapperDraft(), false);
-console.log("Mapper saved-draft boundary checks passed.");
+assert.equal(api.persistMapperSession(templates.sampleSupportRefundAgent, "sample"), "sample", "Examples remain usable with blocked storage");
+assert.equal(api.persistMapperSession(templates.emptyState, "draft"), "unavailable");
+
+// Modules can be saved in any order; quick-start completion is not workflow completion.
+const React = require("react");
+const { renderToStaticMarkup } = require("react-dom/server");
+const jsxRuntime = require("react/jsx-runtime");
+const utils = loadModule("lib/utils.ts", {
+  clsx: require("clsx"),
+  "tailwind-merge": require("tailwind-merge"),
+}).exports;
+const { StackDiagram } = loadModule("components/StackDiagram.tsx", {
+  "react/jsx-runtime": jsxRuntime,
+  "lucide-react": require("lucide-react"),
+  "@/lib/utils": utils,
+}).exports;
+const progress = renderToStaticMarkup(React.createElement(StackDiagram, {
+  completed: ["quick", "value", "health"],
+}));
+const rows = [...progress.matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/g)]
+  .map((match) => match[1].replace(/<[^>]+>/g, ""));
+assert.equal(rows.length, 10);
+assert.ok(rows.includes("Workflow FitNot saved"), "Quick Start must not mark Workflow Fit as saved");
+assert.ok(rows.includes("Runtime Health SignalsSaved"), "An out-of-order health module must show its actual saved state");
+assert.ok(rows.includes("Business Value LoopSaved"), "An out-of-order value module must show its actual saved state");
+assert.equal(rows.filter((row) => !row.includes("Not saved")).length, 2);
+
+// Monitoring shows entered thresholds, including unconfigured ones, without a made-up score.
+const { HealthSignalsDashboard } = loadModule("components/HealthSignalsDashboard.tsx", {
+  "react/jsx-runtime": jsxRuntime,
+}).exports;
+const signals = Array.from({ length: 9 }, (_, index) => ({
+  id: `metric-${index}`,
+  label: `Selected metric ${index + 1}`,
+  selected: true,
+  threshold: index === 8 ? "  " : `Threshold ${index + 1}`,
+}));
+signals.push({ id: "hidden", label: "Unselected metric", selected: false, threshold: "Do not show" });
+const monitoring = renderToStaticMarkup(React.createElement(HealthSignalsDashboard, { signals }));
+assert.equal((monitoring.match(/<dt\b/g) || []).length, 9, "Every selected signal must be represented");
+assert.ok(monitoring.includes("Threshold 1"));
+assert.ok(monitoring.includes("Threshold not set"));
+assert.ok(monitoring.includes("no live measurements are connected"));
+assert.ok(!monitoring.includes("Unselected metric"));
+assert.ok(!monitoring.includes("readiness"));
+const noSignals = renderToStaticMarkup(React.createElement(HealthSignalsDashboard, { signals: [] }));
+assert.ok(noSignals.includes("Select health signals"));
+console.log("Mapper saved-draft and monitoring/progress checks passed.");

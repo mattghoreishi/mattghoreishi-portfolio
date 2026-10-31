@@ -34,7 +34,7 @@ export default function ContactCenterAIPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page case-study-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page case-study-page">
         <ContactCenterAICase />
       </main>
       <SiteFooter />

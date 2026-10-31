@@ -17,13 +17,13 @@ export default function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#050914",
-          color: "white",
+          background: "#101719",
+          color: "#edf1ec",
           padding: 70,
-          fontFamily: "Inter, Arial, sans-serif"
+          fontFamily: "Arial, sans-serif"
         }}
       >
-        <div style={{ display: "flex", fontSize: 24, color: "#a5f3fc", letterSpacing: 4 }}>AI PRODUCT READINESS</div>
+        <div style={{ display: "flex", fontSize: 24, color: "#a5dbc9", letterSpacing: 4 }}>AI PRODUCT READINESS</div>
         <div style={{ display: "flex", flexDirection: "column", maxWidth: 1020 }}>
           <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.03 }}>Before I Trust an AI Feature</div>
           <div style={{ marginTop: 34, display: "flex", gap: 14 }}>
@@ -32,10 +32,10 @@ export default function Image() {
                 key={item}
                 style={{
                   display: "flex",
-                  borderLeft: "2px solid #67e8f9",
+                  borderLeft: "2px solid #a5dbc9",
                   paddingLeft: 14,
                   fontSize: 23,
-                  color: "#cbd5e1"
+                  color: "#b4c2bf"
                 }}
               >
                 {item}
@@ -43,7 +43,7 @@ export default function Image() {
             ))}
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 27, color: "#94a3b8" }}>Matt Ghoreishi · June 2026</div>
+        <div style={{ display: "flex", fontSize: 27, color: "#9badaa" }}>Matt Ghoreishi · June 2026</div>
       </div>
     ),
     size

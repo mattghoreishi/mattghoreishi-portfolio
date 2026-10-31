@@ -2,6 +2,8 @@ import { domainTemplates, emptyState } from "@/data/templates";
 import type { MapperState } from "@/types";
 
 export const mapperStorageKey = "agentic-product-stack-mapper-state-v1";
+export type MapperMode = "draft" | "sample";
+export type MapperStorageStatus = "saved" | "unavailable" | "sample";
 
 const autonomyLevels = new Set([
   "Agent can do alone",
@@ -62,6 +64,12 @@ export function saveMapperDraft(state: MapperState): boolean {
   } catch {
     return false;
   }
+}
+
+/** Example edits never write to or replace the visitor's personal draft. */
+export function persistMapperSession(state: MapperState, mode: MapperMode): MapperStorageStatus {
+  if (mode === "sample") return "sample";
+  return saveMapperDraft(state) ? "saved" : "unavailable";
 }
 
 export function clearMapperDraft(): boolean {

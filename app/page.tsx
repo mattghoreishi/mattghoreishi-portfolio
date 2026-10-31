@@ -16,15 +16,15 @@ export default function HomePage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <section className="portfolio-wrap portfolio-hero">
           <div className="hero-copy">
             <p className="portfolio-eyebrow">Product work & personal notes</p>
             <h1>Matt Ghoreishi.</h1>
             <p className="hero-role">Senior Product Manager · Hamburg</p>
             <p className="portfolio-lead">
-              I like getting deep into a complicated product: how people use it,
-              where they get stuck, and what the numbers leave out.
+              I like getting deep into a complicated user journey: how people use
+              a product, where they get stuck, and what the data suggests we have missed.
             </p>
             <p className="portfolio-lead">
               My work has included payments and video at Cafe Bazaar, enterprise
@@ -47,17 +47,25 @@ export default function HomePage() {
         <section id="selected-work" className="portfolio-paper scroll-mt-24">
           <div className="portfolio-wrap">
             <div className="section-heading">
-              <div><p className="portfolio-eyebrow">From my work</p><h2>Three projects.</h2></div>
+              <div><p className="portfolio-eyebrow">From my work</p><h2>Selected work.</h2></div>
               <p>The context, my role, and the choices behind each product.</p>
             </div>
             <CaseList source="home" />
           </div>
         </section>
 
+        <section className="portfolio-wrap portfolio-section home-career">
+          <div className="section-heading">
+            <div><p className="portfolio-eyebrow">Background</p><h2>My path so far.</h2></div>
+            <Link href="/experience" className="portfolio-text-link">Full experience <ArrowRight size={17} aria-hidden="true" /></Link>
+          </div>
+          <CareerTimeline compact />
+        </section>
+
         <section className="portfolio-lab">
           <div className="portfolio-wrap">
             <div className="section-heading">
-              <div><p className="portfolio-eyebrow">Outside the roadmap</p><h2>Writing & a working tool.</h2></div>
+              <div><p className="portfolio-eyebrow">Independent work</p><h2>Writing & a working tool.</h2></div>
               <p>Questions about AI that I’ve been working through in public.</p>
             </div>
             <div className="lab-grid">
@@ -81,19 +89,15 @@ export default function HomePage() {
                   <li><span>03</span> What evidence would justify a pilot?</li>
                 </ol>
                 <p className="tool-local-note">Runs in your browser. No account or email required to download your brief.</p>
-                <Link href="/tools/agentic-product-stack-mapper" className="portfolio-text-link">About the tool <ArrowRight size={17} aria-hidden="true" /></Link>
+                <div className="tool-entry-links">
+                  <Link href="/mapper?sample=refund" className="portfolio-button">Try a worked example <ArrowRight size={17} aria-hidden="true" /></Link>
+                  <Link href="/tools/agentic-product-stack-mapper" className="portfolio-text-link">About the tool</Link>
+                </div>
               </article>
             </div>
           </div>
         </section>
 
-        <section className="portfolio-wrap portfolio-section home-career">
-          <div className="section-heading">
-            <div><p className="portfolio-eyebrow">Background</p><h2>My path so far.</h2></div>
-            <Link href="/experience" className="portfolio-text-link">Full experience <ArrowRight size={17} aria-hidden="true" /></Link>
-          </div>
-          <CareerTimeline compact />
-        </section>
         <ContactStrip />
       </main>
       <SiteFooter />

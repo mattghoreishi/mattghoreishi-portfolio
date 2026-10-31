@@ -15,7 +15,7 @@ export default function WritingPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro label="Writing" title="Questions I keep coming back to.">
           <p>
             Much of my recent writing is about AI: what a working demo leaves

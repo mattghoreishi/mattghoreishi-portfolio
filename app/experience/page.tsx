@@ -17,7 +17,7 @@ export default function ExperiencePage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro
           label="Experience"
           title="Experience."
@@ -44,7 +44,7 @@ export default function ExperiencePage() {
                 Sharif University of Technology
               </h2>
               <p className="mt-3 leading-7">BSc, Electrical Engineering</p>
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-3 leading-7 text-[var(--portfolio-secondary)]">
                 An engineering foundation that helps me work through technical
                 constraints with the teams building the product.
               </p>

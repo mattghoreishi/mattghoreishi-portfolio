@@ -34,7 +34,7 @@ export function ProductStory({
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page case-study-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page case-study-page">
         <header className="portfolio-wrap story-hero">
           <Link href="/work" className="portfolio-text-link mb-10">
             <ArrowLeft size={17} aria-hidden="true" />
@@ -50,7 +50,7 @@ export function ProductStory({
         </header>
         <section
           className="story-facts portfolio-wrap"
-          aria-label="Project scale and historical results"
+          aria-label="Project facts"
         >
           {facts.map((fact) => (
             <div key={fact.label}>
@@ -72,11 +72,11 @@ export function ProductStory({
                     <p key={paragraph}>{paragraph}</p>
                   ))}
                   {section.observations && (
-                    <dl className="mt-8 border-t border-[#183137]/20">
+                    <dl className="mt-8 border-t border-[var(--portfolio-rule)]">
                       {section.observations.map((item) => (
-                        <div key={item.observation} className="grid gap-2 border-b border-[#183137]/15 py-5 sm:grid-cols-[0.45fr_0.55fr] sm:gap-6">
+                        <div key={item.observation} className="grid gap-2 border-b border-[var(--portfolio-rule)] py-5 sm:grid-cols-[0.45fr_0.55fr] sm:gap-6">
                           <dt className="font-semibold leading-7">{item.observation}</dt>
-                          <dd className="leading-7 text-[#526562]">{item.implication}</dd>
+                          <dd className="leading-7 text-[var(--portfolio-secondary)]">{item.implication}</dd>
                         </div>
                       ))}
                     </dl>

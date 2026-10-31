@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { siteUrl } from "@/data/site";
 import "./globals.css";
@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined
   }
+};
+
+export const viewport: Viewport = {
+  themeColor: "#101719",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
