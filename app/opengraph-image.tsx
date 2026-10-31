@@ -26,15 +26,15 @@ export default function Image() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 28, color: "#a5f3fc", letterSpacing: 4 }}>MATT GHOREISHI</div>
           <div style={{ border: "1px solid rgba(165,243,252,0.45)", borderRadius: 999, padding: "12px 20px", fontSize: 22 }}>
-            AI · SaaS · Data
+            AI · Payments · SaaS
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.05, maxWidth: 920 }}>
-            I build products where AI, data, and business outcomes meet.
+            I build products. And know when to change course.
           </div>
           <div style={{ marginTop: 30, fontSize: 30, color: "#cbd5e1", maxWidth: 840 }}>
-            Senior Product Manager based in Hamburg.
+            Matt Ghoreishi · Senior Product Manager · Hamburg
           </div>
         </div>
       </div>

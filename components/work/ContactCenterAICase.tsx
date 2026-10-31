@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, FileSearch, Mail, MessageSquareText, MousePointer2, Pause, Play } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileSearch, Mail, MessageSquareText, MousePointer2 } from "lucide-react";
 import { profile } from "@/data/site";
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
 
@@ -155,9 +155,10 @@ export function ContactCenterAICase() {
       <Hero />
       <SectionRail />
       <RoleSection />
+      <CustomerDiscovery />
       <ProblemSection processed={processed} onProcess={processCalls} />
       <ProductDecision />
-      <Workflow selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
+      <Workflow key={callId} selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
       <HistoricalArtifact />
       <Decisions />
       <Evidence />
@@ -269,6 +270,10 @@ function RoleSection() {
       </div>
     </section>
   );
+}
+
+function CustomerDiscovery() {
+  return <section className="px-5 pb-14 md:px-8"><div className="mx-auto max-w-7xl grid gap-8 lg:grid-cols-[0.35fr_0.65fr]"><div><Label>What changed the product</Label><h2 className="mt-4 text-3xl font-semibold">Time with quality managers changed my starting point.</h2></div><div className="space-y-5 text-lg leading-8 text-slate-300"><p>I spent two weeks working with two quality managers to understand how they reviewed calls. The useful question became which call to look at next, and what evidence would help them judge it.</p><p>That shifted my focus from a dashboard of model outputs to a prioritized review queue. Sentiment and keywords could help surface a call, but the reviewer still needed the context to make a decision.</p><p>Alongside discovery, I worked on pricing and pilot discussions. Interest in the technology was only a starting point; we needed to establish whether the operational problem was valuable enough for a customer to pay to solve.</p></div></div></section>;
 }
 
 function ProblemSection({ processed, onProcess }: { processed: boolean; onProcess: () => void }) {
@@ -439,6 +444,7 @@ function ProductDecision() {
 }
 
 function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeof syntheticCalls)[number]; callId: CallId; onChooseCall: (id: CallId) => void }) {
+  const [transcriptTurn, setTranscriptTurn] = useState<number | null>(null);
   return (
     <section id="workflow" className="scroll-mt-28 border-y border-white/10 bg-[#07111f] px-5 py-16 md:px-8">
       <div className="mx-auto max-w-7xl">
@@ -484,22 +490,16 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                   <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
                     <p className="font-semibold text-white">{selectedCall.summary}</p>
                     <p className="mt-1 text-sm text-slate-400">
-                      {selectedCall.date} · {selectedCall.agent} · {selectedCall.customer} · Quality score: {selectedCall.score}
+                      {selectedCall.date} · {selectedCall.agent} · {selectedCall.customer} · Initial model score: {selectedCall.score}
                     </p>
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                      <button
-                        type="button"
-                        aria-label={`Start playback simulation for ${selectedCall.id}`}
-                        onClick={() => trackEvent(analyticsEvents.playDemo, { demo: "ccai_workflow", action: "playback_simulation", call_id: selectedCall.id })}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-300 text-slate-950 focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914]"
-                      >
-                        <Play className="h-4 w-4 fill-current" />
+                    <div className="mt-4">
+                      <button type="button" onClick={() => {
+                        setTranscriptTurn(turn => turn === null ? 0 : (turn + 1) % selectedCall.transcript.length);
+                        trackEvent(analyticsEvents.playDemo, { demo: "ccai_workflow", action: "transcript_walkthrough", call_id: selectedCall.id });
+                      }} className="inline-flex items-center gap-2 rounded-md border border-cyan-200/40 px-3 py-2 text-sm text-cyan-100">
+                        {transcriptTurn === null ? "Walk through transcript" : "Next transcript turn"}<ArrowRight size={16} aria-hidden="true" />
                       </button>
-                      <Pause className="h-4 w-4 text-slate-500" />
-                      <div className="h-2 w-40 overflow-hidden rounded-full bg-white/10">
-                        <div className="h-full w-[54%] rounded-full bg-cyan-300" />
-                      </div>
-                      <span className="text-sm text-slate-400">{selectedCall.duration}</span>
+                      <p className="mt-3 text-xs leading-5 text-slate-400" aria-live="polite">{transcriptTurn === null ? "Synthetic transcript. Audio is not included in this reconstruction." : `Turn ${transcriptTurn + 1} of ${selectedCall.transcript.length}: ${selectedCall.transcript[transcriptTurn][0]}. Highlighted below.`}</p>
                     </div>
                   </div>
                   <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.035] p-4">
@@ -507,8 +507,8 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                       <MessageSquareText className="h-5 w-5 text-cyan-200" />
                       Transcript
                     </h4>
-                    {selectedCall.transcript.map(([speaker, text]) => (
-                      <div key={`${speaker}-${text}`} className="mt-3 rounded-md bg-[#050914] p-3">
+                    {selectedCall.transcript.map(([speaker, text], index) => (
+                      <div key={`${speaker}-${text}`} className={`mt-3 rounded-md border p-3 ${transcriptTurn === index ? "border-cyan-200/60 bg-cyan-200/10" : "border-transparent bg-[#050914]"}`}>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-200">{speaker}</p>
                         <p className="mt-1 text-sm leading-6 text-slate-300">{text}</p>
                       </div>
@@ -517,7 +517,7 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                 </div>
                 <div className="grid content-start gap-4">
                   <Panel title="Analysis signals" items={selectedCall.signals} />
-                  <ReviewActions callId={selectedCall.id} />
+                  <ReviewActions key={selectedCall.id} callId={selectedCall.id} />
                   <Box title="The system helps with" body="Transcription · Initial scoring signals · Call prioritization · Topic or pattern extraction" />
                   <Box title="The reviewer decides" body="Final QA assessment · Score adjustment · Follow-up need · Coaching or operational action" />
                   <p className="text-sm leading-6 text-slate-400">
@@ -534,23 +534,30 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
 }
 
 function ReviewActions({ callId }: { callId: string }) {
-  return (
-    <div className="rounded-lg border border-amber-300/20 bg-amber-300/10 p-4">
-      <h4 className="font-semibold text-white">Reviewer workflow</h4>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {["Confirm review", "Adjust score", "Mark for follow-up", "Continue QA form"].map((action) => (
-          <button
-            key={action}
-            type="button"
-            onClick={() => trackEvent(analyticsEvents.ccaiReviewAction, { synthetic_call_id: callId, action, demo: "ccai_workflow" })}
-            className="rounded-full border border-amber-200/25 px-3 py-2 text-sm font-semibold text-amber-50 transition hover:bg-amber-200/10 focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-[#1d1a10]"
-          >
-            {action}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState("");
+  const [score, setScore] = useState("");
+  const [reviewNotes, setReviewNotes] = useState("");
+
+  function choose(action: string) {
+    setSelectedAction(action);
+    setFeedback(action === "Confirm review" ? `${callId}: review confirmed in this demo.` : action === "Mark for follow-up" ? `${callId}: marked for follow-up in this demo.` : "");
+    trackEvent(analyticsEvents.ccaiReviewAction, { synthetic_call_id: callId, action, demo: "ccai_workflow" });
+  }
+
+  return <div className="rounded-lg border border-amber-300/20 bg-amber-300/10 p-4">
+    <h4 className="font-semibold text-white">Reviewer workflow</h4>
+    <p className="mt-2 text-xs leading-5 text-slate-300">Try a review action. Changes stay in this demo and reset when you choose another call.</p>
+    <div className="mt-4 flex flex-wrap gap-2">{["Confirm review", "Adjust score", "Mark for follow-up", "Continue QA form"].map(action => <button key={action} type="button" aria-pressed={selectedAction === action} onClick={() => choose(action)} className={`rounded-full border border-amber-200/25 px-3 py-2 text-sm font-semibold text-amber-50 hover:bg-amber-200/10 ${selectedAction === action ? "bg-amber-200/20" : ""}`}>{action}</button>)}</div>
+    {selectedAction === "Adjust score" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: demo score updated to ${score}.`); }}>
+      <label htmlFor={`score-${callId}`} className="text-sm text-amber-50">Reviewer score (0–100)</label>
+      <div className="mt-2 flex flex-wrap gap-2"><input id={`score-${callId}`} type="number" min="0" max="100" required value={score} onChange={event => setScore(event.target.value)} className="w-24 rounded border border-amber-100/30 bg-slate-950 px-3 py-2 text-white" /><button type="submit" className="rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-slate-950">Save demo score</button></div>
+    </form>}
+    {selectedAction === "Continue QA form" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: review note recorded locally for this demo.`); }}>
+      <label htmlFor={`note-${callId}`} className="text-sm text-amber-50">Demo review note</label><textarea id={`note-${callId}`} required maxLength={500} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} placeholder="Use a fictional note. Nothing is submitted." className="mt-2 w-full rounded border border-amber-100/30 bg-slate-950 p-3 text-sm text-white" /><button type="submit" className="mt-2 rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-slate-950">Save demo note</button>
+    </form>}
+    <p className="mt-3 text-sm leading-6 text-amber-100" role="status">{feedback}</p>
+  </div>;
 }
 
 function HistoricalArtifact() {
@@ -618,10 +625,10 @@ function Evidence() {
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           <Metric value="18K+" label="Daily calls" detail="Handled through the ASR workflow" />
           <Metric value="35%" label="Review / reporting throughput" detail="Improvement in the operational workflow" />
-          <Metric value="2.15x" label="Call-scoring accuracy" detail="Improvement" />
+          <Metric value="2.15x" label="Scoring of low-rated calls" detail="Historical improvement, not a general accuracy score" />
         </div>
         <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-500">
-          These are historical operating signals from my documented product work. The interface on this page is a synthetic reconstruction, not the original production system.
+          These are historical results from my product work with the team. The 18K+ figure describes daily volume in the supporting ASR workflow; the other figures describe review and scoring improvements. They are not results from this demo or a claim of general model accuracy. The interface here uses synthetic data.
         </p>
       </div>
     </section>

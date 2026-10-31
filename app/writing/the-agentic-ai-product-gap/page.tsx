@@ -39,7 +39,7 @@ export default function AgenticAiProductGapPage() {
     "Matt Ghoreishi, The Agentic AI Product Gap: Why the hard part starts after an agent gets the first task right, May 4, 2026.";
 
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <article data-article-content>
         <ArticleEngagement articleSlug={article.slug} />

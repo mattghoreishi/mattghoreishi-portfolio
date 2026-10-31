@@ -3,10 +3,19 @@
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { isAnalyticsDebugEnabled, type AnalyticsEventName, trackEvent, trackPageView } from "@/lib/analytics";
+import {
+  isAnalyticsDebugEnabled,
+  readAnalyticsStorage,
+  writeAnalyticsStorage,
+  safeLinkMetadata,
+  type AnalyticsEventName,
+  trackEvent,
+  trackPageView,
+} from "@/lib/analytics";
 
 const productionGaMeasurementId = "G-XWVT59N0JV";
-const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || productionGaMeasurementId;
+const gaMeasurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || productionGaMeasurementId;
 const consentStorageKey = "matt_analytics_consent";
 const preferencesEventName = "analytics-preferences:open";
 
@@ -17,11 +26,13 @@ function applyAnalyticsConsent(consent: AnalyticsConsent) {
 
   const granted = consent === "granted";
   window.mattAnalyticsConsentGranted = granted;
-  (window as unknown as Record<string, boolean>)[`ga-disable-${gaMeasurementId}`] = !granted;
+  (window as unknown as Record<string, boolean>)[
+    `ga-disable-${gaMeasurementId}`
+  ] = !granted;
 
   if (typeof window.gtag === "function") {
     window.gtag("consent", "update", {
-      analytics_storage: granted ? "granted" : "denied"
+      analytics_storage: granted ? "granted" : "denied",
     });
   }
 }
@@ -38,8 +49,7 @@ function InitialPageViewTracking() {
     const query = searchParams.toString();
     const pagePath = query ? `${pathname}?${query}` : pathname;
 
-    trackPageView(pagePath);
-    hasTrackedInitialPage.current = true;
+    hasTrackedInitialPage.current = trackPageView(pagePath);
   }, [pathname, searchParams]);
 
   return null;
@@ -50,7 +60,9 @@ function DelegatedEventTracking() {
     function handleClick(event: MouseEvent) {
       const target = event.target instanceof Element ? event.target : null;
       const trigger = target?.closest<HTMLElement>("[data-analytics-event]");
-      const eventName = trigger?.dataset.analyticsEvent as AnalyticsEventName | undefined;
+      const eventName = trigger?.dataset.analyticsEvent as
+        | AnalyticsEventName
+        | undefined;
 
       if (!trigger || !eventName) return;
 
@@ -66,10 +78,12 @@ function DelegatedEventTracking() {
       }
 
       trackEvent(eventName, {
-        link_text: trigger.textContent?.trim().slice(0, 120),
-        destination_url: trigger instanceof HTMLAnchorElement ? trigger.href : undefined,
+        ...safeLinkMetadata(
+          trigger instanceof HTMLAnchorElement ? trigger.href : undefined,
+          trigger.textContent ?? undefined,
+        ),
         page_path: window.location.pathname,
-        ...params
+        ...params,
       });
     }
 
@@ -81,12 +95,16 @@ function DelegatedEventTracking() {
   return null;
 }
 
-function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent: AnalyticsConsent) => void }) {
+function AnalyticsConsentBanner({
+  onConsentChange,
+}: {
+  onConsentChange: (consent: AnalyticsConsent) => void;
+}) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     function readConsent() {
-      const storedConsent = window.localStorage.getItem(consentStorageKey);
+      const storedConsent = readAnalyticsStorage(consentStorageKey);
       if (storedConsent === "granted" || storedConsent === "denied") {
         applyAnalyticsConsent(storedConsent);
         onConsentChange(storedConsent);
@@ -116,16 +134,19 @@ function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent
     readConsent();
     window.addEventListener(preferencesEventName, openPreferences);
 
-    return () => window.removeEventListener(preferencesEventName, openPreferences);
+    return () =>
+      window.removeEventListener(preferencesEventName, openPreferences);
   }, [onConsentChange]);
 
   function saveConsent(consent: Exclude<AnalyticsConsent, "unset">) {
-    window.localStorage.setItem(consentStorageKey, consent);
+    writeAnalyticsStorage(consentStorageKey, consent);
     applyAnalyticsConsent(consent);
     onConsentChange(consent);
     setVisible(false);
     if (isAnalyticsDebugEnabled()) {
-      console.info(`[analytics] consent ${consent === "granted" ? "accepted" : "declined"}`);
+      console.info(
+        `[analytics] consent ${consent === "granted" ? "accepted" : "declined"}`,
+      );
       if (consent === "granted") {
         console.info("[analytics] GA loading", gaMeasurementId);
       } else {
@@ -141,12 +162,12 @@ function AnalyticsConsentBanner({ onConsentChange }: { onConsentChange: (consent
       role="dialog"
       aria-live="polite"
       aria-label="Analytics preferences"
-      className="fixed inset-x-0 bottom-0 z-[100] border-t border-white/10 bg-[#050914]/95 px-5 py-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl md:px-8"
+      className="no-print fixed inset-x-0 bottom-0 z-[100] border-t border-white/10 bg-[#050914]/95 px-5 py-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl md:px-8"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <p className="max-w-3xl text-sm leading-6 text-slate-300">
-          Analytics help me understand which portfolio work is useful and improve the site. Google Analytics only loads
-          if you accept.
+          Analytics help me understand which portfolio work is useful and
+          improve the site. Google Analytics only loads if you accept.
         </p>
         <div className="flex shrink-0 flex-wrap gap-2">
           <button
@@ -193,14 +214,22 @@ declare global {
 
 export function AnalyticsProvider() {
   const [consent, setConsent] = useState<AnalyticsConsent>("unset");
+  const [gaReady, setGaReady] = useState(false);
   const shouldLoadGa = gaMeasurementId && consent === "granted";
 
   return (
     <>
       {shouldLoadGa && (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="afterInteractive" />
-          <Script id="ga4-base" strategy="afterInteractive">
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+            strategy="afterInteractive"
+          />
+          <Script
+            id="ga4-base"
+            strategy="afterInteractive"
+            onReady={() => setGaReady(true)}
+          >
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -210,7 +239,7 @@ export function AnalyticsProvider() {
           </Script>
         </>
       )}
-      {shouldLoadGa && (
+      {shouldLoadGa && gaReady && (
         <Suspense fallback={null}>
           <InitialPageViewTracking />
         </Suspense>

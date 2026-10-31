@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s"
   },
   description:
-    "Matt Ghoreishi is a Senior Product Manager in Hamburg focused on AI, SaaS, and data platforms, building products where AI, data, and business outcomes meet.",
+    "Matt Ghoreishi is a Senior Product Manager in Hamburg. Explore the decisions behind his work in AI, payments, video, and industrial SaaS.",
   applicationName: "Matt Ghoreishi",
   authors: [{ name: "Matt Ghoreishi" }],
   creator: "Matt Ghoreishi",

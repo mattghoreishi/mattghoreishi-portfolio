@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function BeforeITrustAnAiFeaturePage() {
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
       <SiteNav />
       <article data-article-content>
         <ArticleEngagement articleSlug={article.slug} />

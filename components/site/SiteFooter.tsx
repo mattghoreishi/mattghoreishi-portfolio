@@ -1,32 +1,31 @@
 import Link from "next/link";
 import { AnalyticsPreferencesButton } from "@/components/analytics/AnalyticsPreferencesButton";
 import { profile } from "@/data/site";
-
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/10 bg-[#050914] px-5 py-10 md:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
+    <footer className="site-footer no-print">
+      <div className="portfolio-wrap">
         <div>
-          <p className="font-semibold text-white">{profile.name}</p>
-          <p className="mt-1">© 2026 Matt Ghoreishi. Built in Hamburg.</p>
+          <p className="font-semibold text-white">Matt Ghoreishi</p>
+          <p className="mt-2">
+            Product work, writing, and a few things I’ve learned.
+          </p>
+          <p className="mt-2 text-xs">© 2026 · Hamburg</p>
         </div>
-        <div className="flex flex-wrap gap-4">
-          <Link href="/work" className="hover:text-white">Work</Link>
-          <Link href="/writing" className="hover:text-white">Writing</Link>
-          <Link href="/about" className="hover:text-white">About</Link>
-          <Link href="/contact" className="hover:text-white">Contact</Link>
+        <div className="footer-links">
+          <Link href="/experience">Experience</Link>
+          <Link href="/resume">CV</Link>
+          <Link href="/contact">Contact</Link>
           <a
             href={profile.linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
-            data-analytics-event="click_contact"
-            data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "site_footer" })}
-            className="hover:text-white"
           >
             LinkedIn
           </a>
-          <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">GitHub</a>
-          <a href={profile.mediumUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">Medium</a>
+          <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
           <AnalyticsPreferencesButton />
         </div>
       </div>

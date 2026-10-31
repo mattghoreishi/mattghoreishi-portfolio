@@ -1,90 +1,81 @@
-import type { Metadata } from "next";
-import { ArrowUpRight, MapPin } from "lucide-react";
-import { BrandCard } from "@/components/site/BrandCard";
-import { SiteFooter } from "@/components/site/SiteFooter";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { SiteNav } from "@/components/site/SiteNav";
-import { profile, siteUrl } from "@/data/site";
-
-export const metadata: Metadata = {
-  title: "Contact | Matt Ghoreishi",
-  description:
-    "Contact Matt Ghoreishi for product conversations and collaboration around AI, SaaS, and data platforms.",
-  alternates: {
-    canonical: `${siteUrl}/contact`
-  },
-  openGraph: {
-    title: "Contact | Matt Ghoreishi",
-    description: "Connect with Matt Ghoreishi about AI, SaaS, data platforms, and product leadership.",
-    url: `${siteUrl}/contact`,
-    type: "website",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }]
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Contact | Matt Ghoreishi",
-    description: "Connect about AI, SaaS, data platforms, and product leadership.",
-    images: ["/opengraph-image"]
-  }
-};
-
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { PageIntro, pageMetadata } from "@/components/site/Portfolio";
+import { profile } from "@/data/site";
+export const metadata = pageMetadata(
+  "Contact",
+  "Email Matt Ghoreishi or connect on LinkedIn to discuss senior product roles, AI products, payments, and SaaS. Based in Hamburg.",
+  "/contact",
+);
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#050914] text-white">
+    <>
       <SiteNav />
-      <section className="px-5 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-4xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-200">Contact</p>
-          <h1 className="mt-5 text-5xl font-semibold tracking-normal md:text-6xl">Contact</h1>
-          <p className="mt-6 text-lg leading-8 text-slate-400">
-            Based in Hamburg. LinkedIn is the best place to reach me for product conversations and collaboration.
+      <main id="main-content" className="portfolio-page">
+        <PageIntro label="Contact" title="Let’s start with a conversation.">
+          <p>
+            I’m based in Hamburg and interested in senior product roles. If my
+            experience connects with a problem your team is working on, I’d like
+            to hear about it.
           </p>
-          <BrandCard className="mt-10 p-6 md:p-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-slate-400">
-                  <MapPin className="h-4 w-4 text-cyan-200" />
-                  {profile.location}
-                </div>
-                <p className="mt-4 max-w-2xl text-slate-400">
-                  Product strategy, AI products, SaaS, data platforms, writing, and tools.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href={profile.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-analytics-event="click_contact"
-                  data-analytics-params={JSON.stringify({ contact_method: "linkedin", cta_location: "contact_page_primary" })}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
-                >
-                  Connect on LinkedIn
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-                <a
-                  href={profile.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
-                >
-                  GitHub
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-                <a
-                  href={profile.mediumUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
-                >
-                  Medium
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-          </BrandCard>
-        </div>
-      </section>
+        </PageIntro>
+        <section className="portfolio-wrap contact-options">
+          <a
+            href={`mailto:${profile.email}`}
+            data-analytics-event="click_contact"
+            data-analytics-params={JSON.stringify({
+              contact_method: "email",
+              cta_location: "contact_page",
+            })}
+          >
+            <span>Email</span>
+            <strong>{profile.email}</strong>
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+          <a
+            href={profile.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-analytics-event="click_contact"
+            data-analytics-params={JSON.stringify({
+              contact_method: "linkedin",
+              cta_location: "contact_page",
+            })}
+          >
+            <span>LinkedIn</span>
+            <strong>Connect with me</strong>
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+          <Link href="/resume">
+            <span>Background</span>
+            <strong>Read my CV</strong>
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          <div className="flex flex-wrap gap-6 py-8 text-sm text-slate-300">
+            <a
+              href={profile.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="portfolio-text-link"
+            >
+              Code on GitHub
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+            <a
+              href={profile.mediumUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="portfolio-text-link"
+            >
+              Writing on Medium
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </div>
+        </section>
+      </main>
       <SiteFooter />
-    </main>
+    </>
   );
 }

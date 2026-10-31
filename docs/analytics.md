@@ -2,7 +2,7 @@
 
 This site uses a small, privacy-aware analytics layer for `mattghoreishi.com`.
 
-Deployment note: Cloudflare Pages production builds run from `main` with `pnpm run build`.
+Deployment note: Cloudflare Pages production builds run from `main` with the `build` package script.
 
 ## Providers
 
@@ -63,3 +63,7 @@ For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.an
 8. Use mapper suggestions and confirm `expand_rationale`.
 9. Submit the export gate and confirm `submit_contact_form` without email or free-text content in GA4.
 10. Confirm the production DOM contains exactly one Cloudflare Pages Web Analytics beacon. It is independent of GA4 consent and should not have an application-managed duplicate.
+
+## October 2026 update
+
+The initial page view waits for the GA base script readiness callback. The sent flag only changes after a successful queue operation. `mailto:` and `tel:` links omit `link_text` and `destination_url`; other destinations omit query strings and fragments. `download_resume` now fires from the PDF CV link on `/resume`. Run `npm run check:analytics` for focused regression checks.

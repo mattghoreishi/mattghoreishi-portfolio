@@ -6,7 +6,8 @@ export const profile = {
   name: "Matt Ghoreishi",
   title: "Senior Product Manager | AI, SaaS, and Data Platforms",
   location: "Hamburg, Germany",
-  message: "I build products where AI, data, and business outcomes meet.",
+  message: "I build products. And know when to change course.",
+  email: "sedmgh@gmail.com",
   linkedinUrl: "https://www.linkedin.com/in/mattghoreishi/",
   mediumUrl: "https://medium.com/@ghoreishi",
   githubUrl: "https://github.com/mattghoreishi"
