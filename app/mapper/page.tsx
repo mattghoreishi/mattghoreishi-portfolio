@@ -23,7 +23,8 @@ import { domainTemplates, emptyState, sampleSupportRefundAgent } from "@/data/te
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { generateBrief } from "@/lib/briefGenerator";
 import { asList } from "@/lib/utils";
-import { clearMapperDraft, readMapperDraft, saveMapperDraft } from "@/lib/mapperStorage";
+import { clearMapperDraft, persistMapperSession, readMapperDraft } from "@/lib/mapperStorage";
+import type { MapperMode, MapperStorageStatus } from "@/lib/mapperStorage";
 import type { AutonomyLevel, Facing, MapperState } from "@/types";
 
 const steps = [
@@ -157,17 +158,25 @@ function ModuleActions({
 
 export default function MapperPage() {
   const [state, setState] = useState<MapperState>(emptyState);
+  const [mode, setMode] = useState<MapperMode>("draft");
   const [activeStep, setActiveStep] = useState("quick");
   const [loaded, setLoaded] = useState(false);
-  const [storageStatus, setStorageStatus] = useState<"loading" | "saved" | "unavailable">("loading");
+  const [storageStatus, setStorageStatus] = useState<"loading" | MapperStorageStatus>("loading");
+  const [draftStorageAvailable, setDraftStorageAvailable] = useState<boolean | null>(null);
   const [recoveryNotice, setRecoveryNotice] = useState("");
+  const personalDraft = useRef<MapperState>(emptyState);
   const moduleRef = useRef<HTMLElement>(null);
   const focusNextModule = useRef(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const draft = readMapperDraft();
+    personalDraft.current = draft.state;
+    setDraftStorageAvailable(draft.available);
     if (params.get("sample") === "refund") {
-      setState(sampleSupportRefundAgent);
+      setMode("sample");
+      setState(structuredClone(sampleSupportRefundAgent));
+      setStorageStatus("sample");
       setActiveStep("brief");
       trackEvent(analyticsEvents.playDemo, {
         demo_name: "agentic_product_stack_mapper",
@@ -177,7 +186,6 @@ export default function MapperPage() {
       setLoaded(true);
       return;
     }
-    const draft = readMapperDraft();
     setState(draft.state);
     setStorageStatus(draft.available ? "saved" : "unavailable");
     if (draft.recovered) setRecoveryNotice("The saved draft could not be read. A fresh draft is ready.");
@@ -185,8 +193,14 @@ export default function MapperPage() {
   }, []);
 
   useEffect(() => {
-    if (loaded) setStorageStatus(saveMapperDraft(state) ? "saved" : "unavailable");
-  }, [state, loaded]);
+    if (!loaded) return;
+    const result = persistMapperSession(state, mode);
+    if (mode === "draft") {
+      personalDraft.current = state;
+      setDraftStorageAvailable(result === "saved");
+    }
+    setStorageStatus(result);
+  }, [state, loaded, mode]);
 
   useEffect(() => {
     if (focusNextModule.current) {
@@ -232,10 +246,50 @@ export default function MapperPage() {
     selectStep(steps[Math.max(currentIndex - 1, 0)].id, "previous_button");
   }
 
+  function setSampleLocation(sample: boolean) {
+    const url = new URL(window.location.href);
+    if (sample) url.searchParams.set("sample", "refund");
+    else url.searchParams.delete("sample");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function openSample(source: string) {
+    // Keep the latest edit even if storage is blocked or its effect has not run.
+    if (mode === "draft") {
+      personalDraft.current = state;
+      setDraftStorageAvailable(persistMapperSession(state, "draft") === "saved");
+    }
+    setMode("sample");
+    setState(structuredClone(sampleSupportRefundAgent));
+    setStorageStatus("sample");
+    setRecoveryNotice("");
+    setSampleLocation(true);
+    selectStep("brief", "open_sample");
+    trackEvent(analyticsEvents.playDemo, {
+      demo_name: "agentic_product_stack_mapper",
+      sample_name: "support_refund_agent",
+      source,
+    });
+  }
+
+  function resumeDraft() {
+    setMode("draft");
+    setState(structuredClone(personalDraft.current));
+    setSampleLocation(false);
+    setRecoveryNotice("Your draft is back. The example did not change it.");
+    selectStep("quick", "resume_draft");
+  }
+
   function reset() {
+    if (mode === "sample") {
+      setState(structuredClone(sampleSupportRefundAgent));
+      setRecoveryNotice("Refund example reset. Your draft is unchanged.");
+      selectStep("brief", "reset_sample");
+      return;
+    }
     clearMapperDraft();
     setRecoveryNotice("Draft reset.");
-    setState(emptyState);
+    setState(structuredClone(emptyState));
     selectStep("quick", "reset");
   }
 
@@ -276,17 +330,11 @@ export default function MapperPage() {
           <Button
             type="button"
             variant="accent"
-            onClick={() => {
-              setState(sampleSupportRefundAgent);
-              trackEvent(analyticsEvents.playDemo, {
-                demo_name: "agentic_product_stack_mapper",
-                sample_name: "support_refund_agent",
-                source: "quick_start"
-              });
-            }}
+            disabled={!loaded}
+            onClick={() => openSample("quick_start")}
           >
             <Sparkles className="h-4 w-4" />
-            Try with sample support refund agent
+            {mode === "sample" ? "Reload refund example" : "Try the refund example"}
           </Button>
           <Button
             type="button"
@@ -805,7 +853,7 @@ export default function MapperPage() {
   } as Record<string, ReactElement>;
 
   return (
-    <main id="main-content" className="min-h-screen px-5 py-5 md:px-8">
+    <main id="main-content" tabIndex={-1} className="min-h-screen px-5 py-5 md:px-8">
       <div className="mx-auto max-w-7xl space-y-5">
         <div className="no-print flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -821,28 +869,33 @@ export default function MapperPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => {
-                setState(sampleSupportRefundAgent);
-                trackEvent(analyticsEvents.playDemo, {
-                  demo_name: "agentic_product_stack_mapper",
-                  sample_name: "support_refund_agent",
-                  source: "mapper_header"
-                });
-              }}
+              disabled={!loaded || mode === "sample"}
+              onClick={() => openSample("mapper_header")}
             >
               <Sparkles className="h-4 w-4" />
-              Load sample
+              {mode === "sample" ? "Example mode" : "Load example"}
             </Button>
-            <Button type="button" variant="outline" onClick={reset}>
+            <Button type="button" variant="outline" disabled={!loaded} onClick={reset}>
               <RotateCcw className="h-4 w-4" />
-              Reset
+              {mode === "sample" ? "Reset example" : "Reset your draft"}
             </Button>
             <Badge className="bg-primary/10 text-primary">
               <Save className="mr-1 h-3 w-3" aria-hidden="true" />
-              {storageStatus === "saved" ? "Saved in this browser" : storageStatus === "unavailable" ? "Autosave unavailable" : "Loading draft"}
+              {storageStatus === "sample" ? "Example edits are temporary" : storageStatus === "saved" ? "Saved in this browser" : storageStatus === "unavailable" ? "Autosave unavailable" : "Loading draft"}
             </Badge>
           </div>
         </div>
+
+        {mode === "sample" && (
+          <aside className="no-print flex flex-col gap-4 rounded-lg border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between" aria-label="Example mode">
+            <div>
+              <p className="font-semibold">You’re exploring a fictional refund example.</p>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Try changes and download the result. Example edits are temporary; refreshing restores the original example. Your personal draft is kept separate.</p>
+              {draftStorageAvailable === false && <p role="status" className="mt-3 max-w-3xl text-sm leading-6 text-amber-100">Browser saving is unavailable. Any unsaved changes to your personal draft will be lost on refresh. Resume your draft and download a copy before leaving.</p>}
+            </div>
+            <Button type="button" variant="outline" onClick={resumeDraft} className="shrink-0">Resume your draft<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button>
+          </aside>
+        )}
 
         {storageStatus === "unavailable" && <p role="status" className="no-print text-sm leading-6 text-amber-100">This browser cannot save your draft. You can still work here and download it before leaving.</p>}
 

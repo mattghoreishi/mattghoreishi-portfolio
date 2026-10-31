@@ -17,26 +17,26 @@ export default function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "linear-gradient(135deg,#050914 0%,#07111f 48%,#0b2340 100%)",
-          color: "white",
+          background: "#101719",
+          color: "#edf1ec",
           padding: 72,
-          fontFamily: "Inter, Arial, sans-serif"
+          fontFamily: "Arial, sans-serif"
         }}
       >
-        <div style={{ fontSize: 26, color: "#a5f3fc", letterSpacing: 4 }}>THE AGENTIC AI PRODUCT GAP</div>
+        <div style={{ fontSize: 26, color: "#a5dbc9", letterSpacing: 4 }}>THE AGENTIC AI PRODUCT GAP</div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 76, fontWeight: 700, lineHeight: 1.02, maxWidth: 960 }}>
             Why the hard part starts after an agent gets the first task right
           </div>
           <div style={{ marginTop: 30, display: "flex", gap: 16 }}>
             {["Workflow", "Risk", "Autonomy", "Evals", "Value"].map((item) => (
-              <div key={item} style={{ border: "1px solid rgba(165,243,252,0.35)", borderRadius: 14, padding: "12px 18px", fontSize: 24 }}>
+              <div key={item} style={{ border: "1px solid #334448", borderRadius: 14, padding: "12px 18px", fontSize: 24 }}>
                 {item}
               </div>
             ))}
           </div>
         </div>
-        <div style={{ fontSize: 28, color: "#cbd5e1" }}>Matt Ghoreishi · May 4, 2026</div>
+        <div style={{ fontSize: 28, color: "#b4c2bf" }}>Matt Ghoreishi · May 4, 2026</div>
       </div>
     ),
     size

@@ -136,9 +136,9 @@ export function ContactCenterAICase() {
         <h1 className="portfolio-heading">Contact Center AI</h1>
         <p className="portfolio-lead mt-6 max-w-3xl">How working with two quality managers changed my starting point: from displaying speech and language outputs to helping a reviewer decide which call needed attention.</p>
         <p className="story-role"><span>My role</span>Customer discovery, product scope, reviewer workflow, roadmap coordination, customer testing, and pricing and pilot discussions. The voice and NLP teams owned the models.</p>
-        <p className="mt-6 max-w-3xl text-sm leading-6 text-[#526562]">This account combines historical product work, an original prototype, and a modern reconstruction using synthetic calls. The last section is my current reflection.</p>
+        <p className="mt-6 max-w-3xl text-sm leading-6 text-[var(--portfolio-secondary)]">This account combines historical product work, an original prototype, and a modern reconstruction using synthetic calls. The last section is my current reflection.</p>
       </header>
-      <nav aria-label="Case study sections" className="portfolio-wrap border-y border-[#183137]/15 py-4">
+      <nav aria-label="Case study sections" className="portfolio-wrap border-y border-[var(--portfolio-rule)] py-4">
         <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
           {[["Discovery", "#discovery"], ["Problem", "#problem"], ["Scope", "#product-decision"], ["Prototype", "#prototype"], ["Try the workflow", "#workflow"], ["Results", "#evidence"], ["Revisiting it", "#today"]].map(([label, href]) => <a key={href} href={href} className="portfolio-text-link">{label}</a>)}
         </div>
@@ -159,9 +159,9 @@ export function ContactCenterAICase() {
           <h2>Start with quality monitoring.</h2>
           <p>The broader contact-center vision included automatic answering, outbound automation, classification, monitoring, and quality review. For the initial product, I focused on quality monitoring: an existing job where speech and language signals could help a person find and assess calls.</p>
           <p>It meant keeping the reviewer responsible for the final assessment. A frustrated customer could be evidence of a service problem, a difficult situation handled appropriately, or poor agent performance. A sentiment score alone could not make that distinction.</p>
-          <dl className="mt-8 grid gap-5 border-y border-[#183137]/15 py-6 sm:grid-cols-2">
-            <div><dt className="font-semibold">The system’s part</dt><dd className="mt-2 leading-7 text-[#526562]">Transcribe, surface quality signals, and organize calls for review.</dd></div>
-            <div><dt className="font-semibold">The reviewer’s part</dt><dd className="mt-2 leading-7 text-[#526562]">Interpret the context, make the QA assessment, and decide on follow-up.</dd></div>
+          <dl className="mt-8 grid gap-5 border-y border-[var(--portfolio-rule)] py-6 sm:grid-cols-2">
+            <div><dt className="font-semibold">The system’s part</dt><dd className="mt-2 leading-7 text-[var(--portfolio-secondary)]">Transcribe, surface quality signals, and organize calls for review.</dd></div>
+            <div><dt className="font-semibold">The reviewer’s part</dt><dd className="mt-2 leading-7 text-[var(--portfolio-secondary)]">Interpret the context, make the QA assessment, and decide on follow-up.</dd></div>
           </dl>
         </div>
       </section>
@@ -177,7 +177,7 @@ export function ContactCenterAICase() {
       </section>
       <Evidence />
       <Today era={era} onSetEra={setEra} mode={mode} onSetMode={setMode} />
-      <section className="portfolio-wrap portfolio-section border-t border-[#183137]/15">
+      <section className="portfolio-wrap portfolio-section border-t border-[var(--portfolio-rule)]">
         <p className="portfolio-eyebrow">Continue reading</p>
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           <Link href="/work/inline-apps-to-video" className="portfolio-text-link">From Inline Apps to video<ArrowRight size={18} aria-hidden="true" /></Link>
@@ -227,13 +227,13 @@ function HistoricalArtifact() {
       <div>
         <p className="portfolio-eyebrow">03 / The original prototype</p>
         <h2 className="mt-4 text-3xl font-semibold tracking-tight">Designed for Persian-speaking QA teams.</h2>
-        <p className="mt-5 leading-7 text-[#526562]">The 2020 prototype brought call playback, transcript, call context, and a quality score together. It is an early artifact of the workflow described here.</p>
+        <p className="mt-5 leading-7 text-[var(--portfolio-secondary)]">The 2020 prototype brought call playback, transcript, call context, and a quality score together. It is an early artifact of the workflow described here.</p>
       </div>
       <figure>
-        <a href="/assets/cases/contact-center-prototype-2020.png" target="_blank" rel="noopener noreferrer" className="block rounded border border-[#183137]/20 bg-white p-2" aria-label="Open the original 2020 prototype image in a new tab">
+        <a href="/assets/cases/contact-center-prototype-2020.png" target="_blank" rel="noopener noreferrer" className="block rounded border border-[var(--portfolio-rule)] bg-white p-2" aria-label="Open the original 2020 prototype image in a new tab">
           <Image src="/assets/cases/contact-center-prototype-2020.png" alt="Original 2020 Persian quality-monitoring prototype showing call playback, transcript, call context, and quality score." width={2940} height={1742} className="h-auto w-full object-contain" sizes="(min-width: 1024px) 700px, 100vw" />
         </a>
-        <figcaption className="mt-3 text-sm leading-6 text-[#526562]">Original quality-monitoring prototype excerpt, 2020. Persian interface; identifying fields obscured. Open the image to inspect it.</figcaption>
+        <figcaption className="mt-3 text-sm leading-6 text-[var(--portfolio-secondary)]">Overview of the original prototype workspace, 2020. Persian interface; identifying fields obscured. Open the full-size image to inspect the archive.</figcaption>
       </figure>
     </div>
   </section>;
@@ -245,8 +245,8 @@ function Evidence() {
     <div>
       <h2>What the operating results describe.</h2>
       <dl className="mt-7 grid gap-6 sm:grid-cols-2">
-        <div className="border-t border-[#183137]/20 pt-5"><dt className="text-sm font-semibold">Review / reporting throughput</dt><dd className="mt-2 text-3xl font-semibold">+35%</dd><dd className="mt-3 leading-7 text-[#526562]">Historical improvement in the operational review and reporting workflow.</dd></div>
-        <div className="border-t border-[#183137]/20 pt-5"><dt className="text-sm font-semibold">Supporting ASR volume</dt><dd className="mt-2 text-3xl font-semibold">18K+ calls / day</dd><dd className="mt-3 leading-7 text-[#526562]">Daily volume handled through the supporting speech-recognition workflow. This is not a count of CCAI users or reviewed calls.</dd></div>
+        <div className="border-t border-[var(--portfolio-rule)] pt-5"><dt className="text-sm font-semibold">Review / reporting throughput</dt><dd className="mt-2 text-3xl font-semibold">+35%</dd><dd className="mt-3 leading-7 text-[var(--portfolio-secondary)]">Historical improvement in the operational review and reporting workflow.</dd></div>
+        <div className="border-t border-[var(--portfolio-rule)] pt-5"><dt className="text-sm font-semibold">Supporting ASR volume</dt><dd className="mt-2 text-3xl font-semibold">18K+ calls / day</dd><dd className="mt-3 leading-7 text-[var(--portfolio-secondary)]">Daily volume handled through the supporting speech-recognition workflow. This is not a count of CCAI users or reviewed calls.</dd></div>
       </dl>
       <p>These are historical team outcomes recorded in my career materials. The synthetic examples on this page illustrate product behavior and do not reproduce a measured test.</p>
     </div>
@@ -259,7 +259,7 @@ function Today({ era, onSetEra, mode, onSetMode }: { era: Era; onSetEra: (era: E
     <p className="portfolio-eyebrow">07 / Revisiting the work</p>
     <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">What I would examine now.</h2>
     <p className="portfolio-lead mt-5 max-w-3xl">I would look closely at which calls reach the queue, how often reviewers correct the system, and whether suggested actions reduce work or create more review. I would also make each important signal traceable to its supporting evidence.</p>
-    <p className="mt-4 max-w-3xl leading-7 text-[#526562]">This is a present-day design reflection, not a claim about features in the original product. The controls below compare the historical workflow with a possible extension, then separate observing, recommending, and acting.</p>
+    <p className="mt-4 max-w-3xl leading-7 text-[var(--portfolio-secondary)]">This is a present-day design reflection, not a claim about features in the original product. The controls below compare the historical workflow with a possible extension, then separate observing, recommending, and acting.</p>
     <div className="case-workspace mt-8 rounded-lg bg-[#07111b] p-5 text-slate-100 md:p-7">
       <div className="flex flex-wrap gap-2" role="group" aria-label="Product logic comparison">
         {(["2020", "today"] as Era[]).map(option => <button key={option} type="button" aria-pressed={era === option} onClick={() => {onSetEra(option); trackEvent(analyticsEvents.ccaiEraSwitch, {era: option});}} className={`min-h-11 rounded border px-4 py-2 text-sm font-semibold ${era === option ? "border-cyan-200 bg-cyan-200 text-slate-950" : "border-slate-600 text-slate-200"}`}>{option === "2020" ? "2020 product logic" : "Today's product logic"}</button>)}

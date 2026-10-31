@@ -10,21 +10,21 @@ import {
 } from "@/components/site/Portfolio";
 export const metadata = pageMetadata(
   "Selected work",
-  "The decisions behind Matt Ghoreishi’s work in Contact Center AI, video, payments, and current AI product tools.",
+  "The decisions behind Matt Ghoreishi’s work in enterprise AI, industrial software, video, and payments.",
   "/work",
 );
 export default function WorkPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro
           label="Selected work"
           title="Selected product work."
         >
           <p>
-            Two case studies and a shorter project note, drawn from my work
-            in enterprise AI, consumer video, and payments. Each describes my
+            Case studies and project notes from my work in enterprise AI,
+            industrial software, consumer video, and payments. Each describes my
             role and what happened, with room to inspect the details.
           </p>
         </PageIntro>

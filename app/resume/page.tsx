@@ -14,7 +14,7 @@ export default function ResumePage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="resume-page">
+      <main id="main-content" tabIndex={-1} className="resume-page">
         <div className="portfolio-wrap">
           <div className="resume-tools no-print">
             <p>CV · Updated October 2026</p>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { profile, siteUrl } from "@/data/site";
@@ -54,11 +55,11 @@ export function CaseList({ source }: { source: string }) {
   return (
     <div className="case-list">
       {selectedCases.map((item) => (
-        <article className="case-row" key={item.slug}>
+        <article className={`case-row${item.slug === "contact-center-ai" ? " case-row-featured" : ""}`} key={item.slug}>
           <div className="case-number" aria-hidden="true">
             {item.number}
           </div>
-          <div>
+          <div className="case-copy">
             <p className="case-kicker">
               {item.company} <span aria-hidden="true">/</span> {item.category}
             </p>
@@ -79,7 +80,15 @@ export function CaseList({ source }: { source: string }) {
             <p className="case-decision">
               {item.decision}
             </p>
-            <p className="case-result"><strong>{item.metric}</strong> {item.metricLabel}</p>
+          </div>
+          <div className="case-evidence">
+            {item.slug === "contact-center-ai" && (
+              <Link href={`/work/${item.slug}#prototype`} className="case-artifact" aria-label="See the original Contact Center AI prototype from 2020">
+                <Image src="/assets/cases/contact-center-prototype-2020.png" alt="Original Figma canvas showing Contact Center AI overview and quality-monitoring screens" width={2940} height={1742} sizes="(min-width: 1024px) 280px, (min-width: 768px) 340px, 80vw" />
+                <span>Prototype archive · 2020 <ArrowRight size={14} aria-hidden="true" /></span>
+              </Link>
+            )}
+            <p className="case-result"><strong>{item.metric}</strong> <span>{item.metricLabel}</span></p>
             <Link
               href={`/work/${item.slug}`}
               className="portfolio-text-link"

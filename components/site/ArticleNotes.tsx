@@ -48,7 +48,7 @@ export function ArticleNotes({
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <article data-article-content>
           <ArticleEngagement articleSlug={article.slug} />
           <header className="portfolio-wrap portfolio-intro article-notes-header">

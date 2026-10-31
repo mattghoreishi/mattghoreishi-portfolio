@@ -22,7 +22,7 @@ export default function AgenticProductStackMapperPage() {
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro label="Personal project" title="Agentic Product Stack Mapper">
           <p>
             A worksheet for the decisions around an AI agent: where it belongs

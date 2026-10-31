@@ -1,5 +1,4 @@
 import type { MapperState } from "@/types";
-import { cn } from "@/lib/utils";
 
 const rows = ["Customer", "Financial", "Operational", "Legal", "Trust"];
 
@@ -14,34 +13,25 @@ export function RiskShapeMatrix({ state }: { state: MapperState }) {
 
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Risk Shape Matrix</h3>
-        <span className="text-xs text-muted-foreground">{state.riskShape.reversibility}</span>
+      <div className="mb-4">
+        <h3 className="text-sm font-semibold">Risk profile</h3>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          Your selected impact levels, from Low through Critical. These are
+          planning assumptions, not a measured risk assessment.
+        </p>
       </div>
-      <div className="grid grid-cols-[110px_1fr_1fr_1fr] gap-2 text-xs">
-        <span />
-        {["Low", "Medium", "High"].map((label) => (
-          <span key={label} className="text-center font-semibold text-muted-foreground">
-            {label}
-          </span>
-        ))}
+      <dl className="divide-y divide-border text-sm">
         {rows.map((row, index) => (
-          <div className="contents" key={row}>
-            <span className="py-2 font-semibold">{row}</span>
-            {["Low", "Medium", "High"].map((level) => (
-              <span
-                key={level}
-                className={cn(
-                  "h-8 rounded-md border border-border",
-                  values[index] === level && level === "Low" && "border-primary bg-primary/20",
-                  values[index] === level && level === "Medium" && "border-accent bg-accent/25",
-                  values[index] === level && level === "High" && "border-destructive bg-destructive/20"
-                )}
-              />
-            ))}
+          <div className="flex items-baseline justify-between gap-4 py-3" key={row}>
+            <dt className="text-muted-foreground">{row} impact</dt>
+            <dd className="font-semibold text-foreground">{values[index]}</dd>
           </div>
         ))}
-      </div>
+        <div className="flex flex-wrap items-baseline justify-between gap-2 py-3">
+          <dt className="text-muted-foreground">Reversibility</dt>
+          <dd className="font-semibold text-foreground">{state.riskShape.reversibility}</dd>
+        </div>
+      </dl>
     </div>
   );
 }

@@ -30,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...[
       "/work/inline-apps-to-video",
+      "/work/industrial-gas-monitoring",
       "/work/direct-carrier-billing",
       "/resume",
     ].map((path) => ({

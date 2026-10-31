@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   isAnalyticsDebugEnabled,
   readAnalyticsStorage,
@@ -97,6 +97,18 @@ function AnalyticsConsentBanner({
   onConsentChange: (consent: AnalyticsConsent) => void;
 }) {
   const [visible, setVisible] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const focusOnOpenRef = useRef(false);
+  const closeBanner = useCallback(() => {
+    const focusWasInside = bannerRef.current?.contains(document.activeElement);
+    const returnTarget = returnFocusRef.current?.isConnected
+      ? returnFocusRef.current
+      : document.getElementById("main-content");
+    setVisible(false);
+    returnFocusRef.current = null;
+    if (focusWasInside) returnTarget?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     function readConsent() {
@@ -121,7 +133,12 @@ function AnalyticsConsentBanner({
     }
 
     function openPreferences() {
+      returnFocusRef.current = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+      focusOnOpenRef.current = !bannerRef.current;
       setVisible(true);
+      bannerRef.current?.focus({ preventScroll: true });
       if (isAnalyticsDebugEnabled()) {
         console.info("[analytics] preferences opened");
       }
@@ -134,11 +151,50 @@ function AnalyticsConsentBanner({
       window.removeEventListener(preferencesEventName, openPreferences);
   }, [onConsentChange]);
 
+  useEffect(() => {
+    if (!visible || !bannerRef.current) return;
+
+    const banner = bannerRef.current;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeBanner();
+      }
+    };
+    const updateHeight = () => {
+      document.documentElement.style.setProperty(
+        "--consent-banner-height",
+        `${Math.ceil(banner.getBoundingClientRect().height)}px`,
+      );
+    };
+    updateHeight();
+    const observer = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(updateHeight);
+    observer?.observe(banner);
+    window.addEventListener("resize", updateHeight);
+    banner.addEventListener("keydown", closeOnEscape);
+
+    // Opening preferences is an explicit action. Initial consent remains
+    // non-modal and never takes focus away from the page.
+    if (focusOnOpenRef.current) {
+      banner.focus({ preventScroll: true });
+      focusOnOpenRef.current = false;
+    }
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateHeight);
+      banner.removeEventListener("keydown", closeOnEscape);
+      document.documentElement.style.removeProperty("--consent-banner-height");
+    };
+  }, [visible, closeBanner]);
+
   function saveConsent(consent: Exclude<AnalyticsConsent, "unset">) {
     writeAnalyticsStorage(consentStorageKey, consent);
     applyAnalyticsConsent(consent);
     onConsentChange(consent);
-    setVisible(false);
+    closeBanner();
     if (isAnalyticsDebugEnabled()) {
       console.info(
         `[analytics] consent ${consent === "granted" ? "accepted" : "declined"}`,
@@ -155,13 +211,17 @@ function AnalyticsConsentBanner({
 
   return (
     <div
+      ref={bannerRef}
+      tabIndex={-1}
       role="dialog"
-      aria-live="polite"
+      aria-modal="false"
       aria-label="Analytics preferences"
-      className="no-print fixed inset-x-0 bottom-0 z-[100] border-t border-white/10 bg-[#050914]/95 px-5 py-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl md:px-8"
+      aria-describedby="analytics-consent-description"
+      data-analytics-banner="true"
+      className="no-print fixed inset-x-0 bottom-0 z-[100] border-t border-border bg-card px-5 py-4 text-foreground shadow-2xl shadow-black/30 md:px-8"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <p className="max-w-3xl text-sm leading-6 text-slate-300">
+        <p id="analytics-consent-description" className="max-w-3xl text-sm leading-6 text-muted-foreground">
           Analytics help me understand which portfolio work is useful and
           improve the site. Google Analytics only loads if you accept.
         </p>
@@ -169,14 +229,14 @@ function AnalyticsConsentBanner({
           <button
             type="button"
             onClick={() => saveConsent("denied")}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-white/15 px-4 text-sm font-semibold text-white transition hover:border-cyan-200 hover:bg-cyan-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-input px-4 text-sm font-semibold text-foreground transition hover:border-primary hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Decline
           </button>
           <button
             type="button"
             onClick={() => saveConsent("granted")}
-            className="inline-flex h-10 items-center justify-center rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Accept analytics
           </button>
