@@ -157,7 +157,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
 .case-row h3 a:hover { color: #00717e; }
 .case-summary { max-width: 630px; margin-top: 17px; color: #465e63; font-size: 15px; line-height: 1.8; }
 .case-decision { margin-block: 17px 22px; font-size: 13px; color: #314e51; line-height: 1.8; }
-.case-decision span { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #59787a; }
+.case-decision span { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #52696c; }
 .case-result { align-self: center; border-left: 1px solid #193d3e30; padding-left: 28px; }
 .case-result p { font-size: 48px; letter-spacing: -.05em; font-weight: 500; line-height: 1.1; color: #1b5258; }
 .case-result span { display: block; margin-top: 14px; color: #506a6d; font-size: 12px; line-height: 1.7; }

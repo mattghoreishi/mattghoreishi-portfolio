@@ -51,3 +51,7 @@ Before changes, the full baseline was preserved at:
 - Commit: `62eff45a14f3c22abe4930e5d7405106b719acec`
 
 Preserve protected `main`. If rollback is needed, revert the revision through a pull request and let the existing Cloudflare Pages integration deploy it. The archived branch remains available for inspection or recovery. Do not force-push or delete previous history.
+
+### Release verification
+
+Cloudflare Pages built and deployed the revision successfully from the feature branch. The local adapter run reported an export-status failure after successful compilation; this did not reproduce in Cloudflare’s build environment. No build dependency or hosting migration was needed. Link validation covered 218 internal links across 19 generated HTML pages. The cream-section decision label was adjusted to a measured 5.12:1 contrast ratio.
