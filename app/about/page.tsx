@@ -4,11 +4,13 @@ import { ArrowRight } from "lucide-react";
 import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ContactStrip, pageMetadata } from "@/components/site/Portfolio";
+
 export const metadata = pageMetadata(
   "About",
-  "I’m Matt Ghoreishi, a product manager in Hamburg. My path from product marketing to product leadership, and the lessons that changed how I work.",
+  "Matt Ghoreishi on product work, getting into the details, thinking with AI, and his path from Tehran to Hamburg.",
   "/about",
 );
+
 export default function AboutPage() {
   return (
     <>
@@ -17,86 +19,98 @@ export default function AboutPage() {
         <section className="portfolio-wrap about-intro">
           <div>
             <p className="portfolio-eyebrow">About me</p>
-            <h1 className="portfolio-heading">
-              I’m Matt.
-              <br />A product person,
-              <br />
-              still learning.
-            </h1>
+            <h1 className="portfolio-heading">I’m Matt.</h1>
             <p className="portfolio-lead mt-6">
-              I live in Hamburg. My career started in Tehran, where I moved from
-              product marketing into building products and leading product
-              teams.
+              I’m a product manager in Hamburg. My career started in Tehran,
+              in product marketing at Cafe Bazaar. I moved into product
+              development there, then led product teams at Sotoon.
             </p>
             <p className="portfolio-lead mt-5">
-              I’ve worked on advertising, payments, video, AI, and industrial
-              monitoring. Changing domains has made me more willing to ask basic
-              questions, and less willing to assume that a familiar answer fits
-              a new problem.
+              My background is in electrical engineering. Since moving into
+              product, I’ve worked as an individual PM and led PMs, across
+              consumer businesses and enterprise software.
             </p>
           </div>
           <figure>
             <Image
               src="/assets/profile/matt-ghoreishi-profile.webp"
-              width={800}
-              height={800}
+              width={512}
+              height={512}
               priority
-              sizes="(min-width: 1024px) 360px, 85vw"
+              sizes="(min-width: 768px) 320px, 85vw"
               alt="Matt Ghoreishi"
               className="w-full rounded-sm"
             />
-            <figcaption className="mt-4 text-sm text-slate-400">
-              Matt Ghoreishi · Hamburg, Germany
-            </figcaption>
           </figure>
         </section>
+
         <section className="portfolio-paper">
           <div className="portfolio-wrap about-writing">
-            <p className="portfolio-eyebrow">Things the work has taught me</p>
+            <p className="portfolio-eyebrow">How I approach the work</p>
             <div>
-              <h2>
-                Being responsible for a product also means being willing to let
-                part of it go.
-              </h2>
+              <h2>The part I enjoy most</h2>
               <p>
-                Inline Apps had reached millions of users. That made narrowing
-                its scope harder, but reach alone wasn’t a reason to keep
-                investing in every category. Looking at how people used the
-                product led me toward video.
+                I like getting into a complicated journey: following what
+                people do, examining the data, and working through the details
+                until the problem starts to make sense. There is a particular
+                satisfaction in the moment when something that looked confusing
+                becomes clear enough to act on.
               </p>
-              <Link
-                href="/work/inline-apps-to-video"
-                className="portfolio-text-link"
-              >
-                Read that story
+              <p>
+                At Cafe Bazaar, the total number of Inline Apps users did not
+                explain what was happening inside each category. Looking more
+                closely at that behavior helped us focus on video. At Sotoon,
+                time with quality managers helped us understand what they needed
+                to do after a call had been transcribed. In both cases, getting
+                closer to the work changed the product direction.
+              </p>
+              <Link href="/work" className="portfolio-text-link">
+                Read the project accounts
                 <ArrowRight size={18} aria-hidden="true" />
               </Link>
-              <h2>A good model is only part of a useful AI product.</h2>
+
+              <h2>Working with other people</h2>
               <p>
-                At Sotoon, working with quality managers made the next step
-                clearer: help them find the calls that needed attention and give
-                them evidence to review. The workflow mattered as much as the
-                technology.
-              </p>
-              <h2>I want feedback I can do something with.</h2>
-              <p>
-                I value clear expectations, direct feedback, and room to
-                question an assumption. I try to bring the same clarity to
-                colleagues: what we’re deciding, why it matters, and what would
+                I value clear expectations and direct feedback. I want to know
+                where my reasoning is weak while there is still time to do
+                something about it. With colleagues, I try to make the decision
+                clear, explain the trade-off, and leave room for someone to
                 change my mind.
               </p>
+              <p>
+                I still want to be close enough to the details to
+                understand what I am asking a team to build and why.
+              </p>
+
+              <h2>Thinking with AI</h2>
+              <p>
+                I use AI a lot. One thing that concerns me is how easily a
+                fluent answer can make an idea sound better examined than it is.
+                I ask for weak assumptions and counterexamples, but asking for
+                criticism does not automatically make the answer reliable. I
+                still have to check it.
+              </p>
+              <p>
+                My writing and tools explore related questions: what evidence
+                makes an AI feature ready, which actions a system should be
+                allowed to take, and how people can review or correct it.
+              </p>
+              <Link href="/writing" className="portfolio-text-link">
+                Writing on AI products
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>
+
         <section className="portfolio-wrap personal-note">
-          <p className="portfolio-eyebrow">Outside the work</p>
+          <p className="portfolio-eyebrow">Outside work</p>
           <p>
-            Roller skating, films, and music are part of my life too. This site
-            is mostly about products, but there’s a person on the other side of
-            the email.
+            I love roller skating, films, and music. I can happily spend hours
+            talking about any of them.
           </p>
           <Link href="/experience" className="portfolio-text-link">
-            Explore my career
+            Roles and experience
             <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </section>

@@ -20,12 +20,12 @@ export default function WorkPage() {
       <main id="main-content" className="portfolio-page">
         <PageIntro
           label="Selected work"
-          title="What I built. What I changed. Why."
+          title="Selected product work."
         >
           <p>
-            Three pieces of product work that show different sides of my
-            experience: AI workflows, choosing a narrower strategy, and opening
-            up a payment channel.
+            Two case studies and a shorter project note, drawn from my work
+            in enterprise AI, consumer video, and payments. Each describes my
+            role and what happened, with room to inspect the details.
           </p>
         </PageIntro>
         <section className="portfolio-paper">

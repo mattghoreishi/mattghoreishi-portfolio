@@ -200,7 +200,7 @@ export const knowledgeBase: SourceCard[] = [
     year: 2023,
     category: "Governance and risk",
     type: "Risk framework",
-    reliability: "Regulatory guidance",
+    reliability: "Official documentation",
     url: "https://www.nist.gov/itl/ai-risk-management-framework",
     keyPoints: [
       "Provides a voluntary framework to manage AI risks to individuals, organizations, and society.",

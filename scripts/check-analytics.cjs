@@ -33,7 +33,7 @@ context.window = {
   },
   gtag: (...args) => events.push(args),
 };
-context.document = { title: "Contact" };
+context.document = { title: "Contact", referrer: "https://example.com/referral?email=private@example.com#private" };
 assert.equal(api.isAnalyticsDebugEnabled(), false);
 assert.equal(api.writeAnalyticsStorage("consent", "denied"), false);
 assert.equal(api.trackPageView("/contact"), false);
@@ -51,6 +51,21 @@ context.window.gtag = gtag;
 assert.equal(api.trackPageView("/contact"), true);
 assert.equal(events.length, 1);
 assert.equal(events[0][2].page_title, "Contact");
+context.window.location.href = "https://mattghoreishi.com/work?email=private@example.com#private";
+assert.equal(api.trackPageView("/work?email=private@example.com#private"), true);
+assert.equal(events[1][2].page_path, "/work");
+assert.equal(events[1][2].page_location, "https://mattghoreishi.com/work");
+assert.equal(events[1][2].page_referrer, "https://example.com/referral");
+api.trackEvent("click_primary_cta", { agent_name: "Private project", main_use_case: "Secret", email: "private@example.com", cta_name: "download_mapper_json" });
+assert.equal(events[2][2].agent_name, undefined);
+assert.equal(events[2][2].main_use_case, undefined);
+assert.equal(events[2][2].email, undefined);
+assert.equal(events[2][2].cta_name, "download_mapper_json");
+assert.equal(api.articleReadDepth(500, 3000, 400), 0);
+assert.equal(api.articleReadDepth(500, 3000, 2000), 50);
+assert.equal(api.articleReadDepth(500, 3000, 3200), 90);
+assert.equal(api.articleReadDepth(500, 3000, 4000), 100);
+assert.equal(api.articleReadDepth(500, 0, 4000), 0);
 for (const href of [
   "mailto:private@example.com?subject=Secret",
   "tel:+491234567",
@@ -72,7 +87,7 @@ assert.equal(
   false,
   "Withdrawal stops custom events",
 );
-assert.equal(events.length, 1);
+assert.equal(events.length, 3);
 const provider = fs.readFileSync(
   "components/analytics/AnalyticsProvider.tsx",
   "utf8",

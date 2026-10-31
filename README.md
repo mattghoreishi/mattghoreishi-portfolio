@@ -49,7 +49,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Supabase variables are optional for local portfolio browsing; without them, optional Mapper submissions are not stored. Use placeholders in `.env.example` and keep real values only in local or Cloudflare-managed environment settings.
+Open [http://localhost:3000](http://localhost:3000). Supabase variables are not needed for the portfolio or Mapper. Legacy API handlers are retained, but local exports do not submit visitor data. Use placeholders in `.env.example` and keep real values only in local or Cloudflare-managed environment settings.
 
 ## Quality checks
 
@@ -57,6 +57,8 @@ Open [http://localhost:3000](http://localhost:3000). Supabase variables are opti
 npm run typecheck
 npm run lint
 npm run check:analytics
+npm run check:mapper
+npm run check:scoring
 npm run next:build
 ```
 
@@ -67,7 +69,7 @@ An end-to-end test script is not implemented yet. The planned focused browser sm
 - GA4 loads only after a visitor accepts analytics consent.
 - Cloudflare Web Analytics is the native Cloudflare Pages integration.
 - Custom GA4 events use structured, non-PII parameters.
-- Optional Mapper submissions require explicit consent.
+- Mapper exports are local and require no email. Drafts stay in browser storage.
 
 See [docs/analytics.md](docs/analytics.md) for the event inventory, consent flow, and verification steps.
 
@@ -84,3 +86,5 @@ Durable product and portfolio decisions are captured in [docs/product-decisions.
 Application code is reusable only if an applicable license or explicit permission grants it. Matt Ghoreishi's personal writing, case-study materials, portrait, brand elements, and historical artifacts are not granted for reuse by any code permission. Historical work is reconstructed with sanitized or synthetic material and must not be treated as source material for other projects.
 
 See [the October 2026 portfolio revision](docs/personal-portfolio-revision.md) for content sources, validation, and rollback.
+
+The subsequent [editorial review](docs/editorial-review-2026-10-31.md) records the independent review, final design direction, deeper tool fixes, and verification limits.

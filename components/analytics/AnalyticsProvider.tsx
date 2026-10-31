@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import {
   isAnalyticsDebugEnabled,
@@ -39,18 +39,14 @@ function applyAnalyticsConsent(consent: AnalyticsConsent) {
 
 function InitialPageViewTracking() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const hasTrackedInitialPage = useRef(false);
 
   useEffect(() => {
     if (!gaMeasurementId || !pathname) return;
     if (hasTrackedInitialPage.current) return;
 
-    const query = searchParams.toString();
-    const pagePath = query ? `${pathname}?${query}` : pathname;
-
-    hasTrackedInitialPage.current = trackPageView(pagePath);
-  }, [pathname, searchParams]);
+    hasTrackedInitialPage.current = trackPageView(pathname);
+  }, [pathname]);
 
   return null;
 }
@@ -234,7 +230,11 @@ export function AnalyticsProvider() {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${gaMeasurementId}', { send_page_view: false });
+              gtag('config', '${gaMeasurementId}', {
+                send_page_view: false,
+                page_location: window.location.origin + window.location.pathname,
+                page_referrer: document.referrer.split(/[?#]/)[0]
+              });
             `}
           </Script>
         </>

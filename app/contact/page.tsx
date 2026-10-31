@@ -14,7 +14,7 @@ export default function ContactPage() {
     <>
       <SiteNav />
       <main id="main-content" className="portfolio-page">
-        <PageIntro label="Contact" title="Let’s start with a conversation.">
+        <PageIntro label="Contact" title="Say hello.">
           <p>
             I’m based in Hamburg and interested in senior product roles. If my
             experience connects with a problem your team is working on, I’d like
@@ -53,7 +53,7 @@ export default function ContactPage() {
             <strong>Read my CV</strong>
             <ArrowRight aria-hidden="true" />
           </Link>
-          <div className="flex flex-wrap gap-6 py-8 text-sm text-slate-300">
+          <div className="flex flex-wrap gap-6 py-8 text-sm text-slate-600">
             <a
               href={profile.githubUrl}
               target="_blank"

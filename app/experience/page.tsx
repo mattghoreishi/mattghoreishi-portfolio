@@ -20,14 +20,14 @@ export default function ExperiencePage() {
       <main id="main-content" className="portfolio-page">
         <PageIntro
           label="Experience"
-          title="From reaching users to choosing what to build."
+          title="Experience."
         >
           <p>
             I started in product marketing in 2014. Since then, I’ve owned
             products, led product teams, and worked across consumer platforms,
             enterprise AI, and industrial software.
           </p>
-          <Link href="/resume" className="portfolio-button mt-7">
+          <Link href="/resume" className="portfolio-text-link mt-7">
             Read my CV
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>

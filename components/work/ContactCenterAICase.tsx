@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, FileSearch, Mail, MessageSquareText, MousePointer2 } from "lucide-react";
-import { profile } from "@/data/site";
+import { ArrowLeft, ArrowRight, CheckCircle2, FileSearch, MessageSquareText, MousePointer2 } from "lucide-react";
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
 
 type Era = "2020" | "today";
@@ -105,14 +104,6 @@ const modeContent = {
   }
 } satisfies Record<Mode, { title: string; body: string; actions: string[] }>;
 
-const rolePhases = [
-  ["Discover & focus", "Customer discovery, market benchmarking, and initial product focus.", "xl:col-span-2"],
-  ["Define & design", "MVP, success signals, reviewer workflow, and high-fidelity prototype.", "xl:col-span-2"],
-  ["Align & build", "Roadmaps across contact-center, voice, NLP, and engineering.", "xl:col-span-2"],
-  ["Test & iterate", "Customer MVP testing and feedback-led product releases.", "xl:col-span-3"],
-  ["Commercialize", "Pricing and commercial work with sales and customer-facing teams.", "xl:col-span-3"]
-] as const;
-
 const priorityLanes = [
   { label: "High priority", value: 9, tone: "rose" },
   { label: "Mixed signals", value: 8, tone: "violet" },
@@ -129,235 +120,173 @@ export function ContactCenterAICase() {
 
   function processCalls() {
     setProcessed(true);
-    trackEvent(analyticsEvents.ccaiRunTriage, {
-      synthetic_result: true,
-      calls_processed: 100,
-      calls_surfaced: 38
-    });
-    trackEvent(analyticsEvents.playDemo, {
-      demo_name: "ccai_100_call_problem",
-      action: "process_all_100"
-    });
+    trackEvent(analyticsEvents.ccaiRunTriage, { synthetic_result: true, calls_processed: 100, calls_surfaced: 38 });
+    trackEvent(analyticsEvents.playDemo, { demo_name: "ccai_100_call_problem", action: "process_all_100" });
   }
-
   function chooseCall(nextCallId: CallId) {
-    const previous = callId;
     setCallId(nextCallId);
-    trackEvent(analyticsEvents.switchDemoTab, {
-      demo: "ccai_workflow",
-      tab: nextCallId,
-      previous_tab: previous
-    });
+    trackEvent(analyticsEvents.switchDemoTab, { demo: "ccai_workflow", tab: nextCallId, previous_tab: callId });
   }
 
   return (
     <>
-      <Hero />
-      <SectionRail />
-      <RoleSection />
-      <CustomerDiscovery />
+      <header className="portfolio-wrap story-hero">
+        <Link href="/work" className="portfolio-text-link mb-10"><ArrowLeft size={17} aria-hidden="true" />All work</Link>
+        <p className="portfolio-eyebrow">Sotoon / Case study / Work started in 2020</p>
+        <h1 className="portfolio-heading">Contact Center AI</h1>
+        <p className="portfolio-lead mt-6 max-w-3xl">How working with two quality managers changed my starting point: from displaying speech and language outputs to helping a reviewer decide which call needed attention.</p>
+        <p className="story-role"><span>My role</span>Customer discovery, product scope, reviewer workflow, roadmap coordination, customer testing, and pricing and pilot discussions. The voice and NLP teams owned the models.</p>
+        <p className="mt-6 max-w-3xl text-sm leading-6 text-[#526562]">This account combines historical product work, an original prototype, and a modern reconstruction using synthetic calls. The last section is my current reflection.</p>
+      </header>
+      <nav aria-label="Case study sections" className="portfolio-wrap border-y border-[#183137]/15 py-4">
+        <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+          {[["Discovery", "#discovery"], ["Problem", "#problem"], ["Scope", "#product-decision"], ["Prototype", "#prototype"], ["Try the workflow", "#workflow"], ["Results", "#evidence"], ["Revisiting it", "#today"]].map(([label, href]) => <a key={href} href={href} className="portfolio-text-link">{label}</a>)}
+        </div>
+      </nav>
+      <section id="discovery" className="portfolio-wrap story-section scroll-mt-28">
+        <p className="portfolio-eyebrow">01 / Discovery</p>
+        <div>
+          <h2>Two weeks with the people reviewing calls.</h2>
+          <p>Sotoon already had automatic speech recognition and natural language processing capabilities. I spent two weeks working with two quality managers to understand how those capabilities might fit their work.</p>
+          <p>The useful question became which call to look at next, and what evidence would help them judge it. Sentiment and keywords could help surface a call, but they did not settle whether an agent had handled it well.</p>
+          <p>That shifted my focus from a dashboard of model outputs to a prioritized review queue. A reviewer needed the call, its transcript and context, the quality signals, and a way to continue the assessment in one place.</p>
+        </div>
+      </section>
       <ProblemSection processed={processed} onProcess={processCalls} />
-      <ProductDecision />
-      <Workflow key={callId} selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
+      <section id="product-decision" className="portfolio-wrap story-section scroll-mt-28">
+        <p className="portfolio-eyebrow">02 / Choosing the scope</p>
+        <div>
+          <h2>Start with quality monitoring.</h2>
+          <p>The broader contact-center vision included automatic answering, outbound automation, classification, monitoring, and quality review. For the initial product, I focused on quality monitoring: an existing job where speech and language signals could help a person find and assess calls.</p>
+          <p>It meant keeping the reviewer responsible for the final assessment. A frustrated customer could be evidence of a service problem, a difficult situation handled appropriately, or poor agent performance. A sentiment score alone could not make that distinction.</p>
+          <dl className="mt-8 grid gap-5 border-y border-[#183137]/15 py-6 sm:grid-cols-2">
+            <div><dt className="font-semibold">The system’s part</dt><dd className="mt-2 leading-7 text-[#526562]">Transcribe, surface quality signals, and organize calls for review.</dd></div>
+            <div><dt className="font-semibold">The reviewer’s part</dt><dd className="mt-2 leading-7 text-[#526562]">Interpret the context, make the QA assessment, and decide on follow-up.</dd></div>
+          </dl>
+        </div>
+      </section>
       <HistoricalArtifact />
-      <Decisions />
+      <Workflow key={callId} selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
+      <section className="portfolio-wrap story-section">
+        <p className="portfolio-eyebrow">05 / Taking it to customers</p>
+        <div>
+          <h2>Pricing and pilots were part of the product work.</h2>
+          <p>Alongside the reviewer workflow, I worked on pricing and pilot discussions with sales and customer-facing teams. Interest in the technology was a starting point; we needed to understand whether the operational problem mattered enough for a customer to pay to solve it.</p>
+          <p>My responsibilities also included coordinating roadmaps across the contact-center, voice, NLP, and engineering teams, defining the MVP, and using customer testing to guide subsequent releases.</p>
+        </div>
+      </section>
       <Evidence />
-      <Today era={era} onSetEra={setEra} />
-      <Autonomy mode={mode} onSetMode={setMode} />
-      <ChangeToday />
-      <LookingBack />
-      <RelatedThinking />
-      <FinalCta />
+      <Today era={era} onSetEra={setEra} mode={mode} onSetMode={setMode} />
+      <section className="portfolio-wrap portfolio-section border-t border-[#183137]/15">
+        <p className="portfolio-eyebrow">Continue reading</p>
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <Link href="/work/inline-apps-to-video" className="portfolio-text-link">From Inline Apps to video<ArrowRight size={18} aria-hidden="true" /></Link>
+          <Link href="/writing/the-agentic-ai-product-gap" className="portfolio-text-link">The Agentic AI Product Gap<ArrowRight size={18} aria-hidden="true" /></Link>
+        </div>
+      </section>
     </>
   );
 }
 
-function Hero() {
-  return (
-    <section className="relative scroll-mt-28 overflow-hidden px-5 py-14 md:px-8 md:py-20">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.055)_1px,transparent_1px)] bg-[size:36px_36px]" />
-      <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.76fr] lg:items-center">
-        <div>
-          <Label>Contact Center AI · 2020 → today</Label>
-          <h1 className="mt-5 max-w-5xl text-4xl font-semibold tracking-normal text-white md:text-6xl">
-            In 2020, we were trying to make AI useful inside a contact center.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            Sotoon already had ASR and NLP capabilities. The harder product question was what came next: how do you turn
-            model output into a workflow a contact-center QA team will actually use?
-          </p>
-          <p className="mt-5 max-w-3xl leading-7 text-slate-400">
-            I started working on this product problem in 2020. This is a modern interactive reconstruction of the product
-            decisions behind that work, followed by how I would approach the same problem with today&apos;s AI capabilities.
-          </p>
-          <p className="mt-5 max-w-3xl text-sm leading-6 text-slate-500">
-            Interactive reconstruction using synthetic data. No customer or confidential operational data is shown.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <TrackedLink href="#problem" name="explore_problem">Explore the problem</TrackedLink>
-            <TrackedLink href="#today" name="see_today_change" variant="secondary">See what I would change today</TrackedLink>
-            <TrackedLink href="/contact" name="discuss_this_work" variant="quiet">Discuss this work</TrackedLink>
-          </div>
-        </div>
-        <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-          {[
-            ["2020", "ASR + NLP", "Specialized capabilities were available."],
-            ["Product work", "QA review", "The hard part was turning output into something a reviewer could use."],
-            ["Today", "Models + actions", "The opportunity is larger, and so are the product consequences."]
-          ].map(([year, title, body]) => (
-            <div key={title} className="mb-4 grid grid-cols-[5rem_1fr] gap-4 rounded-md border border-white/10 bg-[#050914] p-4 last:mb-0">
-              <p className={year === "Today" ? "font-semibold text-cyan-100" : "font-semibold text-amber-100"}>{year}</p>
-              <div>
-                <p className="font-semibold text-white">{title}</p>
-                <p className="mt-1 text-sm leading-6 text-slate-400">{body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function SectionRail() {
-  return (
-    <nav aria-label="Case study sections" className="border-y border-white/10 bg-[#050914]/88 px-5 py-3 backdrop-blur md:px-8">
-      <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto text-sm">
-        {[
-          ["Problem", "#problem"],
-          ["Product decision", "#product-decision"],
-          ["Workflow", "#workflow"],
-          ["Evidence", "#evidence"],
-          ["Today", "#today"]
-        ].map(([label, href]) => (
-          <a key={href} href={href} className="shrink-0 rounded-full border border-white/10 px-3 py-2 text-slate-300 hover:border-cyan-300/35 hover:text-white">
-            {label}
-          </a>
-        ))}
-      </div>
-    </nav>
-  );
-}
-
-function RoleSection() {
-  return (
-    <section className="scroll-mt-28 px-5 py-14 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.35fr_0.65fr]">
-        <div>
-          <Label tone="warm">My Role</Label>
-          <h2 className="mt-4 text-3xl font-semibold text-white">Product ownership, not model ownership.</h2>
-        </div>
-        <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5 md:p-6">
-          <div className="relative grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-            <div className="absolute left-5 top-8 hidden h-px w-[calc(100%-2.5rem)] bg-gradient-to-r from-amber-200/0 via-amber-200/25 to-cyan-200/0 xl:block" />
-            {rolePhases.map(([title, body, span], index) => (
-              <div key={title} className={`relative rounded-md border border-white/10 bg-[#050914] p-4 ${span}`}>
-                <div className="flex items-center gap-3">
-                  <p className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-amber-200/30 bg-amber-200/10 text-xs font-semibold text-amber-100">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-white">{title}</h3>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-slate-400">{body}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-5 leading-7 text-slate-300">
-            The voice and NLP teams owned the models. I owned the productization: turning those capabilities into a product,
-            an operating workflow, a validation plan, and a path to customers.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CustomerDiscovery() {
-  return <section className="px-5 pb-14 md:px-8"><div className="mx-auto max-w-7xl grid gap-8 lg:grid-cols-[0.35fr_0.65fr]"><div><Label>What changed the product</Label><h2 className="mt-4 text-3xl font-semibold">Time with quality managers changed my starting point.</h2></div><div className="space-y-5 text-lg leading-8 text-slate-300"><p>I spent two weeks working with two quality managers to understand how they reviewed calls. The useful question became which call to look at next, and what evidence would help them judge it.</p><p>That shifted my focus from a dashboard of model outputs to a prioritized review queue. Sentiment and keywords could help surface a call, but the reviewer still needed the context to make a decision.</p><p>Alongside discovery, I worked on pricing and pilot discussions. Interest in the technology was only a starting point; we needed to establish whether the operational problem was valuable enough for a customer to pay to solve.</p></div></div></section>;
-}
-
 function ProblemSection({ processed, onProcess }: { processed: boolean; onProcess: () => void }) {
   return (
-    <section id="problem" className="scroll-mt-28 border-y border-white/10 bg-[#07111f] px-5 py-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-        <div>
-          <Label tone="warm">The 2020 Problem</Label>
-          <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white md:text-5xl">
-            A QA team could only review a fraction of its calls.
-          </h2>
-          <p className="mt-5 text-lg leading-8 text-slate-300">
-            Quality monitoring was constrained by human attention. Reviewing a call took time, so the product problem was
-            not simply “score calls with AI.”
-          </p>
-          <p className="mt-5 text-xl font-semibold leading-8 text-white">Which calls deserve a reviewer&apos;s attention?</p>
-          <p className="mt-5 text-sm leading-6 text-slate-400">
-            In the product research and planning behind this work, manual QA was commonly framed as reviewing roughly 5%
-            to 20% of calls.
-          </p>
-        </div>
-        <div className="rounded-lg border border-white/10 bg-[#050914] p-4 md:p-5">
-          {!processed ? (
-            <>
-              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-300">100 calls received</p>
-                  <p className="mt-1 text-3xl font-semibold text-white">10 manually sampled</p>
-                  <p className="text-sm text-slate-400">90 outside the manual review sample</p>
-                </div>
-                <span className="w-fit rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-semibold text-amber-100">
-                  Limited manual sampling
-                </span>
-              </div>
+    <section id="problem" className="portfolio-wrap pb-12 scroll-mt-28">
+      <div className="case-workspace rounded-lg bg-[#07111b] p-5 text-slate-100 md:p-8">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <Label>The attention constraint</Label>
+            <h2 className="mt-4 text-2xl font-semibold text-white md:text-3xl">Which calls reach a reviewer?</h2>
+            <p className="mt-5 leading-7 text-slate-300">Manual review takes time. Sampling calls limits the amount a quality manager has to listen to, but it can also leave relevant calls unseen.</p>
+            <p className="mt-4 text-sm leading-6 text-slate-300">This illustration starts with 10 sampled calls out of 100. The priority counts below are invented to explain the interaction, not historical results or a model evaluation.</p>
+          </div>
+          <div className="rounded-lg border border-white/15 bg-[#050914] p-4 md:p-5">
+            {!processed ? <>
+              <p className="text-sm font-semibold text-slate-300">100 synthetic calls received</p>
+              <p className="mt-2 text-2xl font-semibold text-white">10 manually sampled</p>
+              <p className="mt-2 text-sm text-slate-300">90 calls outside the sample</p>
               <UnsortedCalls />
-              <div className="mt-6 grid gap-3 md:grid-cols-2">
-                <Box title="Selection signals" body="Calls might be selected through a random sample, call duration, or an existing customer score." />
-                <Box title="Product opportunity" body="Use ASR and NLP to surface more of the calls worth reviewing." />
-              </div>
-              <button
-                type="button"
-                onClick={onProcess}
-                className="mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914]"
-              >
-                Process all 100 and prioritize review
-                <MousePointer2 className="h-4 w-4" />
-              </button>
-            </>
-          ) : (
-            <div aria-live="polite">
+              <button type="button" onClick={onProcess} className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-cyan-200 px-4 py-3 text-left text-sm font-semibold text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-100">Process all 100 and prioritize review<MousePointer2 size={18} className="shrink-0" aria-hidden="true" /></button>
+            </> : <div aria-live="polite">
               <Label>Illustrative synthetic result</Label>
-              <div className="mt-4 grid gap-4 lg:grid-cols-[0.38fr_0.62fr]">
-                <div className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-4">
-                  <p className="text-sm font-semibold text-cyan-100">100 processed</p>
-                  <p className="mt-2 text-3xl font-semibold text-white">38 moved into review lanes</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">in this synthetic example</p>
-                </div>
-                <PriorityLaneGrid />
-              </div>
-              <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                <p className="text-lg font-semibold text-white">The system did not replace QA. It changed where reviewers started.</p>
-                <p className="mt-2 leading-7 text-slate-400">
-                  Instead of starting from a limited manual sample, the QA team could begin with a prioritized view across
-                  a broader set of calls.
-                </p>
-                <p className="mt-2 leading-7 text-slate-400">
-                  The goal was not to eliminate QA time. It was to use scarce review time on a broader, better-prioritized set of calls.
-                </p>
-              </div>
-              <TrackedLink href="#workflow" name="open_prioritized_review_queue">
-                Open the review queue
-                <ArrowRight className="h-4 w-4" />
-              </TrackedLink>
-            </div>
-          )}
+              <p className="mt-3 text-2xl font-semibold text-white">38 calls moved into review lanes</p>
+              <p className="mb-5 mt-2 text-sm text-slate-300">All 100 were processed in this example.</p>
+              <PriorityLaneGrid />
+              <p className="mt-5 leading-7 text-slate-300">The reviewer starts with a broader, prioritized set of calls. They still make the quality assessment.</p>
+              <TrackedLink href="#workflow" name="open_prioritized_review_queue">Open the review queue<ArrowRight size={18} aria-hidden="true" /></TrackedLink>
+            </div>}
+          </div>
         </div>
       </div>
     </section>
   );
+}
+
+function HistoricalArtifact() {
+  return <section id="prototype" className="portfolio-wrap portfolio-section scroll-mt-28">
+    <div className="grid gap-8 lg:grid-cols-[0.36fr_0.64fr] lg:items-start">
+      <div>
+        <p className="portfolio-eyebrow">03 / The original prototype</p>
+        <h2 className="mt-4 text-3xl font-semibold tracking-tight">Designed for Persian-speaking QA teams.</h2>
+        <p className="mt-5 leading-7 text-[#526562]">The 2020 prototype brought call playback, transcript, call context, and a quality score together. It is an early artifact of the workflow described here.</p>
+      </div>
+      <figure>
+        <a href="/assets/cases/contact-center-prototype-2020.png" target="_blank" rel="noopener noreferrer" className="block rounded border border-[#183137]/20 bg-white p-2" aria-label="Open the original 2020 prototype image in a new tab">
+          <Image src="/assets/cases/contact-center-prototype-2020.png" alt="Original 2020 Persian quality-monitoring prototype showing call playback, transcript, call context, and quality score." width={2940} height={1742} className="h-auto w-full object-contain" sizes="(min-width: 1024px) 700px, 100vw" />
+        </a>
+        <figcaption className="mt-3 text-sm leading-6 text-[#526562]">Original quality-monitoring prototype excerpt, 2020. Persian interface; identifying fields obscured. Open the image to inspect it.</figcaption>
+      </figure>
+    </div>
+  </section>;
+}
+
+function Evidence() {
+  return <section id="evidence" className="portfolio-wrap story-section scroll-mt-28">
+    <p className="portfolio-eyebrow">06 / Historical results</p>
+    <div>
+      <h2>What the operating results describe.</h2>
+      <dl className="mt-7 grid gap-6 sm:grid-cols-2">
+        <div className="border-t border-[#183137]/20 pt-5"><dt className="text-sm font-semibold">Review / reporting throughput</dt><dd className="mt-2 text-3xl font-semibold">+35%</dd><dd className="mt-3 leading-7 text-[#526562]">Historical improvement in the operational review and reporting workflow.</dd></div>
+        <div className="border-t border-[#183137]/20 pt-5"><dt className="text-sm font-semibold">Supporting ASR volume</dt><dd className="mt-2 text-3xl font-semibold">18K+ calls / day</dd><dd className="mt-3 leading-7 text-[#526562]">Daily volume handled through the supporting speech-recognition workflow. This is not a count of CCAI users or reviewed calls.</dd></div>
+      </dl>
+      <p>These are historical team outcomes recorded in my career materials. The synthetic examples on this page illustrate product behavior and do not reproduce a measured test.</p>
+    </div>
+  </section>;
+}
+
+function Today({ era, onSetEra, mode, onSetMode }: { era: Era; onSetEra: (era: Era) => void; mode: Mode; onSetMode: (mode: Mode) => void }) {
+  const active = modeContent[mode];
+  return <section id="today" className="portfolio-wrap portfolio-section scroll-mt-28">
+    <p className="portfolio-eyebrow">07 / Revisiting the work</p>
+    <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">What I would examine now.</h2>
+    <p className="portfolio-lead mt-5 max-w-3xl">I would look closely at which calls reach the queue, how often reviewers correct the system, and whether suggested actions reduce work or create more review. I would also make each important signal traceable to its supporting evidence.</p>
+    <p className="mt-4 max-w-3xl leading-7 text-[#526562]">This is a present-day design reflection, not a claim about features in the original product. The controls below compare the historical workflow with a possible extension, then separate observing, recommending, and acting.</p>
+    <div className="case-workspace mt-8 rounded-lg bg-[#07111b] p-5 text-slate-100 md:p-7">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Product logic comparison">
+        {(["2020", "today"] as Era[]).map(option => <button key={option} type="button" aria-pressed={era === option} onClick={() => {onSetEra(option); trackEvent(analyticsEvents.ccaiEraSwitch, {era: option});}} className={`min-h-11 rounded border px-4 py-2 text-sm font-semibold ${era === option ? "border-cyan-200 bg-cyan-200 text-slate-950" : "border-slate-600 text-slate-200"}`}>{option === "2020" ? "2020 product logic" : "Today's product logic"}</button>)}
+      </div>
+      <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {eraSteps[era].map((step, index) => <li key={step} className="rounded border border-white/15 p-4"><span className="text-xs font-semibold text-cyan-200">{String(index + 1).padStart(2, "0")}</span><p className="mt-2 text-sm leading-6 text-slate-200">{step}</p></li>)}
+      </ol>
+      <p className="mt-5 leading-7 text-slate-300" aria-live="polite">{era === "2020" ? "The system interprets and prioritizes evidence before the reviewer acts." : "A possible extension prepares recommendations or takes permitted actions. Those actions need boundaries, review, and a way to correct mistakes."}</p>
+      <div className="mt-8 border-t border-white/15 pt-7">
+        <h3 className="text-xl font-semibold text-white">Three levels of responsibility</h3>
+        <p className="mt-3 max-w-3xl leading-7 text-slate-300">I would add autonomy only where an action improves the workflow and its consequences can be managed. Classification and summarization do not require an agent.</p>
+        <div className="mt-5 grid gap-2 sm:grid-cols-3" role="group" aria-label="Autonomy level">
+          {(["observe", "recommend", "act"] as Mode[]).map(option => <button key={option} type="button" aria-pressed={mode === option} onClick={() => {onSetMode(option); trackEvent(analyticsEvents.ccaiAutonomyMode, {mode: option});}} className={`min-h-11 rounded border p-3 text-left font-semibold ${mode === option ? "border-cyan-200 bg-cyan-200 text-slate-950" : "border-slate-600 text-slate-200"}`}>{modeContent[option].title}</button>)}
+        </div>
+        <div className="mt-5 rounded border border-white/15 p-5">
+          <h4 className="text-lg font-semibold text-white">{active.title}</h4>
+          <p className="mt-2 leading-7 text-slate-300">{active.body}</p>
+          <ul className="mt-4 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">{active.actions.map(action => <li key={action} className="flex items-start gap-2"><CheckCircle2 size={16} className="mt-1 shrink-0 text-cyan-200" aria-hidden="true" />{action}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>;
 }
 
 function UnsortedCalls() {
   return (
-    <div className="mt-5 grid grid-cols-10 gap-1.5" aria-label="100 synthetic calls, with 10 manually sampled">
+    <div className="mt-5 grid grid-cols-10 gap-1.5" aria-hidden="true">
       {Array.from({ length: 100 }, (_, index) => {
         const sampled = index % 10 === 0;
         const height = index % 7 === 0 ? "h-5" : index % 5 === 0 ? "h-4" : "h-3";
@@ -409,59 +338,23 @@ function PriorityLane({ label, value, tone }: { label: string; value: number; to
   );
 }
 
-function ProductDecision() {
-  return (
-    <section id="product-decision" className="scroll-mt-28 px-5 py-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <Label tone="warm">The Product Decision</Label>
-          <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white">We did not start with full automation.</h2>
-          <p className="mt-5 text-lg leading-8 text-slate-400">
-            The broader vision included more ambitious contact-center automation. But a broad AI vision is not an MVP.
-          </p>
-          <p className="mt-5 leading-7 text-slate-400">
-            My bias was to find the first workflow where the AI capability could change an operating process, not just
-            create an impressive demo.
-          </p>
-        </div>
-        <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-          <Box title="Broad contact-center vision" body="Automatic answering · Outbound automation · Call classification · Monitoring and trends · Quality monitoring" />
-          <div className="py-3 text-center text-2xl text-slate-500">↓</div>
-          <Box title="Customer and market learning" body="Stakeholder conversations · Global product benchmarking · Prototype exploration · Operational workflow analysis" />
-          <div className="py-3 text-center text-2xl text-slate-500">↓</div>
-          <div className="rounded-lg border border-amber-300/25 bg-amber-300/10 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-100">Initial focus</p>
-            <h3 className="mt-2 text-3xl font-semibold text-white">Quality monitoring</h3>
-            <p className="mt-3 leading-7 text-slate-300">
-              The pain already existed, the reviewer already had a job to do, and ASR/NLP capabilities could enter that
-              workflow without requiring the entire contact center to change at once.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeof syntheticCalls)[number]; callId: CallId; onChooseCall: (id: CallId) => void }) {
   const [transcriptTurn, setTranscriptTurn] = useState<number | null>(null);
   return (
-    <section id="workflow" className="scroll-mt-28 border-y border-white/10 bg-[#07111f] px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Label>Interactive Reconstruction</Label>
-        <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white md:text-5xl">A score was not a product.</h2>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-400">
-          The reviewer still needed to hear the call, read the transcript, understand the context, and continue the QA workflow.
-        </p>
-        <div className="mt-8 rounded-lg border border-white/10 bg-[#050914]">
+    <section id="workflow" className="portfolio-wrap portfolio-section scroll-mt-28">
+      <div>
+        <p className="portfolio-eyebrow">04 / The review workflow</p>
+        <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">Try the reviewer’s side of the product.</h2>
+        <p className="portfolio-lead mt-5 max-w-3xl">Select a call, inspect the transcript and signals, then make a review decision. These fictional calls illustrate the workflow; no model is running here.</p>
+        <div className="case-workspace mt-8 overflow-hidden rounded-lg border border-white/10 bg-[#07111b] text-slate-100">
           <div className="border-b border-white/10 p-4 md:p-5">
             <Label>Quality review workspace</Label>
-            <p className="mt-1 text-sm text-slate-400">Modern reconstruction of the historic workflow logic</p>
+            <p className="mt-1 text-sm text-slate-400">Synthetic reconstruction of the historical workflow. Review changes stay in this browser view.</p>
           </div>
           <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
             <div className="border-b border-white/10 p-4 md:p-5 lg:border-b-0 lg:border-r">
               <h3 className="flex items-center gap-2 font-semibold text-white">
-                <FileSearch className="h-5 w-5 text-cyan-200" />
+                <FileSearch className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                 Review queue
               </h3>
               <div className="mt-4 grid gap-3">
@@ -469,6 +362,7 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                   <button
                     key={call.id}
                     type="button"
+                    aria-pressed={callId === call.id}
                     onClick={() => onChooseCall(call.id)}
                     className={`rounded-md border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914] ${
                       callId === call.id ? "border-cyan-300/50 bg-cyan-300/10" : "border-white/10 bg-white/[0.035] hover:border-cyan-300/25"
@@ -504,7 +398,7 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                   </div>
                   <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.035] p-4">
                     <h4 className="flex items-center gap-2 font-semibold text-white">
-                      <MessageSquareText className="h-5 w-5 text-cyan-200" />
+                      <MessageSquareText className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                       Transcript
                     </h4>
                     {selectedCall.transcript.map(([speaker, text], index) => (
@@ -560,275 +454,6 @@ function ReviewActions({ callId }: { callId: string }) {
   </div>;
 }
 
-function HistoricalArtifact() {
-  return (
-    <section className="px-5 py-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-center">
-        <div>
-          <Label tone="warm">From the 2020 prototype</Label>
-          <p className="mt-4 text-lg leading-8 text-slate-300">
-            The original product interface was designed for Persian-speaking contact-center teams.
-          </p>
-        </div>
-        <figure className="rounded-lg border border-white/10 bg-white/[0.035] p-3">
-          <Image
-            src="/assets/cases/contact-center-prototype-2020.png"
-            alt="Original 2020 Persian quality-monitoring prototype showing call playback, transcript, call context, and quality score."
-            width={2940}
-            height={1742}
-            className="max-h-[520px] w-full rounded-md object-contain"
-            sizes="(min-width: 1024px) 58vw, 100vw"
-            priority={false}
-          />
-          <figcaption className="mt-3 text-sm leading-6 text-slate-500">
-            Original quality-monitoring prototype excerpt, 2020. Persian UI. Identifying fields obscured.
-          </figcaption>
-        </figure>
-      </div>
-    </section>
-  );
-}
-
-function Decisions() {
-  const decisions = [
-    ["Start with quality monitoring, not full automation", "Quality monitoring presented a sharper problem, an existing user, and a faster route to an MVP. A broad AI capability becomes a product only after you choose the workflow where it earns the right to exist."],
-    ["Put AI inside the review flow", "A score returned by an API was not enough. The reviewer needed playback, transcript, call context, score, and the next review step in one place."],
-    ["Measure the operating workflow", "The product evidence had to move from model output to operating value. Could we process more calls? Could more relevant calls reach reviewers? Could scoring become more reliable?"]
-  ];
-  return (
-    <section className="px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Label tone="warm">Product Decisions</Label>
-        <h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-white md:text-5xl">Three decisions mattered more than the model demo.</h2>
-        <div className="mt-10 grid gap-6">
-          {decisions.map(([title, body], index) => (
-            <div key={title} className="grid gap-4 border-t border-white/10 pt-6 md:grid-cols-[8rem_1fr]">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-100">Decision {String(index + 1).padStart(2, "0")}</p>
-              <div>
-                <h3 className="text-2xl font-semibold text-white">{title}</h3>
-                <p className="mt-3 max-w-3xl leading-7 text-slate-400">{body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Evidence() {
-  return (
-    <section id="evidence" className="scroll-mt-28 border-y border-white/10 bg-white/[0.025] px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Label>Operating Evidence</Label>
-        <h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-white md:text-5xl">The product moved beyond a prototype.</h2>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          <Metric value="18K+" label="Daily calls" detail="Handled through the ASR workflow" />
-          <Metric value="35%" label="Review / reporting throughput" detail="Improvement in the operational workflow" />
-          <Metric value="2.15x" label="Scoring of low-rated calls" detail="Historical improvement, not a general accuracy score" />
-        </div>
-        <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-500">
-          These are historical results from my product work with the team. The 18K+ figure describes daily volume in the supporting ASR workflow; the other figures describe review and scoring improvements. They are not results from this demo or a claim of general model accuracy. The interface here uses synthetic data.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function Today({ era, onSetEra }: { era: Era; onSetEra: (era: Era) => void }) {
-  return (
-    <section id="today" className="scroll-mt-28 px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Label>2020 → today</Label>
-        <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white md:text-6xl">The model layer changed dramatically.</h2>
-        <p className="mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Current product reflection, updated July 2026.</p>
-        <p className="mt-5 text-3xl font-semibold text-cyan-100">The product question did not disappear.</p>
-        <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-400">
-          In 2020, much of the work was about combining specialized ASR and NLP capabilities with a usable operational
-          workflow. Today, modern models can interpret far more context, produce structured outputs, use tools, and in
-          some systems take actions across software.
-        </p>
-        <p className="mt-4 max-w-4xl text-lg leading-8 text-slate-400">
-          That expands the product opportunity. It also expands the consequences of a bad product decision.
-        </p>
-        <div className="mt-10 rounded-lg border border-white/10 bg-white/[0.035] p-4 md:p-5">
-          <div className="inline-flex rounded-md border border-white/10 bg-[#050914] p-1" role="tablist" aria-label="Product logic comparison">
-            {(["2020", "today"] as Era[]).map((option) => (
-              <button
-                key={option}
-                type="button"
-                role="tab"
-                aria-selected={era === option}
-                onClick={() => {
-                  onSetEra(option);
-                  trackEvent(analyticsEvents.ccaiEraSwitch, { era: option });
-                }}
-                className={`rounded px-4 py-2 text-sm font-semibold ${era === option ? "bg-cyan-300 text-slate-950" : "text-slate-300"}`}
-              >
-                {option === "2020" ? "2020 product logic" : "Today's product logic"}
-              </button>
-            ))}
-          </div>
-          <div className="mt-6 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
-            {eraSteps[era].map((step, index) => (
-              <div key={step} className="rounded-md border border-white/10 bg-[#050914] p-4">
-                <p className="text-sm font-semibold text-cyan-200">{String(index + 1).padStart(2, "0")}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-300">{step}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-5 max-w-3xl leading-7 text-slate-400">
-            {era === "2020"
-              ? "The system helps interpret and prioritize evidence before the reviewer acts."
-              : "A modern system can potentially move beyond interpretation and recommendation. It can prepare or take actions. That makes product boundaries more important, not less."}
-          </p>
-          <div className="mt-6 rounded-lg border border-amber-300/20 bg-amber-300/10 p-5">
-            <p className="text-xl font-semibold text-white">One thing I would resist today is calling every intelligent workflow an agent.</p>
-            <p className="mt-3 leading-7 text-slate-300">
-              If the system only classifies, scores, or summarizes, I would design it as a strong AI workflow. I would
-              introduce agentic behavior only where tool use and multi-step action create real product value.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Autonomy({ mode, onSetMode }: { mode: Mode; onSetMode: (mode: Mode) => void }) {
-  const active = modeContent[mode];
-  return (
-    <section className="border-y border-white/10 bg-[#07111f] px-5 py-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-        <div>
-          <Label>Observe / recommend / act</Label>
-          <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white">Autonomy should follow the consequence of the action.</h2>
-          <p className="mt-5 leading-7 text-slate-400">
-            Autonomy should be designed around the consequence and reversibility of the action, not around how impressive the model looks.
-          </p>
-        </div>
-        <div className="rounded-lg border border-white/10 bg-[#050914] p-4">
-          <div className="grid gap-2 md:grid-cols-3">
-            {(["observe", "recommend", "act"] as Mode[]).map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => {
-                  onSetMode(option);
-                  trackEvent(analyticsEvents.ccaiAutonomyMode, { mode: option });
-                }}
-                className={`rounded-md border p-4 text-left ${mode === option ? "border-cyan-300/50 bg-cyan-300/10" : "border-white/10 bg-white/[0.035]"}`}
-              >
-                <p className="font-semibold text-white">{modeContent[option].title}</p>
-              </button>
-            ))}
-          </div>
-          <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <h3 className="text-2xl font-semibold text-white">{active.title}</h3>
-            <p className="mt-3 leading-7 text-slate-400">{active.body}</p>
-            <Panel title="Example actions" items={active.actions} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ChangeToday() {
-  const items = [
-    ["Trace signals to evidence", "Every important quality signal should point back to the transcript, audio segment, policy context, or workflow event that supports it."],
-    ["Evaluate the queue, not just the model", "I would measure whether the right calls reach reviewers, how often they correct the system, and whether the workflow removes work or creates more review."],
-    ["Use agents only when action adds value", "Classification, scoring, and summarization do not automatically need an agent. I would add tool use and multi-step action only where the workflow benefits from it."],
-    ["Design correction before autonomy", "If the system creates tasks, updates records, or routes work, correction and escalation should exist before more autonomy is added."]
-  ];
-  return (
-    <section className="px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Label>What I Would Change Today</Label>
-        <h2 className="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-white md:text-5xl">
-          I would keep the reviewer&apos;s job at the center. I would change how the system handles evidence, uncertainty, and action.
-        </h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {items.map(([title, body]) => (
-            <Box key={title} title={title} body={body} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function LookingBack() {
-  return (
-    <section className="border-y border-white/10 bg-white/[0.025] px-5 py-16 md:px-8">
-      <div className="mx-auto max-w-4xl">
-        <Label tone="warm">Looking Back</Label>
-        <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white md:text-5xl">This is one of the product problems that stayed with me.</h2>
-        <div className="mt-6 grid gap-5 text-lg leading-8 text-slate-400">
-          <p>I started working on this product problem in 2020.</p>
-          <p>At the time, we were combining ASR and NLP capabilities with contact-center workflows. The model layer was difficult, but productizing it created a different set of questions.</p>
-          <p>Which workflow should we start with?</p>
-          <p>What does the reviewer need to see?</p>
-          <p>Where does the model output enter the job?</p>
-          <p>What do we measure when the demo is over?</p>
-          <p className="text-2xl font-semibold leading-9 text-white">The model capability is the beginning. The product starts when it changes a real workflow.</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function RelatedThinking() {
-  return (
-    <section className="px-5 py-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl gap-8 rounded-lg border border-white/10 bg-white/[0.035] p-6 md:p-8 lg:grid-cols-[1fr_0.55fr]">
-        <div>
-          <Label>Related Thinking</Label>
-          <h2 className="mt-4 text-3xl font-semibold text-white">From model output to product system.</h2>
-          <p className="mt-4 leading-7 text-slate-400">
-            My recent article, The Agentic AI Product Gap, looks at a more modern version of the same product tension.
-          </p>
-          <p className="mt-4 leading-7 text-slate-400">
-            Once AI moves from interpreting work to taking action, workflow fit, evaluation, human control, monitoring,
-            and recovery become part of the product itself.
-          </p>
-          <blockquote className="mt-5 border-l-2 border-cyan-300 pl-4 text-lg font-semibold leading-8 text-white">
-            “An agent is not ready when the model looks smart. It is ready when the workflow can absorb its mistakes.”
-          </blockquote>
-        </div>
-        <TrackedLink href="/writing/the-agentic-ai-product-gap" name="read_agentic_ai_product_gap">
-          Read The Agentic AI Product Gap
-          <ArrowRight className="h-4 w-4" />
-        </TrackedLink>
-      </div>
-    </section>
-  );
-}
-
-function FinalCta() {
-  return (
-    <section className="px-5 pb-16 md:px-8">
-      <div className="mx-auto max-w-5xl rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-6 md:p-8">
-        <Label>Continue The Conversation</Label>
-        <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white">The part I enjoy starts after the model works.</h2>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-300">
-          Choosing the workflow, testing it with users, earning adoption, and measuring what actually changed.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <TrackedLink href="/contact" name="discuss_this_work">
-            Discuss this work
-            <Mail className="h-4 w-4" />
-          </TrackedLink>
-          <TrackedLink href="/work" name="view_more_work" variant="secondary">View more work</TrackedLink>
-          <a href={profile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center justify-center rounded-md px-2 text-sm font-semibold text-cyan-100 hover:text-cyan-50">
-            LinkedIn
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Label({ children, tone = "cool" }: { children: React.ReactNode; tone?: "cool" | "warm" }) {
   return <p className={`text-sm font-semibold uppercase tracking-[0.18em] ${tone === "warm" ? "text-amber-100" : "text-cyan-200"}`}>{children}</p>;
 }
@@ -847,9 +472,5 @@ function Box({ title, body }: { title: string; body: string }) {
 }
 
 function Panel({ title, items }: { title: string; items: readonly string[] }) {
-  return <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4"><h4 className="font-semibold text-white">{title}</h4><div className="mt-3 grid gap-2">{items.map((item) => <span key={item} className="flex items-start gap-2 text-sm leading-6 text-slate-400"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-200" />{item}</span>)}</div></div>;
-}
-
-function Metric({ value, label, detail }: { value: string; label: string; detail: string }) {
-  return <div className="rounded-lg border border-white/10 bg-[#050914] p-5"><p className="text-4xl font-semibold text-white">{value}</p><p className="mt-3 text-sm font-semibold uppercase tracking-[0.16em] text-cyan-200">{label}</p><p className="mt-3 leading-7 text-slate-400">{detail}</p></div>;
+  return <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4"><h4 className="font-semibold text-white">{title}</h4><div className="mt-3 grid gap-2">{items.map((item) => <span key={item} className="flex items-start gap-2 text-sm leading-6 text-slate-400"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-200" aria-hidden="true" />{item}</span>)}</div></div>;
 }

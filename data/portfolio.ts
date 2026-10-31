@@ -3,6 +3,7 @@ export const career = [
     company: "Mercor & micro1",
     role: "AI evaluation & product-domain work",
     period: "2025–2026 · Contract projects",
+    shortDetail: "Contract work in AI evaluation, expert review, and product-domain reasoning.",
     detail:
       "Hands-on evaluation of AI outputs, product reasoning, and quality. This work keeps my product thinking close to what models actually do, including where they fall short.",
     points: [
@@ -14,6 +15,7 @@ export const career = [
     company: "Albatec",
     role: "Product Development Manager",
     period: "Jan 2024–Jun 2025 · Hamburg",
+    shortDetail: "Industrial gas-monitoring software, sensor dashboards, and customer pilots.",
     detail:
       "Brought product management to industrial gas monitoring: a cloud platform, sensor dashboards, alerts, reporting, and customer pilots.",
     points: [
@@ -26,6 +28,7 @@ export const career = [
     company: "Sotoon",
     role: "Senior Product Manager → Director of Product",
     period: "Oct 2020–Dec 2022 · Tehran",
+    shortDetail: "Enterprise AI products; led six PMs in an AI organization of more than 40 people.",
     detail:
       "Moved from individual product ownership to leading product work across AI capabilities and customer solutions. Contact Center AI became a concrete way to put speech and language technology to work.",
     points: [
@@ -40,6 +43,7 @@ export const career = [
     company: "Cafe Bazaar",
     role: "Product Marketing → Product Development Manager",
     period: "Sep 2014–Oct 2020 · Tehran",
+    shortDetail: "An Android app marketplace. Six years across advertising, payments, and video.",
     detail:
       "Six years across advertising, payments, distribution, and video in a large consumer app ecosystem. I learned how closely product choices, partnerships, and business models depend on one another.",
     points: [
@@ -57,39 +61,42 @@ export const selectedCases = [
     number: "01",
     slug: "contact-center-ai",
     company: "Sotoon",
-    category: "AI · Customer discovery · Workflow design",
-    title: "Turning speech models into a useful review queue.",
+    category: "Case study · Enterprise AI",
+    role: "My role: discovery, product definition, pricing, and cross-team delivery.",
+    title: "Contact Center AI",
     summary:
-      "Speech and language technology was the starting point. Working with quality managers changed the product into a prioritized review queue, with evidence a person could act on.",
-    decision: "Focus the product on the reviewer's next decision.",
-    metric: "+35%",
-    metricLabel: "Historical review / reporting throughput improvement",
-    linkLabel: "Read the case & try the reconstruction",
+      "Which calls should a quality manager review next? Two weeks with two quality managers helped turn speech and language capabilities into a review workflow.",
+    decision: "Includes an original 2020 prototype and a working reconstruction with synthetic calls.",
+    metric: "35% improvement",
+    metricLabel: "in review and reporting throughput, a historical team result.",
+    linkLabel: "Read the case",
   },
   {
     number: "02",
     slug: "inline-apps-to-video",
     company: "Cafe Bazaar",
-    category: "Strategy · Retention · Video",
-    title: "Five million users. Still a reason to change course.",
+    category: "Case study · Consumer products",
+    role: "My role: built Inline Apps and led the decision to focus on video.",
+    title: "From Inline Apps to video",
     summary:
-      "Inline Apps had reach, but the category-level behavior told a more complicated story. I chose to narrow the bet and focus on video.",
-    decision: "Give up breadth to invest in a stronger use case.",
+      "The platform had reached five million monthly users. Looking at retention by category raised a harder question: which parts deserved more investment?",
+    decision: "The choice to narrow a broad platform to one use case, and what that meant giving up.",
     metric: "11M+",
-    metricLabel: "Monthly active users reached by the VOD product",
-    linkLabel: "Read the decision story",
+    metricLabel: "monthly active users reached by the later video product.",
+    linkLabel: "Read the case",
   },
   {
     number: "03",
     slug: "direct-carrier-billing",
     company: "Cafe Bazaar",
-    category: "Payments · Partnerships · Monetization",
-    title: "A payment method that opened up the market.",
+    category: "Project note · Payments",
+    role: "My role: led the initiative across product, operator partnerships, and delivery.",
+    title: "Direct Carrier Billing",
     summary:
-      "Direct Carrier Billing connected mobile operators with the app marketplace. The work brought product, commercial partnerships, and payment delivery together.",
-    decision: "Make paying possible for more customers.",
+      "Letting customers charge app purchases to their mobile account. I led the launch and expansion with two mobile operators.",
+    decision: "A short account of the initiative’s scope and results across two mobile operators.",
     metric: "5M+",
-    metricLabel: "New paying users reached through the initiative",
-    linkLabel: "Read the project overview",
+    metricLabel: "new paying users reached through the initiative.",
+    linkLabel: "Read the project note",
   },
 ] as const;

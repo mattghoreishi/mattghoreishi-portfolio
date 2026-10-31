@@ -26,4 +26,6 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run check:analytics
+      - run: npm run check:mapper
+      - run: npm run check:scoring
       - run: npm run next:build

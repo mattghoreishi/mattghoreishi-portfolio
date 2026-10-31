@@ -6,7 +6,7 @@ export function exportBriefJson(brief: AgentProductBrief, state: MapperState) {
       brief,
       inputs: state,
       exportNote:
-        "This file was generated locally from user-entered inputs. Source cards are curated evidence cards, not live AI search."
+        "This file was generated locally from user-entered inputs. Scores are heuristic planning checks, not measurements of readiness or safety. Source cards are background reading, not validation of the inputs or calculations."
     },
     null,
     2

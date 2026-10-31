@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/site/BrandMark";
 
@@ -15,6 +15,18 @@ const links = [
 export function SiteNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButton.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
   const active = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
   return (
@@ -55,6 +67,7 @@ export function SiteNav() {
             <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
           <button
+            ref={menuButton}
             type="button"
             className="mobile-menu-toggle"
             aria-expanded={open}

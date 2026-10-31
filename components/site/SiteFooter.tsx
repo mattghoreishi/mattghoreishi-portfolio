@@ -6,14 +6,12 @@ export function SiteFooter() {
     <footer className="site-footer no-print">
       <div className="portfolio-wrap">
         <div>
-          <p className="font-semibold text-white">Matt Ghoreishi</p>
-          <p className="mt-2">
-            Product work, writing, and a few things I’ve learned.
-          </p>
-          <p className="mt-2 text-xs">© 2026 · Hamburg</p>
+          <p className="footer-name">Matt Ghoreishi</p>
+          <p className="footer-location">Hamburg, Germany · © 2026</p>
         </div>
         <div className="footer-links">
           <Link href="/experience">Experience</Link>
+          <Link href="/tools">Tools</Link>
           <Link href="/resume">CV</Link>
           <Link href="/contact">Contact</Link>
           <a

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Eye, RotateCcw, Save, Sparkles } from "lucide-react";
@@ -23,9 +23,8 @@ import { domainTemplates, emptyState, sampleSupportRefundAgent } from "@/data/te
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { generateBrief } from "@/lib/briefGenerator";
 import { asList } from "@/lib/utils";
+import { clearMapperDraft, readMapperDraft, saveMapperDraft } from "@/lib/mapperStorage";
 import type { AutonomyLevel, Facing, MapperState } from "@/types";
-
-const storageKey = "agentic-product-stack-mapper-state-v1";
 
 const steps = [
   { id: "quick", label: "Quick Start" },
@@ -68,10 +67,11 @@ function TextList({
   onChange: (value: string[]) => void;
   suggestion?: string[];
 }) {
+  const fieldId = useId();
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
-        <Label>{label}</Label>
+        <Label htmlFor={fieldId}>{label}</Label>
         {suggestion && (
           <Button
             type="button"
@@ -90,8 +90,8 @@ function TextList({
           </Button>
         )}
       </div>
-      <Textarea value={value.join("\n")} onChange={(event) => onChange(updateList(event.target.value))} placeholder={placeholder} />
-      <p className="text-xs text-muted-foreground">Add one per line or separate with commas.</p>
+      <Textarea id={fieldId} aria-describedby={`${fieldId}-hint`} value={value.join("\n")} onChange={(event) => onChange(updateList(event.target.value))} placeholder={placeholder} />
+      <p id={`${fieldId}-hint`} className="text-xs text-muted-foreground">Add one per line or separate with commas.</p>
     </div>
   );
 }
@@ -113,6 +113,7 @@ function Chips({
           <button
             type="button"
             key={option}
+            aria-pressed={active}
             onClick={() => onChange(active ? selected.filter((item) => item !== option) : [...selected, option])}
             className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
               active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-muted"
@@ -158,6 +159,10 @@ export default function MapperPage() {
   const [state, setState] = useState<MapperState>(emptyState);
   const [activeStep, setActiveStep] = useState("quick");
   const [loaded, setLoaded] = useState(false);
+  const [storageStatus, setStorageStatus] = useState<"loading" | "saved" | "unavailable">("loading");
+  const [recoveryNotice, setRecoveryNotice] = useState("");
+  const moduleRef = useRef<HTMLElement>(null);
+  const focusNextModule = useRef(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -172,26 +177,30 @@ export default function MapperPage() {
       setLoaded(true);
       return;
     }
-    const stored = window.localStorage.getItem(storageKey);
-    if (stored) {
-      try {
-        setState(JSON.parse(stored));
-      } catch {
-        setState(emptyState);
-      }
-    }
+    const draft = readMapperDraft();
+    setState(draft.state);
+    setStorageStatus(draft.available ? "saved" : "unavailable");
+    if (draft.recovered) setRecoveryNotice("The saved draft could not be read. A fresh draft is ready.");
     setLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (loaded) window.localStorage.setItem(storageKey, JSON.stringify(state));
+    if (loaded) setStorageStatus(saveMapperDraft(state) ? "saved" : "unavailable");
   }, [state, loaded]);
+
+  useEffect(() => {
+    if (focusNextModule.current) {
+      moduleRef.current?.focus();
+      focusNextModule.current = false;
+    }
+  }, [activeStep]);
 
   const brief = useMemo(() => generateBrief(state), [state]);
   const currentIndex = steps.findIndex((step) => step.id === activeStep);
   const template = domainTemplates[state.quickStart.workflowDomain as keyof typeof domainTemplates] || domainTemplates.other;
 
   function selectStep(stepId: string, source = "mapper") {
+    if (stepId !== activeStep) focusNextModule.current = true;
     setActiveStep(stepId);
     trackEvent(analyticsEvents.switchDemoTab, {
       demo_name: "agentic_product_stack_mapper",
@@ -224,7 +233,8 @@ export default function MapperPage() {
   }
 
   function reset() {
-    window.localStorage.removeItem(storageKey);
+    clearMapperDraft();
+    setRecoveryNotice("Draft reset.");
     setState(emptyState);
     selectStep("quick", "reset");
   }
@@ -304,16 +314,16 @@ export default function MapperPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Agent name</Label>
-            <Input
+            <Label htmlFor="mapper-agent-name">Agent name</Label>
+            <Input id="mapper-agent-name"
               value={state.quickStart.agentName}
               onChange={(event) => patch({ quickStart: { ...state.quickStart, agentName: event.target.value } })}
               placeholder="Refund Resolution Copilot"
             />
           </div>
           <div className="space-y-2">
-            <Label>Workflow domain</Label>
-            <Select
+            <Label htmlFor="mapper-workflow-domain">Workflow domain</Label>
+            <Select id="mapper-workflow-domain"
               value={state.quickStart.workflowDomain}
               onChange={(event) =>
                 patch({ quickStart: { ...state.quickStart, workflowDomain: event.target.value } })
@@ -327,16 +337,16 @@ export default function MapperPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Primary user</Label>
-            <Input
+            <Label htmlFor="mapper-primary-user">Primary user</Label>
+            <Input id="mapper-primary-user"
               value={state.quickStart.primaryUser}
               onChange={(event) => patch({ quickStart: { ...state.quickStart, primaryUser: event.target.value } })}
               placeholder="Support specialist, account executive, finance analyst"
             />
           </div>
           <div className="space-y-2">
-            <Label>Audience</Label>
-            <Select
+            <Label htmlFor="mapper-audience">Audience</Label>
+            <Select id="mapper-audience"
               value={state.quickStart.facing}
               onChange={(event) =>
                 patch({ quickStart: { ...state.quickStart, facing: event.target.value as Facing } })
@@ -348,21 +358,21 @@ export default function MapperPage() {
             </Select>
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label>Main job the agent should do</Label>
-            <Input
+            <Label htmlFor="mapper-main-job-the-agent-should-do">Main job the agent should do</Label>
+            <Input id="mapper-main-job-the-agent-should-do"
               value={state.quickStart.mainJob}
               onChange={(event) => patch({ quickStart: { ...state.quickStart, mainJob: event.target.value } })}
               placeholder={template.jobs[0]}
             />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label>Systems or tools it may touch</Label>
+            <Label htmlFor="mapper-systems-or-tools-it-may-touch">Systems or tools it may touch</Label>
             <Chips
               options={template.systems}
               selected={state.quickStart.systemsTouched}
               onChange={(value) => patch({ quickStart: { ...state.quickStart, systemsTouched: value } })}
             />
-            <Input
+            <Input id="mapper-systems-or-tools-it-may-touch"
               className="mt-2"
               value={state.quickStart.systemsTouched.join(", ")}
               onChange={(event) =>
@@ -372,24 +382,24 @@ export default function MapperPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Biggest perceived risk</Label>
-            <Input
+            <Label htmlFor="mapper-biggest-perceived-risk">Biggest perceived risk</Label>
+            <Input id="mapper-biggest-perceived-risk"
               value={state.quickStart.biggestRisk}
               onChange={(event) => patch({ quickStart: { ...state.quickStart, biggestRisk: event.target.value } })}
               placeholder={template.risks[0]}
             />
           </div>
           <div className="space-y-2">
-            <Label>Desired business outcome</Label>
-            <Input
+            <Label htmlFor="mapper-desired-business-outcome">Desired business outcome</Label>
+            <Input id="mapper-desired-business-outcome"
               value={state.quickStart.desiredOutcome}
               onChange={(event) => patch({ quickStart: { ...state.quickStart, desiredOutcome: event.target.value } })}
               placeholder="Reduce cycle time by 30% while keeping wrong actions below 1%"
             />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label>Short description</Label>
-            <Textarea
+            <Label htmlFor="mapper-short-description">Short description</Label>
+            <Textarea id="mapper-short-description"
               value={state.quickStart.shortDescription}
               onChange={(event) =>
                 patch({ quickStart: { ...state.quickStart, shortDescription: event.target.value } })
@@ -474,12 +484,12 @@ export default function MapperPage() {
           <TextList label="Systems involved" value={state.workflowFit.systemsInvolved} onChange={(value) => patch({ workflowFit: { ...state.workflowFit, systemsInvolved: value } })} placeholder="CRM, ticketing, billing" suggestion={state.quickStart.systemsTouched} />
           <div className="grid gap-4">
             <div className="space-y-2">
-              <Label>Cost of delay</Label>
-              <Input value={state.workflowFit.costOfDelay} onChange={(event) => patch({ workflowFit: { ...state.workflowFit, costOfDelay: event.target.value } })} placeholder="Repeat contact, SLA breach, lost conversion" />
+              <Label htmlFor="mapper-cost-of-delay">Cost of delay</Label>
+              <Input id="mapper-cost-of-delay" value={state.workflowFit.costOfDelay} onChange={(event) => patch({ workflowFit: { ...state.workflowFit, costOfDelay: event.target.value } })} placeholder="Repeat contact, SLA breach, lost conversion" />
             </div>
             <div className="space-y-2">
-              <Label>Cost of error</Label>
-              <Input value={state.workflowFit.costOfError} onChange={(event) => patch({ workflowFit: { ...state.workflowFit, costOfError: event.target.value } })} placeholder="Customer harm, rework, compliance review" />
+              <Label htmlFor="mapper-cost-of-error">Cost of error</Label>
+              <Input id="mapper-cost-of-error" value={state.workflowFit.costOfError} onChange={(event) => patch({ workflowFit: { ...state.workflowFit, costOfError: event.target.value } })} placeholder="Customer harm, rework, compliance review" />
             </div>
           </div>
         </div>
@@ -497,8 +507,8 @@ export default function MapperPage() {
             ["Trust impact", "trustImpact"]
           ].map(([label, key]) => (
             <div className="space-y-2" key={key}>
-              <Label>{label}</Label>
-              <Select value={state.riskShape[key as keyof typeof state.riskShape] as string} onChange={(event) => patch({ riskShape: { ...state.riskShape, [key]: event.target.value } })}>
+              <Label htmlFor={`risk-${key}`}>{label}</Label>
+              <Select id={`risk-${key}`} value={state.riskShape[key as keyof typeof state.riskShape] as string} onChange={(event) => patch({ riskShape: { ...state.riskShape, [key]: event.target.value } })}>
                 <option>Low</option>
                 <option>Medium</option>
                 <option>High</option>
@@ -507,8 +517,8 @@ export default function MapperPage() {
             </div>
           ))}
           <div className="space-y-2">
-            <Label>Data sensitivity</Label>
-            <Select value={state.riskShape.dataSensitivity} onChange={(event) => patch({ riskShape: { ...state.riskShape, dataSensitivity: event.target.value } })}>
+            <Label htmlFor="mapper-data-sensitivity">Data sensitivity</Label>
+            <Select id="mapper-data-sensitivity" value={state.riskShape.dataSensitivity} onChange={(event) => patch({ riskShape: { ...state.riskShape, dataSensitivity: event.target.value } })}>
               <option>Public data</option>
               <option>Internal business data</option>
               <option>Customer personal data</option>
@@ -516,8 +526,8 @@ export default function MapperPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Reversibility</Label>
-            <Select value={state.riskShape.reversibility} onChange={(event) => patch({ riskShape: { ...state.riskShape, reversibility: event.target.value } })}>
+            <Label htmlFor="mapper-reversibility">Reversibility</Label>
+            <Select id="mapper-reversibility" value={state.riskShape.reversibility} onChange={(event) => patch({ riskShape: { ...state.riskShape, reversibility: event.target.value } })}>
               <option>Fully reversible</option>
               <option>Partially reversible</option>
               <option>Hard to reverse</option>
@@ -525,8 +535,8 @@ export default function MapperPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Detection speed</Label>
-            <Select value={state.riskShape.detectionSpeed} onChange={(event) => patch({ riskShape: { ...state.riskShape, detectionSpeed: event.target.value } })}>
+            <Label htmlFor="mapper-detection-speed">Detection speed</Label>
+            <Select id="mapper-detection-speed" value={state.riskShape.detectionSpeed} onChange={(event) => patch({ riskShape: { ...state.riskShape, detectionSpeed: event.target.value } })}>
               <option>Immediate</option>
               <option>Same day</option>
               <option>Weekly</option>
@@ -534,8 +544,8 @@ export default function MapperPage() {
             </Select>
           </div>
           <div className="space-y-2 md:col-span-3">
-            <Label>Owner of failure</Label>
-            <Input value={state.riskShape.failureOwner} onChange={(event) => patch({ riskShape: { ...state.riskShape, failureOwner: event.target.value } })} placeholder="Support operations manager, compliance owner, product lead" />
+            <Label htmlFor="mapper-owner-of-failure">Owner of failure</Label>
+            <Input id="mapper-owner-of-failure" value={state.riskShape.failureOwner} onChange={(event) => patch({ riskShape: { ...state.riskShape, failureOwner: event.target.value } })} placeholder="Support operations manager, compliance owner, product lead" />
           </div>
         </div>
         <ModuleActions current="risk" onComplete={complete} onNext={next} />
@@ -548,7 +558,7 @@ export default function MapperPage() {
           <TextList label="Write systems" value={state.actionSurface.writeSystems} onChange={(value) => patch({ actionSurface: { ...state.actionSurface, writeSystems: value } })} placeholder="Ticketing only, task tracker" />
           <TextList label="Tools the agent can call" value={state.actionSurface.tools} onChange={(value) => patch({ actionSurface: { ...state.actionSurface, tools: value } })} placeholder="Policy lookup, calculator, summarizer" suggestion={["Knowledge retrieval", "Checklist validation", "Draft generation", "Escalation router"]} />
           <div className="space-y-2">
-            <Label>Action abilities</Label>
+            <p className="text-sm font-semibold">Action abilities</p>
             {[
               ["External communication ability", "externalCommunication"],
               ["Record update ability", "recordUpdates"],
@@ -604,23 +614,32 @@ export default function MapperPage() {
             {state.autonomyBoundaries.map((item, index) => (
               <Card key={item.id} className="shadow-none">
                 <CardContent className="grid gap-3 p-4 md:grid-cols-[1fr_260px]">
-                  <Input value={item.action} onChange={(event) => {
+                  <div className="space-y-2">
+                  <Label htmlFor={`action-${item.id}`}>Action {index + 1}</Label>
+                  <Input id={`action-${item.id}`} value={item.action} onChange={(event) => {
                     const nextActions = [...state.autonomyBoundaries];
                     nextActions[index] = { ...item, action: event.target.value };
                     patch({ autonomyBoundaries: nextActions });
                   }} placeholder="Action" />
-                  <Select value={item.level} onChange={(event) => {
+                  </div>
+                  <div className="space-y-2">
+                  <Label htmlFor={`autonomy-${item.id}`}>Allowed autonomy</Label>
+                  <Select id={`autonomy-${item.id}`} value={item.level} onChange={(event) => {
                     const nextActions = [...state.autonomyBoundaries];
                     nextActions[index] = { ...item, level: event.target.value as AutonomyLevel };
                     patch({ autonomyBoundaries: nextActions });
                   }}>
                     {autonomyLevels.map((level) => <option key={level}>{level}</option>)}
                   </Select>
-                  <Input className="md:col-span-2" value={item.rationale} onChange={(event) => {
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor={`rationale-${item.id}`}>Reason for this boundary</Label>
+                  <Input id={`rationale-${item.id}`} value={item.rationale} onChange={(event) => {
                     const nextActions = [...state.autonomyBoundaries];
                     nextActions[index] = { ...item, rationale: event.target.value };
                     patch({ autonomyBoundaries: nextActions });
                   }} placeholder="Rationale" />
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -633,22 +652,22 @@ export default function MapperPage() {
       <WizardLayout title="Build Evaluation Gates" description="Define the proof needed before the agent gains more autonomy." step="Evaluation Gates" preview={livePreview}>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label>Definition of good outcome</Label>
-            <Textarea value={state.evaluationGates.goodOutcome} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, goodOutcome: event.target.value } })} placeholder="Correct decision, accurate rationale, no unauthorized action, clear user communication." />
+            <Label htmlFor="mapper-definition-of-good-outcome">Definition of good outcome</Label>
+            <Textarea id="mapper-definition-of-good-outcome" value={state.evaluationGates.goodOutcome} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, goodOutcome: event.target.value } })} placeholder="Correct decision, accurate rationale, no unauthorized action, clear user communication." />
           </div>
           <TextList label="Known edge cases" value={state.evaluationGates.edgeCases} onChange={(value) => patch({ evaluationGates: { ...state.evaluationGates, edgeCases: value } })} placeholder="Missing data, policy conflict, high-value customer" suggestion={["Missing data", "Policy conflict", "Low confidence", "High-value customer"]} />
           <TextList label="Unacceptable failures" value={state.evaluationGates.unacceptableFailures} onChange={(value) => patch({ evaluationGates: { ...state.evaluationGates, unacceptableFailures: value } })} placeholder="Unauthorized action, data leak, invented policy" suggestion={["Unauthorized action", "Personal data leak", "Invented policy", "Missed escalation"]} />
           <div className="space-y-2">
-            <Label>Test data availability</Label>
-            <Input value={state.evaluationGates.testDataAvailability} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, testDataAvailability: event.target.value } })} placeholder="Historical tickets, labeled cases, synthetic edge cases" />
+            <Label htmlFor="mapper-test-data-availability">Test data availability</Label>
+            <Input id="mapper-test-data-availability" value={state.evaluationGates.testDataAvailability} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, testDataAvailability: event.target.value } })} placeholder="Historical tickets, labeled cases, synthetic edge cases" />
           </div>
           <div className="space-y-2">
-            <Label>Reviewer role</Label>
-            <Input value={state.evaluationGates.reviewerRole} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, reviewerRole: event.target.value } })} placeholder="QA lead, compliance owner, product manager" />
+            <Label htmlFor="mapper-reviewer-role">Reviewer role</Label>
+            <Input id="mapper-reviewer-role" value={state.evaluationGates.reviewerRole} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, reviewerRole: event.target.value } })} placeholder="QA lead, compliance owner, product manager" />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label>Business metric to improve</Label>
-            <Input value={state.evaluationGates.businessMetric} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, businessMetric: event.target.value } })} placeholder="Cycle time, rework rate, cost per task, customer satisfaction" />
+            <Label htmlFor="mapper-business-metric-to-improve">Business metric to improve</Label>
+            <Input id="mapper-business-metric-to-improve" value={state.evaluationGates.businessMetric} onChange={(event) => patch({ evaluationGates: { ...state.evaluationGates, businessMetric: event.target.value } })} placeholder="Cycle time, rework rate, cost per task, customer satisfaction" />
           </div>
         </div>
         <ModuleActions current="evals" onComplete={complete} onNext={next} />
@@ -662,8 +681,8 @@ export default function MapperPage() {
           <TextList label="Escalation triggers" value={state.humanControl.escalationTriggers} onChange={(value) => patch({ humanControl: { ...state.humanControl, escalationTriggers: value } })} placeholder="Low confidence, VIP, legal threat" suggestion={["Low confidence", "High impact", "Policy conflict", "Customer complaint"]} />
           <TextList label="Override options" value={state.humanControl.overrideOptions} onChange={(value) => patch({ humanControl: { ...state.humanControl, overrideOptions: value } })} placeholder="Edit, reject, escalate, pause" suggestion={["Edit", "Reject", "Escalate", "Pause agent for case"]} />
           <div className="space-y-2 md:col-span-2">
-            <Label>Dispute handling</Label>
-            <Textarea value={state.humanControl.disputeHandling} onChange={(event) => patch({ humanControl: { ...state.humanControl, disputeHandling: event.target.value } })} placeholder="Where contested outcomes go, who reviews them, and what evidence must be attached." />
+            <Label htmlFor="mapper-dispute-handling">Dispute handling</Label>
+            <Textarea id="mapper-dispute-handling" value={state.humanControl.disputeHandling} onChange={(event) => patch({ humanControl: { ...state.humanControl, disputeHandling: event.target.value } })} placeholder="Where contested outcomes go, who reviews them, and what evidence must be attached." />
           </div>
         </div>
         <ModuleActions current="human" onComplete={complete} onNext={next} />
@@ -682,7 +701,8 @@ export default function MapperPage() {
                 }} />
                 {signal.label}
               </label>
-              <Input className="mt-2" value={signal.threshold} onChange={(event) => {
+              <Label htmlFor={`threshold-${signal.id}`} className="mt-3 block text-xs">Threshold for {signal.label.toLowerCase()}</Label>
+              <Input id={`threshold-${signal.id}`} className="mt-2" value={signal.threshold} onChange={(event) => {
                 const nextSignals = [...state.healthSignals];
                 nextSignals[index] = { ...signal, threshold: event.target.value };
                 patch({ healthSignals: nextSignals });
@@ -697,25 +717,25 @@ export default function MapperPage() {
       <WizardLayout title="Add Damage Control and Rollback" description="Plan how the system pauses, reverses, corrects, communicates, and learns from failures." step="Damage Control and Rollback" preview={livePreview}>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Reversibility mechanism</Label>
-            <Textarea value={state.damageControl.reversibilityMechanism} onChange={(event) => patch({ damageControl: { ...state.damageControl, reversibilityMechanism: event.target.value } })} placeholder="How actions are reversed or corrected." />
+            <Label htmlFor="mapper-reversibility-mechanism">Reversibility mechanism</Label>
+            <Textarea id="mapper-reversibility-mechanism" value={state.damageControl.reversibilityMechanism} onChange={(event) => patch({ damageControl: { ...state.damageControl, reversibilityMechanism: event.target.value } })} placeholder="How actions are reversed or corrected." />
           </div>
           <div className="space-y-2">
-            <Label>Kill switch owner</Label>
-            <Input value={state.damageControl.killSwitchOwner} onChange={(event) => patch({ damageControl: { ...state.damageControl, killSwitchOwner: event.target.value } })} placeholder="Named operational owner" />
+            <Label htmlFor="mapper-kill-switch-owner">Kill switch owner</Label>
+            <Input id="mapper-kill-switch-owner" value={state.damageControl.killSwitchOwner} onChange={(event) => patch({ damageControl: { ...state.damageControl, killSwitchOwner: event.target.value } })} placeholder="Named operational owner" />
           </div>
           <TextList label="Pause conditions" value={state.damageControl.pauseConditions} onChange={(value) => patch({ damageControl: { ...state.damageControl, pauseConditions: value } })} placeholder="Wrong-action spike, tool outage" suggestion={["Wrong-action rate above threshold", "Policy retrieval outage", "Spike in complaints"]} />
           <div className="space-y-2">
-            <Label>Customer notification path</Label>
-            <Textarea value={state.damageControl.customerNotificationPath} onChange={(event) => patch({ damageControl: { ...state.damageControl, customerNotificationPath: event.target.value } })} placeholder="Who approves customer notices and when." />
+            <Label htmlFor="mapper-customer-notification-path">Customer notification path</Label>
+            <Textarea id="mapper-customer-notification-path" value={state.damageControl.customerNotificationPath} onChange={(event) => patch({ damageControl: { ...state.damageControl, customerNotificationPath: event.target.value } })} placeholder="Who approves customer notices and when." />
           </div>
           <div className="space-y-2">
-            <Label>Incident review process</Label>
-            <Textarea value={state.damageControl.incidentReviewProcess} onChange={(event) => patch({ damageControl: { ...state.damageControl, incidentReviewProcess: event.target.value } })} placeholder="Review cadence, severity owner, evidence required." />
+            <Label htmlFor="mapper-incident-review-process">Incident review process</Label>
+            <Textarea id="mapper-incident-review-process" value={state.damageControl.incidentReviewProcess} onChange={(event) => patch({ damageControl: { ...state.damageControl, incidentReviewProcess: event.target.value } })} placeholder="Review cadence, severity owner, evidence required." />
           </div>
           <div className="space-y-2">
-            <Label>Compensation or correction path</Label>
-            <Textarea value={state.damageControl.correctionPath} onChange={(event) => patch({ damageControl: { ...state.damageControl, correctionPath: event.target.value } })} placeholder="Correct record, notify user, add eval case, update policy." />
+            <Label htmlFor="mapper-compensation-or-correction-path">Compensation or correction path</Label>
+            <Textarea id="mapper-compensation-or-correction-path" value={state.damageControl.correctionPath} onChange={(event) => patch({ damageControl: { ...state.damageControl, correctionPath: event.target.value } })} placeholder="Correct record, notify user, add eval case, update policy." />
           </div>
         </div>
         <ModuleActions current="rollback" onComplete={complete} onNext={next} />
@@ -725,8 +745,8 @@ export default function MapperPage() {
       <WizardLayout title="Add Governance Evidence" description="Make the product reviewable through logs, versions, eval records, and approvals." step="Governance Evidence" preview={livePreview}>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Customer-facing status</Label>
-            <Select value={state.governanceEvidence.customerFacingStatus} onChange={(event) => patch({ governanceEvidence: { ...state.governanceEvidence, customerFacingStatus: event.target.value } })}>
+            <Label htmlFor="mapper-customer-facing-status">Customer-facing status</Label>
+            <Select id="mapper-customer-facing-status" value={state.governanceEvidence.customerFacingStatus} onChange={(event) => patch({ governanceEvidence: { ...state.governanceEvidence, customerFacingStatus: event.target.value } })}>
               <option>Not customer-facing</option>
               <option>Customer-impacting, human mediated</option>
               <option>Directly customer-facing</option>
@@ -755,22 +775,22 @@ export default function MapperPage() {
           {[
             ["Monthly task volume", "monthlyTaskVolume"],
             ["Current handling time, minutes", "currentHandlingTime"],
-            ["Current cost per task", "currentCostPerTask"],
-            ["Expected automation rate", "expectedAutomationRate"],
-            ["Expected human review rate", "expectedHumanReviewRate"],
-            ["Estimated AI cost per task", "estimatedAiCost"],
-            ["Estimated failure or rework cost", "estimatedFailureCost"],
+            ["Current cost per task (USD)", "currentCostPerTask"],
+            ["Expected automation rate (%)", "expectedAutomationRate"],
+            ["Expected human review rate (%)", "expectedHumanReviewRate"],
+            ["Estimated AI cost per task (USD)", "estimatedAiCost"],
+            ["Estimated failure or rework cost (USD)", "estimatedFailureCost"],
             ["Expected cycle-time reduction", "cycleTimeReduction"],
             ["Expected quality improvement", "qualityImprovement"]
           ].map(([label, key]) => (
             <div className="space-y-2" key={key}>
-              <Label>{label}</Label>
-              <Input type="number" value={state.businessValueLoop[key as keyof typeof state.businessValueLoop] as number} onChange={(event) => patch({ businessValueLoop: { ...state.businessValueLoop, [key]: Number(event.target.value) } })} />
+              <Label htmlFor={`value-${key}`}>{label}</Label>
+              <Input id={`value-${key}`} min={0} max={key === "expectedAutomationRate" || key === "expectedHumanReviewRate" || key === "cycleTimeReduction" || key === "qualityImprovement" ? 100 : undefined} step="any" type="number" value={state.businessValueLoop[key as keyof typeof state.businessValueLoop] as number} onChange={(event) => patch({ businessValueLoop: { ...state.businessValueLoop, [key]: Number(event.target.value) } })} />
             </div>
           ))}
           <div className="space-y-2 md:col-span-3">
-            <Label>Expected revenue, retention, or cost impact</Label>
-            <Textarea value={state.businessValueLoop.valueImpact} onChange={(event) => patch({ businessValueLoop: { ...state.businessValueLoop, valueImpact: event.target.value } })} placeholder="Explain the loop from agent behavior to business outcome." />
+            <Label htmlFor="mapper-expected-revenue-retention-or-cost-impact">Expected revenue, retention, or cost impact</Label>
+            <Textarea id="mapper-expected-revenue-retention-or-cost-impact" value={state.businessValueLoop.valueImpact} onChange={(event) => patch({ businessValueLoop: { ...state.businessValueLoop, valueImpact: event.target.value } })} placeholder="Explain the loop from agent behavior to business outcome." />
           </div>
         </div>
         <ModuleActions current="value" onComplete={complete} onNext={() => selectStep("brief", "value_complete")} />
@@ -791,10 +811,11 @@ export default function MapperPage() {
           <div>
             <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary">
               <ArrowLeft className="h-4 w-4" />
-              Back to landing
+              Back to Matt’s site
             </Link>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">Agentic Product Stack Mapper</h1>
-            <p className="mt-1 text-muted-foreground">Local autosave is on. No login needed.</p>
+            <p className="mt-1 text-muted-foreground">A working draft for your team. Inputs stay in your browser; downloads are free.</p>
+            {recoveryNotice && <p role="status" className="mt-2 text-sm text-amber-100">{recoveryNotice}</p>}
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -817,20 +838,24 @@ export default function MapperPage() {
               Reset
             </Button>
             <Badge className="bg-primary/10 text-primary">
-              <Save className="mr-1 h-3 w-3" />
-              Saved locally
+              <Save className="mr-1 h-3 w-3" aria-hidden="true" />
+              {storageStatus === "saved" ? "Saved in this browser" : storageStatus === "unavailable" ? "Autosave unavailable" : "Loading draft"}
             </Badge>
           </div>
         </div>
 
+        {storageStatus === "unavailable" && <p role="status" className="no-print text-sm leading-6 text-amber-100">This browser cannot save your draft. You can still work here and download it before leaving.</p>}
+
         <ProgressStepper
           steps={steps}
           current={activeStep}
-          completed={["quick", ...state.completedModules]}
+          completed={state.completedModules}
           onSelect={(stepId) => selectStep(stepId, "progress_stepper")}
         />
 
-        {stepContent[activeStep]}
+        <section ref={moduleRef} tabIndex={-1} aria-label={`${steps[currentIndex].label} module`}>
+          {stepContent[activeStep]}
+        </section>
 
         {activeStep !== "brief" && activeStep !== "export" && (
           <div className="no-print flex justify-between">

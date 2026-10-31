@@ -75,9 +75,11 @@ export function CaseList({ source }: { source: string }) {
               </Link>
             </h3>
             <p className="case-summary">{item.summary}</p>
+            <p className="case-role">{item.role}</p>
             <p className="case-decision">
-              <span>The decision</span> {item.decision}
+              {item.decision}
             </p>
+            <p className="case-result"><strong>{item.metric}</strong> {item.metricLabel}</p>
             <Link
               href={`/work/${item.slug}`}
               className="portfolio-text-link"
@@ -90,10 +92,6 @@ export function CaseList({ source }: { source: string }) {
               {item.linkLabel}
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
-          </div>
-          <div className="case-result">
-            <p>{item.metric}</p>
-            <span>{item.metricLabel}</span>
           </div>
         </article>
       ))}
@@ -112,7 +110,7 @@ export function CareerTimeline({ compact = false }: { compact?: boolean }) {
             <p className="career-role">{item.role}</p>
           </div>
           <div>
-            <p className="career-detail">{item.detail}</p>
+            <p className="career-detail">{compact ? item.shortDetail : item.detail}</p>
             {!compact && (
               <ul className="career-points">
                 {item.points.map((point) => (
@@ -136,33 +134,27 @@ export function CareerTimeline({ compact = false }: { compact?: boolean }) {
 export function ContactStrip() {
   return (
     <section className="portfolio-contact-strip">
-      <div className="portfolio-wrap grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+      <div className="portfolio-wrap contact-note">
         <div>
-          <p className="portfolio-eyebrow">Let’s talk</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-            Have a product problem worth working on?
-          </h2>
-          <p className="mt-4 max-w-2xl leading-7 text-slate-300">
-            I’m interested in senior product roles where I can work closely with
-            customers, make difficult choices, and see the results.
-          </p>
+          <h2>Get in touch.</h2>
+          <p>I’m based in Hamburg and exploring senior product roles.</p>
         </div>
-        <div className="flex flex-wrap gap-3 md:flex-col">
+        <div className="contact-note-links">
           <a
             href={`mailto:${profile.email}`}
-            className="portfolio-button"
+            className="portfolio-text-link"
             data-analytics-event="click_contact"
             data-analytics-params={JSON.stringify({
               contact_method: "email",
               cta_location: "contact_strip",
             })}
           >
-            Email me
+            {profile.email}
             <ArrowUpRight size={18} aria-hidden="true" />
           </a>
           <Link
             href="/resume"
-            className="portfolio-button portfolio-button-secondary"
+            className="portfolio-text-link"
           >
             Read my CV
             <ArrowRight size={18} aria-hidden="true" />

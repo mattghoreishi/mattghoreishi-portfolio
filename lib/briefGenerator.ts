@@ -1,7 +1,7 @@
 import { knowledgeBase } from "@/data/knowledgeBase";
 import type { AgentProductBrief, BriefSection, ConfidenceLevel, MapperState } from "@/types";
 import { formatCurrency } from "@/lib/utils";
-import { scoreMapperState } from "@/lib/scoring";
+import { automatedTaskCostDifference, boundedPercentage, scoreMapperState } from "@/lib/scoring";
 
 const hasModule = (state: MapperState, id: string) => state.completedModules.includes(id);
 
@@ -18,10 +18,15 @@ function join(items: string[], fallback: string) {
 export function generateBrief(state: MapperState): AgentProductBrief {
   const scores = scoreMapperState(state);
   const quick = state.quickStart;
-  const monthlyGross =
-    state.businessValueLoop.monthlyTaskVolume *
-    Math.max(0, state.businessValueLoop.currentCostPerTask - state.businessValueLoop.estimatedAiCost) *
-    (state.businessValueLoop.expectedAutomationRate / 100);
+  const monthlyCostDifference = automatedTaskCostDifference(state);
+  const decisionBodies = {
+    "Explore manually first": "The inputs do not yet support a choice between an agent and deterministic automation. Walk through the workflow with a user and identify the decisions, rules, and exceptions first.",
+    "Better as deterministic workflow": "The described workflow has repeatable steps and no listed ambiguity or human-judgment points. Start by testing deterministic automation; this is a planning suggestion, not a finding from a workflow evaluation.",
+    "Not ready until risk controls improve": "The declared plan has gaps in governance, evaluation, or human control. Resolve those gaps before considering production autonomy; the current scores describe inputs, not tested safeguards.",
+    "Agent candidate with human approval": "Explore the workflow with explicit human approval for consequential actions. Review scope, permissions, and recovery paths, then test the proposed controls before any production decision.",
+    "Low-risk autonomy candidate": "The declared inputs suggest a lower-consequence workflow with a relatively complete plan. A bounded pilot and observed evaluation results are still needed before granting autonomy.",
+    "Agent candidate with tight controls": "Explore a bounded pilot with explicit permissions, evaluation gates, monitoring, and recovery. The recommendation reflects the declared plan, not demonstrated production readiness."
+  };
 
   const sections: BriefSection[] = [
     {
@@ -52,10 +57,7 @@ export function generateBrief(state: MapperState): AgentProductBrief {
     },
     {
       title: "Agent vs deterministic workflow decision",
-      body:
-        scores.recommendation === "Better as deterministic workflow"
-          ? "This looks better suited to deterministic automation until the workflow has clearer decision points that need contextual judgment."
-          : "The concept can be explored as an agentic workflow if tool permissions, reviews, and eval gates are designed before production.",
+      body: decisionBodies[scores.recommendation],
       bullets: [
         "Use deterministic automation for stable rules and predictable handoffs.",
         "Use agentic behavior for context gathering, judgment support, multi-step coordination, and exception handling.",
@@ -158,12 +160,13 @@ export function generateBrief(state: MapperState): AgentProductBrief {
       title: "Business value loop",
       body:
         state.businessValueLoop.monthlyTaskVolume > 0
-          ? `At the current assumptions, the rough monthly gross opportunity is ${formatCurrency(monthlyGross)} before platform, change management, QA, and risk costs.`
+          ? `For the ${boundedPercentage(state.businessValueLoop.expectedAutomationRate)}% automated share, the estimated monthly cost difference is ${formatCurrency(monthlyCostDifference)} USD: task volume × automated share × (current cost per task − AI cost per task). Negative values mean added cost. This partial scenario applies AI cost only to automated tasks; it excludes human review, failure or rework, platform, and change-management costs, so it is not net savings or ROI.`
           : "The value loop needs task volume, handling time, current cost, automation rate, review rate, and rework assumptions before it can support investment decisions.",
       bullets: [
         `Monthly task volume: ${state.businessValueLoop.monthlyTaskVolume || "Not entered"}`,
-        `Expected automation rate: ${state.businessValueLoop.expectedAutomationRate}%`,
-        `Expected human review rate: ${state.businessValueLoop.expectedHumanReviewRate}%`,
+        `Expected automation rate: ${boundedPercentage(state.businessValueLoop.expectedAutomationRate)}%`,
+        `Human review assumption: ${boundedPercentage(state.businessValueLoop.expectedHumanReviewRate)}% (not costed in this scenario)`,
+        `Entered failure or rework cost: ${formatCurrency(state.businessValueLoop.estimatedFailureCost)} USD (excluded; define its unit and frequency before costing it)`,
         `Value narrative: ${state.businessValueLoop.valueImpact || quick.desiredOutcome || "Connect to cost, speed, quality, revenue, retention, or risk reduction"}`
       ],
       confidence: confidence(state, "value", state.businessValueLoop.monthlyTaskVolume > 0)

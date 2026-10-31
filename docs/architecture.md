@@ -18,7 +18,7 @@ Cloudflare Web Analytics is injected natively by Cloudflare Pages. It is intenti
 
 ## Supabase boundary
 
-Supabase is optional infrastructure for consented Mapper submissions, events, and feedback. Server route handlers create the client only when the configured environment variables are present; the site and Mapper remain usable when Supabase is unavailable. Service-role credentials stay server-side and must never be imported into client components.
+Legacy Supabase API handlers for submissions, events, and feedback remain for compatibility. The current Mapper UI does not call them; drafts and exports stay in the browser. Server route handlers create the client only when the configured environment variables are present; the site and Mapper remain usable when Supabase is unavailable. Service-role credentials stay server-side and must never be imported into client components.
 
 ## Deployment
 

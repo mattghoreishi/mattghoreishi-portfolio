@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { EvidencePanel } from "@/components/EvidencePanel";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 
 export function WizardLayout({
   title,
@@ -20,7 +20,7 @@ export function WizardLayout({
       <div className="space-y-5">
         <Card className="shadow-editorial">
           <CardHeader>
-            <CardTitle className="text-2xl">{title}</CardTitle>
+            <h2 className="text-2xl font-semibold">{title}</h2>
             <CardDescription className="text-base">{description}</CardDescription>
           </CardHeader>
           <CardContent>{children}</CardContent>
