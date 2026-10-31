@@ -4,9 +4,9 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNav } from "@/components/site/SiteNav";
 import { siteUrl } from "@/data/site";
 
-const title = "Contact Center AI: 2020 → today | Matt Ghoreishi";
+const title = "Contact Center AI | Matt Ghoreishi";
 const description =
-  "An interactive reconstruction of Contact Center AI product work I started in 2020, showing how ASR and NLP capabilities became a quality-review workflow and how I would approach the same product problem with modern AI.";
+  "Matt Ghoreishi’s Contact Center AI work at Sotoon: discovery with quality managers, the original 2020 prototype, product scope, and a synthetic review-workflow reconstruction.";
 const url = `${siteUrl}/work/contact-center-ai`;
 
 export const metadata: Metadata = {
@@ -32,10 +32,12 @@ export const metadata: Metadata = {
 
 export default function ContactCenterAIPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
+    <>
       <SiteNav />
-      <ContactCenterAICase />
+      <main id="main-content" className="portfolio-page case-study-page">
+        <ContactCenterAICase />
+      </main>
       <SiteFooter />
-    </main>
+    </>
   );
 }

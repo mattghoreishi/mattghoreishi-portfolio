@@ -1,4 +1,5 @@
 import type { AgentProductBrief } from "@/types";
+import { scoreLabels } from "@/lib/scoring";
 
 export function exportBriefMarkdown(brief: AgentProductBrief) {
   const sections = brief.sections
@@ -24,20 +25,17 @@ Generated: ${new Date(brief.generatedAt).toLocaleString()}
 
 Recommendation: ${brief.recommendation}
 
-## Sub-scores
+## Planning checks
 
-- Workflow Fit: ${brief.scores.subScores.workflowFit}
-- Risk Shape: ${brief.scores.subScores.riskShape}
-- Autonomy Readiness: ${brief.scores.subScores.autonomyReadiness}
-- Evaluation Maturity: ${brief.scores.subScores.evaluationMaturity}
-- Human Control Strength: ${brief.scores.subScores.humanControlStrength}
-- Runtime Monitoring Readiness: ${brief.scores.subScores.runtimeMonitoringReadiness}
-- Governance Evidence: ${brief.scores.subScores.governanceEvidence}
-- Business Value Confidence: ${brief.scores.subScores.businessValueConfidence}
+These scores are heuristics from the supplied inputs, not measurements of readiness or safety. A higher consequence-profile score means lower modeled consequence.
+
+${Object.entries(brief.scores.subScores).map(([key, value]) => `- ${scoreLabels[key as keyof typeof scoreLabels]}: ${value} / 100`).join("\n")}
+
+${brief.scores.warnings.length ? `Watch points:\n${brief.scores.warnings.map((warning) => `- ${warning}`).join("\n")}\n` : ""}
 
 ${sections}
 
-## Source-backed recommendations
+## Related reading
 
 ${sources}
 

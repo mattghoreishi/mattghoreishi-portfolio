@@ -10,7 +10,12 @@ type StoryProps = {
   introduction: string;
   ownership: string;
   facts: { value: string; label: string }[];
-  sections: { label: string; title: string; paragraphs: string[] }[];
+  sections: {
+    label: string;
+    title: string;
+    paragraphs: string[];
+    observations?: { observation: string; implication: string }[];
+  }[];
   note: string;
   nextHref: string;
   nextTitle: string;
@@ -29,7 +34,7 @@ export function ProductStory({
   return (
     <>
       <SiteNav />
-      <main id="main-content" className="portfolio-page">
+      <main id="main-content" className="portfolio-page case-study-page">
         <header className="portfolio-wrap story-hero">
           <Link href="/work" className="portfolio-text-link mb-10">
             <ArrowLeft size={17} aria-hidden="true" />
@@ -45,7 +50,7 @@ export function ProductStory({
         </header>
         <section
           className="story-facts portfolio-wrap"
-          aria-label="Historical project outcomes"
+          aria-label="Project scale and historical results"
         >
           {facts.map((fact) => (
             <div key={fact.label}>
@@ -66,17 +71,27 @@ export function ProductStory({
                   {section.paragraphs.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}
+                  {section.observations && (
+                    <dl className="mt-8 border-t border-[#183137]/20">
+                      {section.observations.map((item) => (
+                        <div key={item.observation} className="grid gap-2 border-b border-[#183137]/15 py-5 sm:grid-cols-[0.45fr_0.55fr] sm:gap-6">
+                          <dt className="font-semibold leading-7">{item.observation}</dt>
+                          <dd className="leading-7 text-[#526562]">{item.implication}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
                 </div>
               </section>
             ))}
             <aside className="story-evidence">
-              <h2>About the evidence</h2>
+              <h2>Scope of this account</h2>
               <p>{note}</p>
             </aside>
           </div>
         </div>
         <section className="portfolio-wrap portfolio-section">
-          <p className="portfolio-eyebrow">Another side of my work</p>
+          <p className="portfolio-eyebrow">Another project</p>
           <Link href={nextHref} className="next-story">
             {nextTitle}
             <ArrowRight size={28} aria-hidden="true" />

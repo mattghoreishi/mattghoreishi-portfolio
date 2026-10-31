@@ -20,6 +20,10 @@ The portfolio evaluates AI products through workflow fit, controls, evaluation, 
 
 GA4 is optional and consent-aware. Cloudflare Web Analytics is the native, privacy-first Pages integration. The site keeps both implementations centralized and avoids duplicate beacons or application-managed Cloudflare loaders.
 
-## Featured content is explicit
+## Editorial hierarchy
 
-Article records declare `featured` directly, and the data model enforces exactly one featured article. Homepage and Writing-page prominence is never inferred from array order.
+The homepage introduces Matt directly, then offers three pieces of work, three article notes, the independent Mapper, and a compact career history. The former employer strip and repeated positioning copy were removed. Work outcomes remain visible with scope and role attribution. Article metadata retains its featured flag for compatibility, while the homepage presents the full writing index in reverse publication order.
+
+## A local worksheet, not a lead form
+
+The Mapper can export without an email or account. Its draft stays local. Scores describe heuristic planning checks rather than proven readiness. The consequence score is explicitly inverse to risk; negative partial cost scenarios remain visible, and missing inputs do not produce an automation recommendation.

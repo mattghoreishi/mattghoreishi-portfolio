@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, FileJson, FileText, Printer } from "lucide-react";
+import { ArrowUp, FileJson, FileText, Printer } from "lucide-react";
 import type { AgentProductBrief, MapperState } from "@/types";
 import { Button } from "@/components/ui/button";
 import { exportBriefMarkdown } from "@/lib/exportMarkdown";
@@ -16,7 +16,8 @@ function downloadFile(filename: string, contents: string, type: string) {
   document.body.appendChild(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  // Allow the browser to start reading the blob before releasing it.
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function DownloadButtons({
@@ -28,7 +29,7 @@ export function DownloadButtons({
   state: MapperState;
   onDownload?: (kind: string) => void;
 }) {
-  const safeName = (brief.title || "agent-product-brief").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const safeName = brief.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "agent-product-brief";
 
   return (
     <div className="no-print flex flex-wrap gap-2">
@@ -39,8 +40,8 @@ export function DownloadButtons({
           onDownload?.("pdf");
         }}
       >
-        <Printer className="h-4 w-4" />
-        Save as PDF
+        <Printer className="h-4 w-4" aria-hidden="true" />
+        Print / save PDF
       </Button>
       <Button
         type="button"
@@ -50,7 +51,7 @@ export function DownloadButtons({
           onDownload?.("markdown");
         }}
       >
-        <FileText className="h-4 w-4" />
+        <FileText className="h-4 w-4" aria-hidden="true" />
         Markdown
       </Button>
       <Button
@@ -61,11 +62,11 @@ export function DownloadButtons({
           onDownload?.("json");
         }}
       >
-        <FileJson className="h-4 w-4" />
+        <FileJson className="h-4 w-4" aria-hidden="true" />
         JSON
       </Button>
-      <Button type="button" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-        <Download className="h-4 w-4" />
+      <Button type="button" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" })}>
+        <ArrowUp className="h-4 w-4" aria-hidden="true" />
         Back to top
       </Button>
     </div>

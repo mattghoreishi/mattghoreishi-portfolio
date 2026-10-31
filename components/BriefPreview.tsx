@@ -1,12 +1,13 @@
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import type { AgentProductBrief } from "@/types";
+import { scoreLabels } from "@/lib/scoring";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
   const scoreEntries = Object.entries(brief.scores.subScores).map(([key, value]) => ({
     key,
-    label: key.replace(/([A-Z])/g, " $1").replace(/^./, (match) => match.toUpperCase()),
+    label: scoreLabels[key as keyof typeof scoreLabels],
     value
   }));
 
@@ -16,9 +17,9 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Agent Product Brief</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">{brief.title}</h1>
+            <h2 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">{brief.title}</h2>
             <p className="mt-3 max-w-2xl text-muted-foreground">
-              A source-backed strategy artifact for deciding where autonomy belongs, where humans stay in control, and how the product proves value.
+              A working product brief assembled from your answers and built-in guidance.
             </p>
           </div>
           <Badge className="w-fit bg-primary/10 text-primary">{brief.recommendation}</Badge>
@@ -26,7 +27,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
         {brief.scores.warnings.length > 0 && (
           <div className="mt-5 rounded-md border border-accent/40 bg-accent/15 p-4">
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <AlertTriangle className="h-4 w-4" />
+              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
               Watch points
             </div>
             <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
@@ -38,7 +39,10 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
         )}
       </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
+      <p className="text-sm leading-6 text-muted-foreground">
+        Scores are heuristic checks based on these inputs, not measurements of product readiness or safety. The consequence profile runs in the opposite direction to risk: a higher score means lower modeled consequence.
+      </p>
+      <div className="brief-score-grid grid gap-3 md:grid-cols-4">
         {scoreEntries.map((score) => (
           <Card key={score.key} className="print-card shadow-none">
             <CardContent className="p-4">
@@ -47,7 +51,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
                 <span className="text-2xl font-semibold">{score.value}</span>
                 <span className="mb-1 text-xs text-muted-foreground">/ 100</span>
               </div>
-              <div className="mt-3 h-2 rounded-full bg-muted">
+              <div className="no-print mt-3 h-2 rounded-full bg-muted" aria-hidden="true">
                 <div className="h-2 rounded-full bg-primary" style={{ width: `${score.value}%` }} />
               </div>
             </CardContent>
@@ -69,7 +73,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
               <ul className="mt-4 grid gap-2 text-sm md:grid-cols-2">
                 {section.bullets.map((bullet) => (
                   <li key={bullet} className="flex gap-2 rounded-md bg-muted/55 p-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                     <span>{bullet}</span>
                   </li>
                 ))}
@@ -81,7 +85,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
 
       <Card className="print-card shadow-none">
         <CardHeader>
-          <CardTitle>Source-backed recommendations</CardTitle>
+          <CardTitle>Related reading</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2">
           {brief.sourceRecommendations.map((source) => (

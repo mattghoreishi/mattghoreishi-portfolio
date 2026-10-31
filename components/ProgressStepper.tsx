@@ -20,13 +20,16 @@ export function ProgressStepper({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="no-print flex gap-2 overflow-x-auto rounded-lg border border-border bg-card p-2 shadow-subtle">
+    <nav aria-label="Brief modules" className="no-print flex gap-2 overflow-x-auto rounded-lg border border-border bg-card p-2 shadow-subtle">
       {steps.map((step) => {
         const isCurrent = step.id === current;
         const isDone = completed.includes(step.id);
         return (
           <button
             key={step.id}
+            type="button"
+            aria-current={isCurrent ? "step" : undefined}
+            aria-label={`${steps.indexOf(step) + 1}. ${step.label}${isDone ? ", completed" : ""}`}
             onClick={() => onSelect(step.id)}
             className={cn(
               "flex min-w-[136px] items-center gap-2 rounded-md px-3 py-2 text-left text-xs font-semibold transition",
@@ -34,6 +37,7 @@ export function ProgressStepper({
             )}
           >
             <span
+              aria-hidden="true"
               className={cn(
                 "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px]",
                 isDone ? "border-transparent bg-accent text-accent-foreground" : "border-current"
@@ -45,6 +49,6 @@ export function ProgressStepper({
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }

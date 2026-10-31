@@ -1,69 +1,37 @@
-# Analytics Setup
+# Analytics
 
-This site uses a small, privacy-aware analytics layer for `mattghoreishi.com`.
+Cloudflare Pages deploys `main` through the existing Git integration. Cloudflare Web Analytics is injected by Pages, not by application code. Google Analytics loads only after consent; preferences can be changed in the footer.
 
-Deployment note: Cloudflare Pages production builds run from `main` with the `build` package script.
+The production GA measurement ID defaults to `G-XWVT59N0JV`. Environment overrides remain supported. Search Console verification reads `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`. No credentials belong in the repository.
 
-## Providers
+## Event behavior
 
-- Cloudflare Web Analytics: injected natively by Cloudflare Pages after it is enabled in the project's Metrics settings. It is independent of the GA4 consent control and must not be added through application code.
-- Google Analytics 4: loaded through `gtag.js` after consent. The production default is `G-XWVT59N0JV`, and `NEXT_PUBLIC_GA_MEASUREMENT_ID` can override it.
-- Google Search Console: verification meta tag reads from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
+The app sends one initial page view after the GA base script is ready. `send_page_view` is disabled in the base configuration. Subsequent SPA views rely on the existing GA Enhanced Measurement history setting; dashboard access is needed to verify that setting. Do not add a second route emitter without coordinating it.
 
-GA4 is configured with `send_page_view: false` so the site can send exactly one consent-time initial `page_view`. SPA route-change pageviews are handled by GA4 Enhanced Measurement browser-history tracking in the GA4 web stream; do not add a second manual App Router pageview emitter unless Enhanced Measurement is disabled in GA4.
+The explicit page view strips query strings and fragments from location, path, and referrer. Link metadata strips destination query strings/fragments and excludes email/telephone destinations and text. Mapper free text, email, brief title, transcripts, and review notes are excluded from custom event parameters. These safeguards do not verify settings or automatic events controlled in the GA dashboard.
 
-Add these production environment variables:
+| Event | Meaning | Main parameters |
+| --- | --- | --- |
+| `open_case_study` | Open a selected project | `case_study`, `source_surface` |
+| `click_contact` | Follow a contact link | `contact_method`, `cta_location` |
+| `download_resume` | Download the public PDF CV | `asset_name`, `asset_format`, `cta_location` |
+| `click_primary_cta` | Open the full Medium essay or export a Mapper brief | fixed action name, location, article slug or format |
+| `article_read_50`, `article_read_90` | Content has crossed the viewport depth threshold | `article_slug`, `page_path`, `scroll_depth` |
+| `play_demo`, `switch_demo_tab`, `expand_rationale` | Use an example, switch a module/call, or inspect guidance | fixed identifiers and preset domain |
+| `ccai_run_triage` | Run the fictional 100-call illustration | explicitly synthetic counts |
+| `ccai_review_action` | Use a local fictional QA action | synthetic call ID, action, demo ID |
+| `ccai_era_switch`, `ccai_autonomy_mode` | Change the explanatory comparison | era or mode |
 
-```bash
-NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XWVT59N0JV"
-NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="your-search-console-token"
-NEXT_PUBLIC_ANALYTICS_DEBUG="false"
-```
+Reading depth measures content exposure, not comprehension or time spent reading. Events cannot identify a particular recruiter or establish hiring intent.
 
-For local debugging, add `?analytics_debug=1` to any URL or set `localStorage.analytics_debug = "true"`. To retest consent locally, remove `localStorage.matt_analytics_consent`.
+## Local tool data
 
-## Event Map
+Mapper drafts stay in browser local storage when available. Invalid drafts recover safely, and blocked storage does not prevent use. Export produces local files or opens the browser print dialog. The previous email gate and client-side submission/feedback requests have been removed. Legacy API handlers remain for compatibility but are not linked from the UI.
 
-| Event | Recommended parameters | Fires from | Test |
-| --- | --- | --- | --- |
-| `open_case_study` | `case_study`, `case_study_slug`, `content_type`, `source_surface`, `destination_path`, `cta_location` | Work and Home Contact Center AI cards, featured writing/tool cards, and article related links | Click the card/link and confirm event params in GA4 DebugView. Contact Center AI should send `case_study: "contact_center_ai_2020_today"`, `source_surface: "home"` or `"work"`, and `destination_path: "/work/contact-center-ai"`. Before I Trust an AI Feature should send `content_type: "article"`, `case_study_slug: "before-i-trust-an-ai-feature"`, `source_surface: "home"` or `"writing"`, and `destination_path: "/writing/before-i-trust-an-ai-feature"`. |
-| `expand_rationale` | `rationale_slug`, `demo_name`, `source`, `workflow_domain` | Mapper suggestions, deepen-brief flow, framework rationale link | Click suggestion/deepen controls and confirm one event per click. |
-| `switch_demo_tab` | `demo_name`, `tab_id`, `tab_label`, `previous_tab_id`, `source` | Mapper progress stepper, next/back buttons, module picker | Move between mapper modules and confirm tab IDs are correct. |
-| `play_demo` | `demo_name`, `sample_name`, `source`, `destination_path` | Start mapper CTAs, sample-load buttons, `?sample=refund` | Start the mapper or load sample and confirm source value. |
-| `click_primary_cta` | `cta_name`, `cta_location`, `destination_path`, `destination_domain`, `article_slug` | Hero CTAs, Medium article CTAs, mapper downloads | Click each primary action and confirm destination/context. Before I Trust an AI Feature sends `cta_name: "read_on_medium"`, its article slug, CTA location, and `destination_domain: "medium.com"`; it never sends article text or visitor data. |
-| `click_contact` | `contact_method`, `cta_location`, `destination_url` | LinkedIn CTAs in nav, footer, home, contact page | Click LinkedIn CTAs and confirm location differentiates them. |
-| `copy_email` | `email_location`, `page_path` | Reserved for a future email-copy button | Add `trackEvent(analyticsEvents.copyEmail, ...)` to the copy handler. |
-| `download_resume` | `asset_name`, `asset_format`, `cta_location` | Reserved for a future resume download link | Add `data-analytics-event="download_resume"` to the resume link. |
-| `submit_contact_form` | `form_name`, `role`, `company_size`, `main_use_case`, `contact_consent` | Mapper export gate submission | Submit the export form and confirm no email address is sent to GA4. |
-| `article_read_50` | `article_slug`, `page_path`, `scroll_depth` | Article pages at 50% read depth | Scroll halfway through an article and confirm it fires once. |
-| `article_read_90` | `article_slug`, `page_path`, `scroll_depth` | Article pages at 90% read depth | Scroll near the end and confirm it fires once. |
-| `ccai_run_triage` | `synthetic_result`, `calls_processed`, `calls_surfaced` | Contact Center AI V3 triage transformation | Click “Process all 100 and prioritize review” and confirm synthetic-only parameters. These values describe the demo state, not historical operating metrics. |
-| `ccai_review_action` | `synthetic_call_id`, `action`, `demo` | Contact Center AI V3 QA workflow action buttons | Click a QA action and confirm no transcript or free text is sent. |
-| `ccai_era_switch` | `era` | Contact Center AI V3 2020 / today product logic comparison | Switch between 2020 and today. |
-| `ccai_autonomy_mode` | `mode` | Contact Center AI V3 Observe / Recommend / Act control | Switch modes and confirm no PII is sent. |
+CCAI notes and review actions stay in component state. They reset when a different synthetic call is selected.
 
-## What This Teaches
+## Verification
 
-- Recruiter-quality interest: compare `click_contact`, deep article reads, and mapper export submissions by landing page.
-- Case-study attention: compare `open_case_study`, `article_read_50`, `article_read_90`, and downstream CTAs by slug.
-- CTA effectiveness: compare `click_primary_cta` and `click_contact` by `cta_location`.
-- Article discovery: compare GA4 landing pages, Search Console queries, and article read-depth events by `article_slug`.
-- Mapper drop-off: inspect `play_demo`, `switch_demo_tab`, `expand_rationale`, and export-gate completion.
-- Contact Center AI proof-page drop-off: inspect `ccai_run_triage`, `switch_demo_tab`, `ccai_review_action`, `ccai_era_switch`, `ccai_autonomy_mode`, article CTA, and contact CTA events.
+Run `npm run check:analytics` and `npm run check:mapper`. The regression checks cover consent, unavailable storage, script readiness, private field exclusion, URL sanitization, content depth, invalid drafts, and safe recovery.
 
-## Validation Checklist
-
-1. Deploy and open `mattghoreishi.com/?analytics_debug=1`.
-2. Accept analytics consent, then in GA4 Realtime confirm a `page_view` appears for the current page.
-3. Navigate between internal routes and confirm exactly one `page_view` per route change.
-4. In DebugView, click home hero CTAs and confirm `click_primary_cta` params.
-5. Open a featured article/tool and confirm `open_case_study`.
-6. Scroll each article page, including Before I Trust an AI Feature, to 50% and 90%; confirm each read-depth event fires once.
-7. Start the mapper, switch several modules, and confirm `play_demo` plus `switch_demo_tab`.
-8. Use mapper suggestions and confirm `expand_rationale`.
-9. Submit the export gate and confirm `submit_contact_form` without email or free-text content in GA4.
-10. Confirm the production DOM contains exactly one Cloudflare Pages Web Analytics beacon. It is independent of GA4 consent and should not have an application-managed duplicate.
-
-## October 2026 update
-
-The initial page view waits for the GA base script readiness callback. The sent flag only changes after a successful queue operation. `mailto:` and `tel:` links omit `link_text` and `destination_url`; other destinations omit query strings and fragments. `download_resume` now fires from the PDF CV link on `/resume`. Run `npm run check:analytics` for focused regression checks.
+In a browser, verify zero GA scripts before consent, one base initialization after consent, and the initial page view. Use `?analytics_debug=1` for local event diagnostics. Checking GA Realtime, Enhanced Measurement, Cloudflare visitor reports, and remote event delivery requires authenticated dashboard access; local queues do not prove remote reporting.

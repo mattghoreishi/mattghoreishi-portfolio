@@ -1,107 +1,62 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
-import { ArticleEngagement } from "@/components/analytics/ArticleEngagement";
-import { BrandCard } from "@/components/site/BrandCard";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteNav } from "@/components/site/SiteNav";
-import { getArticleBySlug, siteUrl } from "@/data/site";
+import {
+  ArticleNotes,
+  ArticleNoteSection,
+  articleNotesMetadata,
+} from "@/components/site/ArticleNotes";
+import { getArticleBySlug } from "@/data/site";
 
 const article = getArticleBySlug("from-hype-to-value");
-const related = getArticleBySlug("the-agentic-ai-product-gap");
+export const metadata = articleNotesMetadata(article);
 
-export const metadata: Metadata = {
-  title: `${article.title} | Matt Ghoreishi`,
-  description: article.subtitle,
-  alternates: {
-    canonical: `${siteUrl}/writing/${article.slug}`
-  },
-  openGraph: {
-    title: article.title,
-    description: article.subtitle,
-    url: `${siteUrl}/writing/${article.slug}`,
-    type: "article",
-    publishedTime: "2025-09-21",
-    authors: ["Matt Ghoreishi"],
-    tags: article.tags,
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }]
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: article.title,
-    description: article.subtitle,
-    images: ["/opengraph-image"]
-  }
-};
+const questions = [
+  ["Business value", "Which customer or operating metric should change? Establish what it looks like before the pilot."],
+  ["Data and workflow", "What useful data can the product use, and how will its output become part of someone’s actual work?"],
+  ["Evaluation and cost", "What quality, latency, and operating cost are acceptable for this use case?"],
+  ["Control and rollout", "Who owns the release, what needs review, and how will the team stop or reverse a change?"],
+];
 
 export default function FromHypeToValuePage() {
-  const takeaways = [
-    "AI pilots need a business metric, not just a demo moment.",
-    "Workflow integration matters more than novelty.",
-    "Evaluation, cost, latency, and rollback planning should be part of the product spec.",
-    "Governance is easier when it is designed early instead of bolted on after procurement asks."
-  ];
-
   return (
-    <main id="main-content" className="min-h-screen bg-[#050914] text-white">
-      <SiteNav />
-      <article data-article-content className="px-5 py-16 md:px-8 md:py-24">
-        <ArticleEngagement articleSlug={article.slug} />
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
-            <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{article.displayDate}</span>
-            <span className="rounded-full bg-white/[0.07] px-3 py-1">{article.readingTime}</span>
-          </div>
-          <h1 className="mt-6 text-5xl font-semibold tracking-normal md:text-7xl">{article.title}</h1>
-          <p className="mt-5 text-2xl leading-9 text-slate-300">{article.subtitle}</p>
-          <p className="mt-6 text-lg leading-8 text-slate-400">{article.summary}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={article.mediumUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-analytics-event="click_primary_cta"
-              data-analytics-params={JSON.stringify({ cta_name: "read_on_medium", cta_location: "article_hero", article_slug: article.slug, destination_domain: "medium.com" })}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200"
-            >
-              Read on Medium
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-            <Link
-              href={`/writing/${related.slug}`}
-              data-analytics-event="open_case_study"
-              data-analytics-params={JSON.stringify({ case_study_slug: related.slug, content_type: "article", cta_location: "article_hero_related" })}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:border-cyan-200 hover:bg-cyan-300/10"
-            >
-              Read the agentic AI follow-up
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="mt-12 grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-            <BrandCard className="p-6 md:p-8">
-              <h2 className="text-3xl font-semibold">Why it matters</h2>
-              <p className="mt-4 leading-8 text-slate-400">
-                AI pilots often fail because they sit beside the workflow, lack a unique data advantage, skip rigorous
-                evaluation, or reach governance too late. The article reframes AI work as product execution: data, workflow,
-                metrics, rollout, risk, and adoption have to move together.
-              </p>
-            </BrandCard>
-            <BrandCard className="p-6 md:p-8">
-              <h2 className="text-3xl font-semibold">Key takeaways</h2>
-              <ul className="mt-5 space-y-3 text-slate-400">
-                {takeaways.map((takeaway) => (
-                  <li key={takeaway} className="flex gap-3">
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-200" />
-                    <span>{takeaway}</span>
-                  </li>
-                ))}
-              </ul>
-            </BrandCard>
-          </div>
-        </div>
-      </article>
-      <SiteFooter />
-    </main>
+    <ArticleNotes
+      article={article}
+      introduction="This essay considers why a promising AI pilot can struggle to become a useful product. It brings the discussion back to data, the customer’s workflow, evaluation, and the economics of running it."
+      related={[
+        { href: "/writing/the-agentic-ai-product-gap", label: "The follow-up: The Agentic AI Product Gap" },
+        { href: "/work/contact-center-ai", label: "A product example: Contact Center AI" },
+      ]}
+    >
+      <ArticleNoteSection label="The argument" title="A pilot needs a path into the operating workflow.">
+        <p>
+          An AI pilot can demonstrate capability while leaving the practical
+          questions unanswered: how someone will use its output, which data
+          makes it useful, what operating cost it introduces, and who owns it
+          after the experiment.
+        </p>
+        <p>
+          The essay argues for treating those questions as product work from
+          the start. Data access, integration, adoption, evaluation, and
+          governance all affect whether the initial promise becomes a result
+          the business can sustain.
+        </p>
+      </ArticleNoteSection>
+      <ArticleNoteSection label="Questions to take into a pilot" title="Define what the experiment needs to resolve.">
+        <ol className="article-question-list">
+          {questions.map(([title, question]) => (
+            <li key={title}>
+              <h3>{title}</h3>
+              <p>{question}</p>
+            </li>
+          ))}
+        </ol>
+      </ArticleNoteSection>
+      <ArticleNoteSection label="What follows" title="Use the result to make an investment decision.">
+        <p>
+          A pilot should leave the team better able to choose: expand the
+          product, change the approach, narrow the use case, or stop. That
+          requires a connection between the technical result and the work,
+          costs, and customer outcomes the product is meant to change.
+        </p>
+      </ArticleNoteSection>
+    </ArticleNotes>
   );
 }

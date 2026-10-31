@@ -84,6 +84,16 @@ function hasAnalyticsValue(value: AnalyticsParams[string]) {
   );
 }
 
+// Descriptive tool input belongs in the visitor's draft, never an analytics event.
+const privateAnalyticsFields = new Set([
+  "email", "phone", "agent_name", "main_use_case", "feedback", "comment", "brief", "inputs", "transcript",
+]);
+
+export function articleReadDepth(articleTop: number, articleHeight: number, viewportBottom: number) {
+  if (articleHeight <= 0) return 0;
+  return Math.min(100, Math.max(0, ((viewportBottom - articleTop) / articleHeight) * 100));
+}
+
 export function trackEvent(
   eventName: AnalyticsEventName,
   params: AnalyticsParams = {},
@@ -95,7 +105,7 @@ export function trackEvent(
     Object.entries({
       ...params,
       debug_mode: debugEnabled || undefined,
-    }).filter(([, value]) => hasAnalyticsValue(value)),
+    }).filter(([key, value]) => !privateAnalyticsFields.has(key) && hasAnalyticsValue(value)),
   );
 
   if (window.mattAnalyticsConsentGranted !== true) {
@@ -130,17 +140,19 @@ export function trackPageView(path: string, title?: string) {
     return false;
   }
   const debugEnabled = isAnalyticsDebugEnabled();
+  const pagePath = path.split(/[?#]/)[0] || "/";
 
   window.gtag("event", "page_view", {
-    page_location: window.location.href,
-    page_path: path,
+    page_location: window.location.href.split(/[?#]/)[0],
+    page_path: pagePath,
+    page_referrer: document.referrer?.split(/[?#]/)[0] || undefined,
     page_title: title ?? document.title,
     debug_mode: debugEnabled || undefined,
   });
 
   if (debugEnabled) {
     console.info("[analytics]", "page_view", {
-      page_path: path,
+      page_path: pagePath,
       page_title: title ?? document.title,
       debug_mode: true,
     });

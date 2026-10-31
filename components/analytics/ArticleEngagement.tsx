@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { analyticsEvents, trackEvent } from "@/lib/analytics";
+import { analyticsEvents, articleReadDepth, trackEvent } from "@/lib/analytics";
 
 export function ArticleEngagement({ articleSlug }: { articleSlug: string }) {
   const fired = useRef({ 50: false, 90: false });
 
   useEffect(() => {
+    fired.current = { 50: false, 90: false };
     function checkDepth() {
       const article = document.querySelector<HTMLElement>("[data-article-content]");
       if (!article) return;
 
       const rect = article.getBoundingClientRect();
       const articleTop = rect.top + window.scrollY;
-      const readableHeight = Math.max(article.scrollHeight - window.innerHeight, 1);
-      const progress = Math.min(100, Math.max(0, ((window.scrollY - articleTop + window.innerHeight) / readableHeight) * 100));
+      const progress = articleReadDepth(articleTop, article.scrollHeight, window.scrollY + window.innerHeight);
 
       if (progress >= 50 && !fired.current[50]) {
         const sent = trackEvent(analyticsEvents.articleRead50, {

@@ -8,9 +8,9 @@ export const metadata = pageMetadata(
 export default function PaymentsCase() {
   return (
     <ProductStory
-      label="Cafe Bazaar / Payments / During 2016–2020"
-      title="A payment method that opened up the market."
-      introduction="A marketplace needs more than products people want. Customers also need a way to pay. Direct Carrier Billing brought mobile operators into that journey."
+      label="Cafe Bazaar / Project note / During 2016–2020"
+      title="Direct Carrier Billing"
+      introduction="Launching and expanding mobile-operator billing in Cafe Bazaar’s app marketplace. This part of my work connected product delivery with operator partnerships and commercial results."
       ownership="Product Development Manager. Led the launch and expansion of Direct Carrier Billing, working across product delivery and operator partnerships."
       facts={[
         { value: "2", label: "Mobile operators in the launch and expansion" },
@@ -20,33 +20,32 @@ export default function PaymentsCase() {
       sections={[
         {
           label: "The product",
-          title: "Let people pay through their mobile operator.",
+          title: "Another way to pay in the marketplace.",
           paragraphs: [
             "Direct Carrier Billing lets a customer charge a digital purchase to their mobile account. At Cafe Bazaar, this created another way for people to pay within the app marketplace.",
-            "My work covered the launch and expansion to two operators. It brought product development and commercial partnerships together around the same customer journey.",
+            "I led the launch and expansion to two operators, working across product delivery and operator partnerships. The payment experience depended on both the marketplace and the companies providing the billing channel.",
           ],
         },
         {
           label: "The result",
-          title: "More customers became paying customers.",
+          title: "Five million new paying users.",
           paragraphs: [
-            "The initiative reached more than five million new paying users, with approximately twenty percent associated revenue growth recorded in my career results.",
-            "That connected the payment work to a business outcome: more people could transact in the marketplace. The result depended on the product team and the operator partnerships working together.",
+            "The initiative reached more than five million new paying users and was associated with approximately twenty percent revenue growth.",
+            "The revenue figure describes the period of the initiative; it does not isolate the payment method’s effect from other changes in the business.",
           ],
         },
         {
           label: "My perspective today",
-          title:
-            "Payment access is a product decision as well as a commercial one.",
+          title: "The customer journey extends beyond the interface.",
           paragraphs: [
-            "This work is one reason I look beyond the screen when thinking about a customer journey. The available payment rails and partner relationships can change who is able to use a product at all.",
-            "For a similar launch today, I would want to understand payment completion, repeat paying behavior, failed charges, and support issues alongside revenue. That is my current measurement lens, rather than a claim about a historical experiment.",
+            "This work is one reason I look beyond the screen when thinking about a customer journey. The available payment methods and partner relationships shape whether someone can complete a purchase, as well as what happens after it.",
+            "For a similar launch today, I would examine payment completion, repeat paying behavior, failed charges, and support issues alongside revenue. Those are the questions I would bring to the work now, rather than measurements I am claiming for the historical launch.",
           ],
         },
       ]}
-      note="A concise project overview based on my career records. User and revenue figures are historical reported outcomes of the initiative. Operator agreements, integration details, and internal financial data are kept out of this public account."
+      note="This is a short project record, rather than a detailed reconstruction of the launch. It uses historical results from my career materials and does not reproduce operator agreements, internal financial data, or integration details."
       nextHref="/work/contact-center-ai"
-      nextTitle="Turning speech technology into a review workflow"
+      nextTitle="Contact Center AI at Sotoon"
     />
   );
 }

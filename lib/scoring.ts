@@ -3,6 +3,17 @@ import type { MapperState, QualitativeRecommendation, ScoreSet } from "@/types";
 const filled = (value?: string) => Boolean(value && value.trim().length > 0);
 const count = (items?: unknown[]) => items?.length ?? 0;
 
+export const scoreLabels: Record<keyof ScoreSet["subScores"], string> = {
+  workflowFit: "Workflow fit heuristic",
+  riskShape: "Consequence profile (higher = lower)",
+  autonomyReadiness: "Autonomy plan coverage",
+  evaluationMaturity: "Evaluation plan coverage",
+  humanControlStrength: "Human control plan coverage",
+  runtimeMonitoringReadiness: "Monitoring plan coverage",
+  governanceEvidence: "Governance plan coverage",
+  businessValueConfidence: "Value assumptions coverage"
+};
+
 function normalize(score: number) {
   return Math.max(0, Math.min(100, Math.round(score)));
 }
@@ -12,6 +23,20 @@ function impactValue(value: string) {
   if (/medium/i.test(value)) return 2;
   if (/low/i.test(value)) return 1;
   return 1.5;
+}
+
+export function boundedPercentage(value: number) {
+  return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+}
+
+/** A partial cost scenario for the automated share, not net savings or ROI. */
+export function automatedTaskCostDifference(state: MapperState) {
+  const nonNegative = (value: number) => Number.isFinite(value) ? Math.max(0, value) : 0;
+  const value = state.businessValueLoop;
+  const difference = nonNegative(value.monthlyTaskVolume) *
+    (boundedPercentage(value.expectedAutomationRate) / 100) *
+    (nonNegative(value.currentCostPerTask) - nonNegative(value.estimatedAiCost));
+  return difference === 0 ? 0 : difference;
 }
 
 export function scoreMapperState(state: MapperState): ScoreSet {
@@ -71,9 +96,11 @@ export function scoreMapperState(state: MapperState): ScoreSet {
       Number(filled(state.humanControl.disputeHandling)) * 12
   );
 
-  const runtimeMonitoringReadiness = normalize(
-    10 + state.healthSignals.filter((metric) => metric.selected).length * 7
-  );
+  // Example metrics are preselected. They are not a declared plan until the
+  // user confirms this module.
+  const runtimeMonitoringReadiness = state.completedModules.includes("health")
+    ? normalize(10 + state.healthSignals.filter((metric) => metric.selected && filled(metric.threshold)).length * 7)
+    : 0;
 
   const governanceEvidence = normalize(
     18 +
@@ -85,22 +112,25 @@ export function scoreMapperState(state: MapperState): ScoreSet {
       Number(state.governanceEvidence.highImpactDomain) * 12
   );
 
-  const monthlyGross =
-    state.businessValueLoop.monthlyTaskVolume *
-    Math.max(0, state.businessValueLoop.currentCostPerTask - state.businessValueLoop.estimatedAiCost) *
-    (state.businessValueLoop.expectedAutomationRate / 100);
+  const monthlyCostDifference = automatedTaskCostDifference(state);
 
   const businessValueConfidence = normalize(
     15 +
       Number(state.businessValueLoop.monthlyTaskVolume > 0) * 18 +
       Number(state.businessValueLoop.currentHandlingTime > 0) * 12 +
       Number(state.businessValueLoop.currentCostPerTask > 0) * 15 +
-      Number(state.businessValueLoop.expectedAutomationRate > 0) * 12 +
+      Number(boundedPercentage(state.businessValueLoop.expectedAutomationRate) > 0) * 12 +
       Number(filled(state.businessValueLoop.valueImpact)) * 12 +
-      Math.min(monthlyGross / 250, 16)
+      Number(state.completedModules.includes("value")) * 16
   );
 
   const warnings: string[] = [];
+  if (riskShape < 35) {
+    warnings.push("High-consequence workflow: review scope and controls. The inherent-risk score reflects impact and reversibility, not the effectiveness of your controls.");
+  }
+  if (!state.completedModules.includes("health")) {
+    warnings.push("Monitoring metrics are examples until you review and confirm the monitoring module.");
+  }
   if (riskySurface > 30 && approvals < 2) {
     warnings.push("The action surface is broad, but approval boundaries are still thin.");
   }
@@ -116,6 +146,16 @@ export function scoreMapperState(state: MapperState): ScoreSet {
   if (businessValueConfidence < 45) {
     warnings.push("The value case is still too thin for investment review.");
   }
+  if (monthlyCostDifference < 0) {
+    warnings.push("Estimated AI cost exceeds the current cost per task, before review, rework, and other implementation costs.");
+  }
+
+  const workflowDescribed = state.workflowFit.currentSteps.some(filled);
+  const deterministicCandidate = state.completedModules.includes("workflow") &&
+    state.workflowFit.repetitiveSteps.some(filled) &&
+    state.workflowFit.ambiguousSteps.length === 0 &&
+    state.workflowFit.decisionPoints.length === 0 &&
+    state.workflowFit.humanJudgmentPoints.length === 0;
 
   const average =
     (workflowFit +
@@ -129,8 +169,11 @@ export function scoreMapperState(state: MapperState): ScoreSet {
     8;
 
   let recommendation: QualitativeRecommendation = "Explore manually first";
-  if (workflowFit < 35) recommendation = "Better as deterministic workflow";
-  else if (riskShape < 35 || governanceEvidence < 35) recommendation = "Not ready until risk controls improve";
+  if (!workflowDescribed) recommendation = "Explore manually first";
+  else if (deterministicCandidate) recommendation = "Better as deterministic workflow";
+  else if (workflowFit < 35) recommendation = "Explore manually first";
+  else if (governanceEvidence < 35 || humanControlStrength < 35 || evaluationMaturity < 35) recommendation = "Not ready until risk controls improve";
+  else if (riskShape < 35) recommendation = "Agent candidate with human approval";
   else if (autonomyReadiness < 50 || humanControlStrength < 55) recommendation = "Agent candidate with human approval";
   else if (average > 72 && riskShape > 65 && riskySurface < 18) recommendation = "Low-risk autonomy candidate";
   else if (average > 58) recommendation = "Agent candidate with tight controls";
