@@ -127,7 +127,7 @@ export function CareerTimeline({ compact = false }: { compact?: boolean }) {
                 ))}
               </ul>
             )}
-            {!compact && "href" in item && (
+            {!compact && item.href && (
               <Link href={item.href} className="portfolio-text-link mt-5">
                 {item.linkLabel}
                 <ArrowRight size={17} aria-hidden="true" />

@@ -1,6 +1,6 @@
 {
   "name": "matt-ghoreishi-portfolio",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Product portfolio and proof hub for Matt Ghoreishi, featuring AI product case studies, tools, and writing.",
   "private": true,
   "engines": {
@@ -15,23 +15,24 @@
     "typecheck": "tsc --noEmit",
     "check:analytics": "node scripts/check-analytics.cjs",
     "check:mapper": "node scripts/check-mapper.cjs",
-    "check:scoring": "node scripts/check-scoring.cjs"
+    "check:scoring": "node scripts/check-scoring.cjs",
+    "check:security": "node scripts/check-security.cjs",
+    "check:resume": "node scripts/check-resume.cjs",
+    "build:resume": "python3 scripts/build-resume.py"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.105.1",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "lucide-react": "0.468.0",
-    "next": "15.5.15",
+    "next": "15.5.28",
     "react": "19.2.5",
     "react-dom": "19.2.5",
-    "recharts": "2.15.4",
     "tailwind-merge": "2.6.1"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "1.13.16",
     "@eslint/js": "9.39.4",
-    "@next/eslint-plugin-next": "15.5.15",
+    "@next/eslint-plugin-next": "15.5.28",
     "@typescript-eslint/eslint-plugin": "8.59.1",
     "@typescript-eslint/parser": "8.59.1",
     "@types/node": "22.19.17",
@@ -39,14 +40,22 @@
     "@types/react-dom": "19.2.3",
     "autoprefixer": "10.5.0",
     "eslint": "9.39.4",
-    "eslint-config-next": "15.5.15",
+    "eslint-config-next": "15.5.28",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "postcss": "8.5.13",
+    "postcss": "8.5.23",
     "tailwindcss": "3.4.19",
     "typescript": "5.9.3",
     "vercel": "54.20.1"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "$postcss",
+      "sharp": "0.35.5"
+    },
+    "source-map-js": "1.2.2",
+    "tar": "7.5.21"
   }
 }

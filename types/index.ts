@@ -201,14 +201,3 @@ export type AgentProductBrief = {
   sourceRecommendations: SourceCard[];
   nextSteps: string[];
 };
-
-export type ExportLead = {
-  email: string;
-  role?: string;
-  companySize?: string;
-  mainUseCase?: string;
-  consent: boolean;
-  contactConsent?: boolean;
-  website?: string;
-  startedAt: number;
-};

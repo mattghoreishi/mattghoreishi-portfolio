@@ -29,9 +29,10 @@ export default function AgenticProductStackMapperPage() {
             in a workflow, how much authority it should have, and what would
             make it worth shipping.
           </p>
+          <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
           <Link
             href="/mapper"
-            className="portfolio-button mt-7"
+            className="portfolio-button"
             data-analytics-event="play_demo"
             data-analytics-params={JSON.stringify({
               demo_name: "agentic_product_stack_mapper",
@@ -42,6 +43,11 @@ export default function AgenticProductStackMapperPage() {
             Open the mapper
             <ArrowRight size={18} aria-hidden="true" />
           </Link>
+          <Link href="/mapper?sample=refund" className="portfolio-text-link">
+            Try the example
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+          </div>
         </PageIntro>
         <div className="portfolio-wrap pb-16">
           <dl className="tool-facts">

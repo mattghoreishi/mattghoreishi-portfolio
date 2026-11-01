@@ -1,0 +1,9 @@
+{
+  "sources": {
+    "data/career.json": "bfa0ee565c2ef93d8e3e390bf9e35e5170f14a8e1e735baddef6bf11a8b1fa82",
+    "data/resume.json": "081688568787fca3da78d04fdb0056bc46e518ff7777d5a9fe4398696d2c4bf1",
+    "scripts/build-resume.py": "38651600b517d4701b41e3e397f60c68abefb1f6bccca9fb05a0cc316bf6b200"
+  },
+  "pdfSha256": "569305e5b79568767b9741125d8c47ef895aa026517b3f2f999110f1ccdbeee0",
+  "pages": 2
+}

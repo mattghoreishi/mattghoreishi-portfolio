@@ -14,9 +14,9 @@ const layers = [
   { id: "value", label: "Business Value Loop" }
 ];
 
-export function StackDiagram({ completed = [] }: { completed?: string[] }) {
+export function StackDiagram({ completed = [], exampleMode = false }: { completed?: string[]; exampleMode?: boolean }) {
   return (
-    <ol className="grid gap-2" aria-label="Module completion">
+    <ol className="grid gap-2" aria-label={exampleMode ? "Example module contents" : "Module review status"}>
       {layers.map((layer) => {
         const active = completed.includes(layer.id);
         return (
@@ -30,7 +30,7 @@ export function StackDiagram({ completed = [] }: { completed?: string[] }) {
             <span className="font-semibold">{layer.label}</span>
             <span className="flex shrink-0 items-center gap-1.5 text-xs">
               {active && <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
-              {active ? "Saved" : "Not saved"}
+              {exampleMode ? (active ? "Included in example" : "Not included") : (active ? "Reviewed" : "Not reviewed")}
             </span>
           </li>
         );

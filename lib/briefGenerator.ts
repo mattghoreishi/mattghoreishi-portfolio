@@ -130,8 +130,7 @@ export function generateBrief(state: MapperState): AgentProductBrief {
       body: "The health dashboard should track task success, human intervention, wrong actions, cost, latency, policy failures, and rollback events.",
       bullets: state.healthSignals
         .filter((metric) => metric.selected)
-        .slice(0, 8)
-        .map((metric) => `${metric.label}: ${metric.threshold}`),
+        .map((metric) => `${metric.label}: ${metric.threshold.trim() || "Threshold not set"}`),
       confidence: confidence(state, "health", state.healthSignals.filter((metric) => metric.selected).length > 5)
     },
     {

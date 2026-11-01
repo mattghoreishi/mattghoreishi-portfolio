@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, ChevronDown } from "lucide-react";
 import type { AgentProductBrief } from "@/types";
 import { scoreLabels } from "@/lib/scoring";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
     label: scoreLabels[key as keyof typeof scoreLabels],
     value
   }));
+  const scoreContext = "Scores are heuristic checks based on these inputs, not measurements of product readiness or safety. The consequence profile runs in the opposite direction to risk: a higher score means lower modeled consequence.";
 
   return (
     <section className="brief-print space-y-5">
@@ -25,12 +26,12 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
           <Badge className="w-fit bg-primary/10 text-primary">{brief.recommendation}</Badge>
         </div>
         {brief.scores.warnings.length > 0 && (
-          <div className="mt-5 rounded-md border border-accent/40 bg-accent/15 p-4">
-            <div className="flex items-center gap-2 text-sm font-semibold">
+          <div className="mt-5 rounded-md border border-warning-border bg-warning-surface p-4">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-warning">
               <AlertTriangle className="h-4 w-4" aria-hidden="true" />
               Watch points
-            </div>
-            <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+            </h3>
+            <ul className="mt-2 space-y-1 text-sm leading-6 text-warning-foreground">
               {brief.scores.warnings.map((warning) => (
                 <li key={warning}>{warning}</li>
               ))}
@@ -39,24 +40,44 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
         )}
       </div>
 
-      <p className="text-sm leading-6 text-muted-foreground">
-        Scores are heuristic checks based on these inputs, not measurements of product readiness or safety. The consequence profile runs in the opposite direction to risk: a higher score means lower modeled consequence.
-      </p>
-      <div className="brief-score-grid grid gap-3 md:grid-cols-4">
-        {scoreEntries.map((score) => (
-          <Card key={score.key} className="print-card shadow-none">
-            <CardContent className="p-4">
-              <p className="text-xs font-semibold text-muted-foreground">{score.label}</p>
-              <div className="mt-3 flex items-end gap-3">
-                <span className="text-2xl font-semibold">{score.value}</span>
-                <span className="mb-1 text-xs text-muted-foreground">/ 100</span>
-              </div>
-              <div className="no-print mt-3 h-2 rounded-full bg-muted" aria-hidden="true">
-                <div className="h-2 rounded-full bg-primary" style={{ width: `${score.value}%` }} />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <details className="brief-planning-checks no-print rounded-lg border border-border bg-card">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-lg p-4 text-sm hover:bg-muted">
+          <span className="font-semibold">Planning checks <span className="ml-2 font-normal text-muted-foreground">{scoreEntries.length} heuristics</span></span>
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        </summary>
+        <div className="space-y-4 px-4 pb-4">
+          <p className="text-sm leading-6 text-muted-foreground">{scoreContext}</p>
+          <div className="brief-score-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {scoreEntries.map((score) => (
+              <Card key={score.key} className="border-0 bg-background shadow-none">
+                <CardContent className="p-4">
+                  <p className="min-h-10 text-xs font-semibold leading-5 text-muted-foreground">{score.label}</p>
+                  <div className="mt-3 flex items-end gap-3">
+                    <span className="text-2xl font-semibold tabular-nums">{score.value}</span>
+                    <span className="mb-1 text-xs text-muted-foreground">/ 100</span>
+                  </div>
+                  <div className="mt-3 h-2 rounded-full bg-muted" aria-hidden="true">
+                    <div className="h-2 rounded-full bg-foreground/45" style={{ width: `${score.value}%` }} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      {/* A print-only list preserves every check when the disclosure is closed. */}
+      <div className="brief-planning-print">
+        <h3>Planning checks</h3>
+        <p>{scoreContext}</p>
+        <dl>
+          {scoreEntries.map((score) => (
+            <div key={score.key}>
+              <dt>{score.label}</dt>
+              <dd>{score.value} / 100</dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       <div className="space-y-4">
@@ -73,7 +94,7 @@ export function BriefPreview({ brief }: { brief: AgentProductBrief }) {
               <ul className="mt-4 grid gap-2 text-sm md:grid-cols-2">
                 {section.bullets.map((bullet) => (
                   <li key={bullet} className="flex gap-2 rounded-md bg-muted/55 p-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-muted-foreground" aria-hidden="true" />
                     <span>{bullet}</span>
                   </li>
                 ))}

@@ -50,6 +50,10 @@ export default function ToolsPage() {
                   Open the mapper
                   <ArrowRight size={17} aria-hidden="true" />
                 </Link>
+                <Link href="/mapper?sample=refund" className="portfolio-text-link">
+                  Try the example
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </article>

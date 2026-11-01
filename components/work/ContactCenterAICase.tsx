@@ -191,27 +191,27 @@ export function ContactCenterAICase() {
 function ProblemSection({ processed, onProcess }: { processed: boolean; onProcess: () => void }) {
   return (
     <section id="problem" className="portfolio-wrap pb-12 scroll-mt-28">
-      <div className="case-workspace rounded-lg bg-[#07111b] p-5 text-slate-100 md:p-8">
+      <div className="case-workspace rounded-lg bg-background p-5 text-foreground md:p-8">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <Label>The attention constraint</Label>
-            <h2 className="mt-4 text-2xl font-semibold text-white md:text-3xl">Which calls reach a reviewer?</h2>
-            <p className="mt-5 leading-7 text-slate-300">Manual review takes time. Sampling calls limits the amount a quality manager has to listen to, but it can also leave relevant calls unseen.</p>
-            <p className="mt-4 text-sm leading-6 text-slate-300">This illustration starts with 10 sampled calls out of 100. The priority counts below are invented to explain the interaction, not historical results or a model evaluation.</p>
+            <h2 className="mt-4 text-2xl font-semibold text-foreground md:text-3xl">Which calls reach a reviewer?</h2>
+            <p className="mt-5 leading-7 text-muted-foreground">Manual review takes time. Sampling calls limits the amount a quality manager has to listen to, but it can also leave relevant calls unseen.</p>
+            <p className="mt-4 text-sm leading-6 text-muted-foreground">This illustration starts with 10 sampled calls out of 100. The priority counts below are invented to explain the interaction, not historical results or a model evaluation.</p>
           </div>
-          <div className="rounded-lg border border-white/15 bg-[#050914] p-4 md:p-5">
+          <div className="rounded-lg border border-border bg-background p-4 md:p-5">
             {!processed ? <>
-              <p className="text-sm font-semibold text-slate-300">100 synthetic calls received</p>
-              <p className="mt-2 text-2xl font-semibold text-white">10 manually sampled</p>
-              <p className="mt-2 text-sm text-slate-300">90 calls outside the sample</p>
+              <p className="text-sm font-semibold text-muted-foreground">100 synthetic calls received</p>
+              <p className="mt-2 text-2xl font-semibold text-foreground">10 manually sampled</p>
+              <p className="mt-2 text-sm text-muted-foreground">90 calls outside the sample</p>
               <UnsortedCalls />
-              <button type="button" onClick={onProcess} className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-cyan-200 px-4 py-3 text-left text-sm font-semibold text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-100">Process all 100 and prioritize review<MousePointer2 size={18} className="shrink-0" aria-hidden="true" /></button>
+              <button type="button" onClick={onProcess} className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-left transition-colors hover:bg-primary/90 motion-reduce:transition-none text-sm font-semibold text-primary-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">Process all 100 and prioritize review<MousePointer2 size={18} className="shrink-0" aria-hidden="true" /></button>
             </> : <div aria-live="polite">
               <Label>Illustrative synthetic result</Label>
-              <p className="mt-3 text-2xl font-semibold text-white">38 calls moved into review lanes</p>
-              <p className="mb-5 mt-2 text-sm text-slate-300">All 100 were processed in this example.</p>
+              <p className="mt-3 text-2xl font-semibold text-foreground">38 calls moved into review lanes</p>
+              <p className="mb-5 mt-2 text-sm text-muted-foreground">All 100 were processed in this example.</p>
               <PriorityLaneGrid />
-              <p className="mt-5 leading-7 text-slate-300">The reviewer starts with a broader, prioritized set of calls. They still make the quality assessment.</p>
+              <p className="mt-5 leading-7 text-muted-foreground">The reviewer starts with a broader, prioritized set of calls. They still make the quality assessment.</p>
               <TrackedLink href="#workflow" name="open_prioritized_review_queue">Open the review queue<ArrowRight size={18} aria-hidden="true" /></TrackedLink>
             </div>}
           </div>
@@ -260,24 +260,24 @@ function Today({ era, onSetEra, mode, onSetMode }: { era: Era; onSetEra: (era: E
     <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">What I would examine now.</h2>
     <p className="portfolio-lead mt-5 max-w-3xl">I would look closely at which calls reach the queue, how often reviewers correct the system, and whether suggested actions reduce work or create more review. I would also make each important signal traceable to its supporting evidence.</p>
     <p className="mt-4 max-w-3xl leading-7 text-[var(--portfolio-secondary)]">This is a present-day design reflection, not a claim about features in the original product. The controls below compare the historical workflow with a possible extension, then separate observing, recommending, and acting.</p>
-    <div className="case-workspace mt-8 rounded-lg bg-[#07111b] p-5 text-slate-100 md:p-7">
+    <div className="case-workspace mt-8 rounded-lg bg-background p-5 text-foreground md:p-7">
       <div className="flex flex-wrap gap-2" role="group" aria-label="Product logic comparison">
-        {(["2020", "today"] as Era[]).map(option => <button key={option} type="button" aria-pressed={era === option} onClick={() => {onSetEra(option); trackEvent(analyticsEvents.ccaiEraSwitch, {era: option});}} className={`min-h-11 rounded border px-4 py-2 text-sm font-semibold ${era === option ? "border-cyan-200 bg-cyan-200 text-slate-950" : "border-slate-600 text-slate-200"}`}>{option === "2020" ? "2020 product logic" : "Today's product logic"}</button>)}
+        {(["2020", "today"] as Era[]).map(option => <button key={option} type="button" aria-pressed={era === option} onClick={() => {onSetEra(option); trackEvent(analyticsEvents.ccaiEraSwitch, {era: option});}} className={`min-h-11 rounded border px-4 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none ${era === option ? "border-primary bg-primary text-primary-foreground" : "border-[var(--portfolio-control)] text-foreground hover:bg-muted"}`}>{option === "2020" ? "2020 product logic" : "Today's product logic"}</button>)}
       </div>
       <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {eraSteps[era].map((step, index) => <li key={step} className="rounded border border-white/15 p-4"><span className="text-xs font-semibold text-cyan-200">{String(index + 1).padStart(2, "0")}</span><p className="mt-2 text-sm leading-6 text-slate-200">{step}</p></li>)}
+        {eraSteps[era].map((step, index) => <li key={step} className="rounded border border-border p-4"><span className="text-xs font-semibold text-primary">{String(index + 1).padStart(2, "0")}</span><p className="mt-2 text-sm leading-6 text-foreground">{step}</p></li>)}
       </ol>
-      <p className="mt-5 leading-7 text-slate-300" aria-live="polite">{era === "2020" ? "The system interprets and prioritizes evidence before the reviewer acts." : "A possible extension prepares recommendations or takes permitted actions. Those actions need boundaries, review, and a way to correct mistakes."}</p>
-      <div className="mt-8 border-t border-white/15 pt-7">
-        <h3 className="text-xl font-semibold text-white">Three levels of responsibility</h3>
-        <p className="mt-3 max-w-3xl leading-7 text-slate-300">I would add autonomy only where an action improves the workflow and its consequences can be managed. Classification and summarization do not require an agent.</p>
+      <p className="mt-5 leading-7 text-muted-foreground" aria-live="polite">{era === "2020" ? "The system interprets and prioritizes evidence before the reviewer acts." : "A possible extension prepares recommendations or takes permitted actions. Those actions need boundaries, review, and a way to correct mistakes."}</p>
+      <div className="mt-8 border-t border-border pt-7">
+        <h3 className="text-xl font-semibold text-foreground">Three levels of responsibility</h3>
+        <p className="mt-3 max-w-3xl leading-7 text-muted-foreground">I would add autonomy only where an action improves the workflow and its consequences can be managed. Classification and summarization do not require an agent.</p>
         <div className="mt-5 grid gap-2 sm:grid-cols-3" role="group" aria-label="Autonomy level">
-          {(["observe", "recommend", "act"] as Mode[]).map(option => <button key={option} type="button" aria-pressed={mode === option} onClick={() => {onSetMode(option); trackEvent(analyticsEvents.ccaiAutonomyMode, {mode: option});}} className={`min-h-11 rounded border p-3 text-left font-semibold ${mode === option ? "border-cyan-200 bg-cyan-200 text-slate-950" : "border-slate-600 text-slate-200"}`}>{modeContent[option].title}</button>)}
+          {(["observe", "recommend", "act"] as Mode[]).map(option => <button key={option} type="button" aria-pressed={mode === option} onClick={() => {onSetMode(option); trackEvent(analyticsEvents.ccaiAutonomyMode, {mode: option});}} className={`min-h-11 rounded border p-3 text-left font-semibold transition-colors motion-reduce:transition-none ${mode === option ? "border-primary bg-primary text-primary-foreground" : "border-[var(--portfolio-control)] text-foreground hover:bg-muted"}`}>{modeContent[option].title}</button>)}
         </div>
-        <div className="mt-5 rounded border border-white/15 p-5">
-          <h4 className="text-lg font-semibold text-white">{active.title}</h4>
-          <p className="mt-2 leading-7 text-slate-300">{active.body}</p>
-          <ul className="mt-4 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">{active.actions.map(action => <li key={action} className="flex items-start gap-2"><CheckCircle2 size={16} className="mt-1 shrink-0 text-cyan-200" aria-hidden="true" />{action}</li>)}</ul>
+        <div className="mt-5 rounded border border-border p-5">
+          <h4 className="text-lg font-semibold text-foreground">{active.title}</h4>
+          <p className="mt-2 leading-7 text-muted-foreground">{active.body}</p>
+          <ul className="mt-4 grid gap-2 text-sm text-foreground sm:grid-cols-2">{active.actions.map(action => <li key={action} className="flex items-start gap-2"><CheckCircle2 size={16} className="mt-1 shrink-0 text-primary" aria-hidden="true" />{action}</li>)}</ul>
         </div>
       </div>
     </div>
@@ -346,15 +346,15 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
         <p className="portfolio-eyebrow">04 / The review workflow</p>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">Try the reviewer’s side of the product.</h2>
         <p className="portfolio-lead mt-5 max-w-3xl">Select a call, inspect the transcript and signals, then make a review decision. These fictional calls illustrate the workflow; no model is running here.</p>
-        <div className="case-workspace mt-8 overflow-hidden rounded-lg border border-white/10 bg-[#07111b] text-slate-100">
-          <div className="border-b border-white/10 p-4 md:p-5">
+        <div className="case-workspace mt-8 overflow-hidden rounded-lg border border-border bg-background text-foreground">
+          <div className="border-b border-border p-4 md:p-5">
             <Label>Quality review workspace</Label>
-            <p className="mt-1 text-sm text-slate-400">Synthetic reconstruction of the historical workflow. Review changes stay in this browser view.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Synthetic reconstruction of the historical workflow. Review changes stay in this browser view.</p>
           </div>
           <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
-            <div className="border-b border-white/10 p-4 md:p-5 lg:border-b-0 lg:border-r">
-              <h3 className="flex items-center gap-2 font-semibold text-white">
-                <FileSearch className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+            <div className="border-b border-border p-4 md:p-5 lg:border-b-0 lg:border-r">
+              <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                <FileSearch className="h-5 w-5 text-primary" aria-hidden="true" />
                 Review queue
               </h3>
               <div className="mt-4 grid gap-3">
@@ -364,16 +364,16 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                     type="button"
                     aria-pressed={callId === call.id}
                     onClick={() => onChooseCall(call.id)}
-                    className={`rounded-md border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914] ${
-                      callId === call.id ? "border-cyan-300/50 bg-cyan-300/10" : "border-white/10 bg-white/[0.035] hover:border-cyan-300/25"
+                    className={`rounded-md border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
+                      callId === call.id ? "border-primary bg-primary/10" : "border-[var(--portfolio-control)] bg-card hover:border-primary"
                     }`}
                   >
                     <div className="flex justify-between gap-3">
-                      <span className="font-semibold text-white">{call.id}</span>
-                      <span className="text-sm text-slate-400">{call.duration}</span>
+                      <span className="font-semibold text-foreground">{call.id}</span>
+                      <span className="text-sm text-muted-foreground">{call.duration}</span>
                     </div>
-                    <p className="mt-2 text-sm text-slate-300">{call.reason}</p>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-200">{call.status}</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{call.reason}</p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">{call.status}</p>
                   </button>
                 ))}
               </div>
@@ -381,30 +381,30 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
             <div className="p-4 md:p-5">
               <div className="grid gap-4 xl:grid-cols-[1fr_0.75fr]">
                 <div>
-                  <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                    <p className="font-semibold text-white">{selectedCall.summary}</p>
-                    <p className="mt-1 text-sm text-slate-400">
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <p className="font-semibold text-foreground">{selectedCall.summary}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
                       {selectedCall.date} · {selectedCall.agent} · {selectedCall.customer} · Initial model score: {selectedCall.score}
                     </p>
                     <div className="mt-4">
                       <button type="button" onClick={() => {
                         setTranscriptTurn(turn => turn === null ? 0 : (turn + 1) % selectedCall.transcript.length);
                         trackEvent(analyticsEvents.playDemo, { demo: "ccai_workflow", action: "transcript_walkthrough", call_id: selectedCall.id });
-                      }} className="inline-flex items-center gap-2 rounded-md border border-cyan-200/40 px-3 py-2 text-sm text-cyan-100">
+                      }} className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--portfolio-control)] px-3 py-2 text-sm text-primary transition-colors hover:bg-muted motion-reduce:transition-none">
                         {transcriptTurn === null ? "Walk through transcript" : "Next transcript turn"}<ArrowRight size={16} aria-hidden="true" />
                       </button>
-                      <p className="mt-3 text-xs leading-5 text-slate-400" aria-live="polite">{transcriptTurn === null ? "Synthetic transcript. Audio is not included in this reconstruction." : `Turn ${transcriptTurn + 1} of ${selectedCall.transcript.length}: ${selectedCall.transcript[transcriptTurn][0]}. Highlighted below.`}</p>
+                      <p className="mt-3 text-xs leading-5 text-muted-foreground" aria-live="polite">{transcriptTurn === null ? "Synthetic transcript. Audio is not included in this reconstruction." : `Turn ${transcriptTurn + 1} of ${selectedCall.transcript.length}: ${selectedCall.transcript[transcriptTurn][0]}. Highlighted below.`}</p>
                     </div>
                   </div>
-                  <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.035] p-4">
-                    <h4 className="flex items-center gap-2 font-semibold text-white">
-                      <MessageSquareText className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+                  <div className="mt-4 rounded-lg border border-border bg-card p-4">
+                    <h4 className="flex items-center gap-2 font-semibold text-foreground">
+                      <MessageSquareText className="h-5 w-5 text-primary" aria-hidden="true" />
                       Transcript
                     </h4>
                     {selectedCall.transcript.map(([speaker, text], index) => (
-                      <div key={`${speaker}-${text}`} className={`mt-3 rounded-md border p-3 ${transcriptTurn === index ? "border-cyan-200/60 bg-cyan-200/10" : "border-transparent bg-[#050914]"}`}>
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-cyan-200">{speaker}</p>
-                        <p className="mt-1 text-sm leading-6 text-slate-300">{text}</p>
+                      <div key={`${speaker}-${text}`} className={`mt-3 rounded-md border p-3 ${transcriptTurn === index ? "border-primary bg-primary/10" : "border-transparent bg-background"}`}>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">{speaker}</p>
+                        <p className="mt-1 text-sm leading-6 text-muted-foreground">{text}</p>
                       </div>
                     ))}
                   </div>
@@ -414,7 +414,7 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                   <ReviewActions key={selectedCall.id} callId={selectedCall.id} />
                   <Box title="The system helps with" body="Transcription · Initial scoring signals · Call prioritization · Topic or pattern extraction" />
                   <Box title="The reviewer decides" body="Final QA assessment · Score adjustment · Follow-up need · Coaching or operational action" />
-                  <p className="text-sm leading-6 text-slate-400">
+                  <p className="text-sm leading-6 text-muted-foreground">
                     The model changes what reaches the reviewer and what evidence is visible. The reviewer still owns the QA decision.
                   </p>
                 </div>
@@ -439,38 +439,38 @@ function ReviewActions({ callId }: { callId: string }) {
     trackEvent(analyticsEvents.ccaiReviewAction, { synthetic_call_id: callId, action, demo: "ccai_workflow" });
   }
 
-  return <div className="rounded-lg border border-amber-300/20 bg-amber-300/10 p-4">
-    <h4 className="font-semibold text-white">Reviewer workflow</h4>
-    <p className="mt-2 text-xs leading-5 text-slate-300">Try a review action. Changes stay in this demo and reset when you choose another call.</p>
-    <div className="mt-4 flex flex-wrap gap-2">{["Confirm review", "Adjust score", "Mark for follow-up", "Continue QA form"].map(action => <button key={action} type="button" aria-pressed={selectedAction === action} onClick={() => choose(action)} className={`rounded-full border border-amber-200/25 px-3 py-2 text-sm font-semibold text-amber-50 hover:bg-amber-200/10 ${selectedAction === action ? "bg-amber-200/20" : ""}`}>{action}</button>)}</div>
+  return <div className="rounded-lg border border-border bg-card p-4">
+    <h4 className="font-semibold text-foreground">Reviewer workflow</h4>
+    <p className="mt-2 text-xs leading-5 text-muted-foreground">Try a review action. Changes stay in this demo and reset when you choose another call.</p>
+    <div className="mt-4 flex flex-wrap gap-2">{["Confirm review", "Adjust score", "Mark for follow-up", "Continue QA form"].map(action => <button key={action} type="button" aria-pressed={selectedAction === action} onClick={() => choose(action)} className={`min-h-11 rounded-full border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none ${selectedAction === action ? "border-primary bg-primary/10 text-primary" : "border-[var(--portfolio-control)] text-foreground hover:bg-muted"}`}>{action}</button>)}</div>
     {selectedAction === "Adjust score" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: demo score updated to ${score}.`); }}>
-      <label htmlFor={`score-${callId}`} className="text-sm text-amber-50">Reviewer score (0–100)</label>
-      <div className="mt-2 flex flex-wrap gap-2"><input id={`score-${callId}`} type="number" min="0" max="100" required value={score} onChange={event => setScore(event.target.value)} className="w-24 rounded border border-amber-100/30 bg-slate-950 px-3 py-2 text-white" /><button type="submit" className="rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-slate-950">Save demo score</button></div>
+      <label htmlFor={`score-${callId}`} className="text-sm text-foreground">Reviewer score (0–100)</label>
+      <div className="mt-2 flex flex-wrap gap-2"><input id={`score-${callId}`} type="number" min="0" max="100" required value={score} onChange={event => setScore(event.target.value)} className="w-24 rounded border border-[var(--portfolio-control)] bg-background px-3 py-2 text-foreground" /><button type="submit" className="min-h-11 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 motion-reduce:transition-none">Save demo score</button></div>
     </form>}
     {selectedAction === "Continue QA form" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: review note recorded locally for this demo.`); }}>
-      <label htmlFor={`note-${callId}`} className="text-sm text-amber-50">Demo review note</label><textarea id={`note-${callId}`} required maxLength={500} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} placeholder="Use a fictional note. Nothing is submitted." className="mt-2 w-full rounded border border-amber-100/30 bg-slate-950 p-3 text-sm text-white" /><button type="submit" className="mt-2 rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-slate-950">Save demo note</button>
+      <label htmlFor={`note-${callId}`} className="text-sm text-foreground">Demo review note</label><textarea id={`note-${callId}`} required maxLength={500} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} placeholder="Use a fictional note. Nothing is submitted." className="mt-2 w-full rounded border border-[var(--portfolio-control)] bg-background p-3 text-sm text-foreground" /><button type="submit" className="mt-2 min-h-11 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 motion-reduce:transition-none">Save demo note</button>
     </form>}
-    <p className="mt-3 text-sm leading-6 text-amber-100" role="status">{feedback}</p>
+    <p className="mt-3 text-sm leading-6 text-primary" role="status">{feedback}</p>
   </div>;
 }
 
 function Label({ children, tone = "cool" }: { children: React.ReactNode; tone?: "cool" | "warm" }) {
-  return <p className={`text-sm font-semibold uppercase tracking-[0.18em] ${tone === "warm" ? "text-amber-100" : "text-cyan-200"}`}>{children}</p>;
+  return <p className={`text-sm font-semibold uppercase tracking-[0.18em] ${tone === "warm" ? "text-warning-foreground" : "text-primary"}`}>{children}</p>;
 }
 
 function TrackedLink({ href, name, children, variant = "primary" }: { href: string; name: string; children: React.ReactNode; variant?: "primary" | "secondary" | "quiet" }) {
   const className = variant === "primary"
-    ? "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan-300 px-5 text-sm font-semibold text-slate-950 hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914]"
+    ? "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
     : variant === "secondary"
-      ? "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md border border-cyan-300/25 px-5 text-sm font-semibold text-cyan-100 hover:bg-cyan-300/10 focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914]"
-      : "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 text-sm font-semibold text-white hover:bg-cyan-300/10 focus:outline-none focus:ring-2 focus:ring-cyan-100 focus:ring-offset-2 focus:ring-offset-[#050914]";
+      ? "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md border border-[var(--portfolio-control)] px-5 text-sm font-semibold text-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+      : "mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-md border border-border px-5 text-sm font-semibold text-foreground hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background";
   return <Link href={href} onClick={() => trackEvent(analyticsEvents.clickPrimaryCta, { cta_name: name, cta_location: "ccai_v3", destination: href })} className={className}>{children}</Link>;
 }
 
 function Box({ title, body }: { title: string; body: string }) {
-  return <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4"><h3 className="font-semibold text-white">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{body}</p></div>;
+  return <div className="rounded-lg border border-border bg-card p-4"><h3 className="font-semibold text-foreground">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p></div>;
 }
 
 function Panel({ title, items }: { title: string; items: readonly string[] }) {
-  return <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4"><h4 className="font-semibold text-white">{title}</h4><div className="mt-3 grid gap-2">{items.map((item) => <span key={item} className="flex items-start gap-2 text-sm leading-6 text-slate-400"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-cyan-200" aria-hidden="true" />{item}</span>)}</div></div>;
+  return <div className="rounded-lg border border-border bg-card p-4"><h4 className="font-semibold text-foreground">{title}</h4><div className="mt-3 grid gap-2">{items.map((item) => <span key={item} className="flex items-start gap-2 text-sm leading-6 text-muted-foreground"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />{item}</span>)}</div></div>;
 }

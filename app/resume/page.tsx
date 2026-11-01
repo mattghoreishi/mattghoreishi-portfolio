@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { pageMetadata } from "@/components/site/Portfolio";
 import { PrintResume } from "@/components/site/PrintResume";
 import { career } from "@/data/portfolio";
-import { profile } from "@/data/site";
+import resume from "@/data/resume.json";
 export const metadata = pageMetadata(
   "CV",
   "Matt Ghoreishi’s CV: senior product management across AI, payments, video, and industrial SaaS. View or print a concise career summary.",
@@ -17,7 +17,7 @@ export default function ResumePage() {
       <main id="main-content" tabIndex={-1} className="resume-page">
         <div className="portfolio-wrap">
           <div className="resume-tools no-print">
-            <p>CV · Updated October 2026</p>
+            <p>CV · Updated {resume.updated}</p>
             <div className="flex flex-wrap gap-3">
               <a
                 href="/assets/Matt-Ghoreishi-CV.pdf"
@@ -37,22 +37,17 @@ export default function ResumePage() {
           </div>
           <article className="resume-sheet">
             <header>
-              <h1>Matt Ghoreishi</h1>
-              <p className="resume-title">Senior Product Manager</p>
+              <h1>{resume.name}</h1>
+              <p className="resume-title">{resume.title}</p>
               <p>
-                Hamburg, Germany ·{" "}
-                <a href={`mailto:${profile.email}`}>{profile.email}</a>
+                {resume.location} ·{" "}
+                <a href={`mailto:${resume.email}`}>{resume.email}</a>
               </p>
               <p>
-                <a href={profile.linkedinUrl}>linkedin.com/in/mattghoreishi</a>{" "}
-                · <a href="https://mattghoreishi.com">mattghoreishi.com</a>
+                <a href={resume.linkedinUrl}>linkedin.com/in/mattghoreishi</a>{" "}
+                · <a href={resume.siteUrl}>mattghoreishi.com</a>
               </p>
-              <p className="resume-summary">
-                Product manager with experience since 2014 across consumer
-                platforms, enterprise AI, payments, and industrial SaaS.
-                Background in individual product ownership, product team
-                leadership, customer discovery, commercialization, and delivery.
-              </p>
+              <p className="resume-summary">{resume.summary}</p>
             </header>
             <section>
               <h2>Experience</h2>
@@ -73,49 +68,25 @@ export default function ResumePage() {
               ))}
             </section>
             <section>
-              <h2>Selected product outcomes</h2>
-              <ul>
-                <li>
-                  Contact Center AI: 35% improvement in review / reporting
-                  throughput; supporting ASR workflow handled 18K+ daily calls.
-                </li>
-                <li>
-                  Cafe Bazaar: Direct Carrier Billing expanded to two operators,
-                  reaching 5M+ new paying users, with approximately 20%
-                  associated revenue growth.
-                </li>
-                <li>
-                  Cafe Bazaar: VOD product reached 11M+ monthly active users.
-                </li>
-              </ul>
-              <p className="resume-context">
-                Historical team outcomes from my product work. Case studies on
-                my website describe their scope and context.
-              </p>
+              <h2>Selected product work</h2>
+              {resume.selectedWork.map((item) => (
+                <p key={item.href} className="mb-3">
+                  <Link href={item.href}>{item.title}</Link>: {item.description}
+                </p>
+              ))}
             </section>
             <section>
               <h2>Education & languages</h2>
-              <p>
-                BSc, Electrical Engineering · Sharif University of Technology
-              </p>
-              <p>
-                English: fluent · Persian: native · Arabic: intermediate ·
-                German: A1, actively learning
-              </p>
+              <p>{resume.education}</p>
+              <p>{resume.languages.join(" · ")}</p>
             </section>
             <section>
               <h2>Independent work</h2>
-              <p>
-                <Link href="/tools/agentic-product-stack-mapper">
-                  Agentic Product Stack Mapper
-                </Link>
-                : an interactive tool for product briefs covering workflow fit,
-                autonomy, evaluation, and business value.
-              </p>
-              <p>
-                <Link href="/writing">Product writing</Link> on AI evaluation,
-                readiness, and moving from pilots to useful products.
-              </p>
+              {resume.independentWork.map((item) => (
+                <p key={item.href}>
+                  <Link href={item.href}>{item.title}</Link>: {item.description}
+                </p>
+              ))}
             </section>
           </article>
         </div>
