@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/site/BrandMark";
 
 const links = [
@@ -58,14 +58,15 @@ export function SiteNav() {
           ))}
         </div>
         <div className="flex items-center gap-3">
-          <Link
+          {pathname === "/resume" ? (
+            <span className="nav-cv" aria-current="page">CV</span>
+          ) : <Link
             href="/resume"
             className="nav-cv"
-            aria-current={pathname === "/resume" ? "page" : undefined}
           >
             CV
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </Link>
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>}
           <button
             ref={menuButton}
             type="button"
@@ -97,7 +98,7 @@ export function SiteNav() {
               onClick={() => setOpen(false)}
             >
               {link.label}
-              <ArrowUpRight size={17} aria-hidden="true" />
+              <ArrowRight size={17} aria-hidden="true" />
             </Link>
           ))}
         </nav>

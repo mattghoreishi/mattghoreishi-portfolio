@@ -166,7 +166,7 @@ export function ContactCenterAICase() {
         </div>
       </section>
       <HistoricalArtifact />
-      <Workflow key={callId} selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
+      <Workflow selectedCall={selectedCall} callId={callId} onChooseCall={chooseCall} />
       <section className="portfolio-wrap story-section">
         <p className="portfolio-eyebrow">05 / Taking it to customers</p>
         <div>
@@ -339,7 +339,8 @@ function PriorityLane({ label, value, tone }: { label: string; value: number; to
 }
 
 function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeof syntheticCalls)[number]; callId: CallId; onChooseCall: (id: CallId) => void }) {
-  const [transcriptTurn, setTranscriptTurn] = useState<number | null>(null);
+  const [transcriptPosition, setTranscriptPosition] = useState<{ callId: string; turn: number } | null>(null);
+  const transcriptTurn = transcriptPosition?.callId === callId ? transcriptPosition.turn : null;
   return (
     <section id="workflow" className="portfolio-wrap portfolio-section scroll-mt-28">
       <div>
@@ -388,10 +389,10 @@ function Workflow({ selectedCall, callId, onChooseCall }: { selectedCall: (typeo
                     </p>
                     <div className="mt-4">
                       <button type="button" onClick={() => {
-                        setTranscriptTurn(turn => turn === null ? 0 : (turn + 1) % selectedCall.transcript.length);
+                        setTranscriptPosition({ callId, turn: transcriptTurn === null ? 0 : (transcriptTurn + 1) % selectedCall.transcript.length });
                         trackEvent(analyticsEvents.playDemo, { demo: "ccai_workflow", action: "transcript_walkthrough", call_id: selectedCall.id });
                       }} className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--portfolio-control)] px-3 py-2 text-sm text-primary transition-colors hover:bg-muted motion-reduce:transition-none">
-                        {transcriptTurn === null ? "Walk through transcript" : "Next transcript turn"}<ArrowRight size={16} aria-hidden="true" />
+                        {transcriptTurn === null ? "Walk through transcript" : transcriptTurn === selectedCall.transcript.length - 1 ? "Restart transcript" : "Next transcript turn"}<ArrowRight size={16} aria-hidden="true" />
                       </button>
                       <p className="mt-3 text-xs leading-5 text-muted-foreground" aria-live="polite">{transcriptTurn === null ? "Synthetic transcript. Audio is not included in this reconstruction." : `Turn ${transcriptTurn + 1} of ${selectedCall.transcript.length}: ${selectedCall.transcript[transcriptTurn][0]}. Highlighted below.`}</p>
                     </div>
@@ -442,13 +443,13 @@ function ReviewActions({ callId }: { callId: string }) {
   return <div className="rounded-lg border border-border bg-card p-4">
     <h4 className="font-semibold text-foreground">Reviewer workflow</h4>
     <p className="mt-2 text-xs leading-5 text-muted-foreground">Try a review action. Changes stay in this demo and reset when you choose another call.</p>
-    <div className="mt-4 flex flex-wrap gap-2">{["Confirm review", "Adjust score", "Mark for follow-up", "Continue QA form"].map(action => <button key={action} type="button" aria-pressed={selectedAction === action} onClick={() => choose(action)} className={`min-h-11 rounded-full border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none ${selectedAction === action ? "border-primary bg-primary/10 text-primary" : "border-[var(--portfolio-control)] text-foreground hover:bg-muted"}`}>{action}</button>)}</div>
+    <div className="mt-4 flex flex-wrap gap-2">{["Confirm review", "Adjust score", "Mark for follow-up", "Add review note"].map(action => <button key={action} type="button" aria-pressed={selectedAction === action} onClick={() => choose(action)} className={`min-h-11 rounded-full border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none ${selectedAction === action ? "border-primary bg-primary/10 text-primary" : "border-[var(--portfolio-control)] text-foreground hover:bg-muted"}`}>{action}</button>)}</div>
     {selectedAction === "Adjust score" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: demo score updated to ${score}.`); }}>
       <label htmlFor={`score-${callId}`} className="text-sm text-foreground">Reviewer score (0–100)</label>
       <div className="mt-2 flex flex-wrap gap-2"><input id={`score-${callId}`} type="number" min="0" max="100" required value={score} onChange={event => setScore(event.target.value)} className="w-24 rounded border border-[var(--portfolio-control)] bg-background px-3 py-2 text-foreground" /><button type="submit" className="min-h-11 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 motion-reduce:transition-none">Save demo score</button></div>
     </form>}
-    {selectedAction === "Continue QA form" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: review note recorded locally for this demo.`); }}>
-      <label htmlFor={`note-${callId}`} className="text-sm text-foreground">Demo review note</label><textarea id={`note-${callId}`} required maxLength={500} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} placeholder="Use a fictional note. Nothing is submitted." className="mt-2 w-full rounded border border-[var(--portfolio-control)] bg-background p-3 text-sm text-foreground" /><button type="submit" className="mt-2 min-h-11 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 motion-reduce:transition-none">Save demo note</button>
+    {selectedAction === "Add review note" && <form className="mt-4" onSubmit={event => { event.preventDefault(); setFeedback(`${callId}: review note recorded locally for this demo.`); }}>
+      <label htmlFor={`note-${callId}`} className="text-sm text-foreground">Demo review note</label><textarea id={`note-${callId}`} required maxLength={500} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} placeholder="Use a fictional note. Nothing is submitted." className="mt-2 w-full rounded border border-[var(--portfolio-control)] bg-background p-3 text-base sm:text-sm text-foreground" /><button type="submit" className="mt-2 min-h-11 rounded bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 motion-reduce:transition-none">Save demo note</button>
     </form>}
     <p className="mt-3 text-sm leading-6 text-primary" role="status">{feedback}</p>
   </div>;

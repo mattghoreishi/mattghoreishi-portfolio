@@ -20,7 +20,7 @@ export default function WorkPage() {
       <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro
           label="Selected work"
-          title="Selected product work."
+          title="Selected product work"
         >
           <p>
             Case studies and project notes from my work in enterprise AI,

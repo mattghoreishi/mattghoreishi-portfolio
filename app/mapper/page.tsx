@@ -67,7 +67,7 @@ function TextList({
   const fieldId = useId();
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Label htmlFor={fieldId}>{label}</Label>
         {suggestion && (
           <Button
@@ -80,10 +80,10 @@ function TextList({
                 demo_name: "agentic_product_stack_mapper",
                 source: "suggested_answer"
               });
-              onChange(suggestion);
+              onChange([...new Set([...value, ...suggestion])]);
             }}
           >
-            Use suggested answer
+            Add suggestions
           </Button>
         )}
       </div>
@@ -112,8 +112,8 @@ function Chips({
             key={option}
             aria-pressed={active}
             onClick={() => onChange(active ? selected.filter((item) => item !== option) : [...selected, option])}
-            className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-              active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-muted"
+            className={`min-h-11 rounded-full border px-3 py-2 text-sm font-semibold transition ${
+              active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card hover:bg-muted"
             }`}
           >
             {option}
@@ -166,6 +166,7 @@ export default function MapperPage() {
   const moduleRef = useRef<HTMLElement>(null);
   const focusNextModule = useRef(false);
   const resetButton = useRef<HTMLButtonElement>(null);
+  const actionSequence = useRef(0);
   const cancelResetButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -287,11 +288,13 @@ export default function MapperPage() {
     });
   }
 
+  const hasPersonalDraft = JSON.stringify(personalDraft.current) !== JSON.stringify(emptyState);
+
   function resumeDraft() {
     setMode("draft");
     setState(structuredClone(personalDraft.current));
     setSampleLocation(false);
-    setRecoveryNotice("Your draft is back. The example did not change it.");
+    setRecoveryNotice(hasPersonalDraft ? "Your draft is back. The example did not change it." : "Your new draft is ready.");
     selectStep("quick", "resume_draft");
   }
 
@@ -320,11 +323,11 @@ export default function MapperPage() {
   const livePreview = (
     <Card className="shadow-none">
       <CardHeader>
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <CardTitle className="flex items-center gap-2 text-base">
               <Eye className="h-4 w-4 text-primary" />
-              Live brief signal
+              Brief preview
             </CardTitle>
             <CardDescription>You can start simple. More detail will make the brief more precise.</CardDescription>
           </div>
@@ -345,21 +348,12 @@ export default function MapperPage() {
   const stepContent = {
     quick: (
       <WizardLayout
-        title="Quick Start Mode"
+        title="Start your brief"
         description="Capture the minimum inputs and get a useful first draft in 3 to 5 minutes."
         step="Agent Idea"
         preview={livePreview}
       >
         <div className="mb-5 flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="accent"
-            disabled={!loaded}
-            onClick={() => openSample("quick_start")}
-          >
-            <Sparkles className="h-4 w-4" />
-            {mode === "sample" ? "Reload refund example" : "Try the refund example"}
-          </Button>
           <Button
             type="button"
             variant="outline"
@@ -374,14 +368,14 @@ export default function MapperPage() {
               patch({
                 quickStart: {
                   ...state.quickStart,
-                  systemsTouched: suggested.systems,
-                  mainJob: suggested.jobs[0],
-                  biggestRisk: suggested.risks[0]
+                  systemsTouched: state.quickStart.systemsTouched.length ? state.quickStart.systemsTouched : suggested.systems,
+                  mainJob: state.quickStart.mainJob.trim() ? state.quickStart.mainJob : suggested.jobs[0],
+                  biggestRisk: state.quickStart.biggestRisk.trim() ? state.quickStart.biggestRisk : suggested.risks[0]
                 }
               });
             }}
           >
-            Use domain suggestions
+            Suggest empty fields
           </Button>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
@@ -489,7 +483,7 @@ export default function MapperPage() {
               selectStep("brief", "generate_first_draft");
             }}
           >
-            Generate first draft brief
+            Preview your brief
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -525,15 +519,11 @@ export default function MapperPage() {
             <p className="text-sm text-muted-foreground">Your brief updates as you work. Download it whenever it is useful.</p>
             <Button type="button" variant="outline" onClick={() => selectStep("export", "brief_header_export")}>
               <Download className="h-4 w-4" aria-hidden="true" />
-              Download brief
+              Export brief
             </Button>
           </div>
           <BriefPreview brief={brief} />
           <div className="no-print flex flex-wrap gap-2">
-            <Button type="button" onClick={() => selectStep("export", "continue_to_export")}>
-              Continue to export
-              <ArrowRight className="h-4 w-4" />
-            </Button>
             <Button
               type="button"
               variant="outline"
@@ -546,7 +536,7 @@ export default function MapperPage() {
                 selectStep("workflow", "deepen_brief");
               }}
             >
-              Deepen this brief
+              Review workflow
             </Button>
           </div>
         </div>
@@ -659,13 +649,14 @@ export default function MapperPage() {
       <WizardLayout title="Define Autonomy Boundaries" description="Classify actions one by one so autonomy is explicit and reviewable." step="Autonomy Boundaries" preview={<AutonomyBoundaryMap actions={state.autonomyBoundaries} />}>
         <div className="space-y-4">
           <Button
+            id="mapper-add-action"
             type="button"
             variant="outline"
             onClick={() =>
               patch({
                 autonomyBoundaries: [
                   ...state.autonomyBoundaries,
-                  { id: crypto.randomUUID(), action: "", level: "Agent can recommend, human approves", rationale: "" }
+                  { id: globalThis.crypto?.randomUUID?.() ?? `action-${Date.now()}-${++actionSequence.current}`, action: "", level: "Agent can recommend, human approves", rationale: "" }
                 ]
               })
             }
@@ -694,6 +685,13 @@ export default function MapperPage() {
             {state.autonomyBoundaries.map((item, index) => (
               <Card key={item.id} className="shadow-none">
                 <CardContent className="grid gap-3 p-4 md:grid-cols-[1fr_260px]">
+                  <div className="md:col-span-2 flex justify-end">
+                    <Button type="button" variant="ghost" size="sm" aria-label={`Remove action ${index + 1}`} onClick={() => {
+                      const adjacent = state.autonomyBoundaries[index + 1] ?? state.autonomyBoundaries[index - 1];
+                      patch({ autonomyBoundaries: state.autonomyBoundaries.filter(action => action.id !== item.id) });
+                      requestAnimationFrame(() => document.getElementById(adjacent ? `action-${adjacent.id}` : "mapper-add-action")?.focus());
+                    }}>Remove action</Button>
+                  </div>
                   <div className="space-y-2">
                   <Label htmlFor={`action-${item.id}`}>Action {index + 1}</Label>
                   <Input id={`action-${item.id}`} value={item.action} onChange={(event) => {
@@ -860,8 +858,8 @@ export default function MapperPage() {
             ["Expected human review rate (%)", "expectedHumanReviewRate"],
             ["Estimated AI cost per task (USD)", "estimatedAiCost"],
             ["Estimated failure or rework cost (USD)", "estimatedFailureCost"],
-            ["Expected cycle-time reduction", "cycleTimeReduction"],
-            ["Expected quality improvement", "qualityImprovement"]
+            ["Expected cycle-time reduction (%)", "cycleTimeReduction"],
+            ["Expected quality improvement (%)", "qualityImprovement"]
           ].map(([label, key]) => (
             <div className="space-y-2" key={key}>
               <Label htmlFor={`value-${key}`}>{label}</Label>
@@ -894,7 +892,7 @@ export default function MapperPage() {
               Back to Matt’s site
             </Link>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">Agentic Product Stack Mapper</h1>
-            <p className="mt-1 text-muted-foreground">A working draft for your team. Inputs stay in your browser; downloads are free.</p>
+            <p className="mt-1 text-muted-foreground">Turn an AI product idea into a brief. Your inputs stay in this browser.</p>
             {recoveryNotice && <p role="status" className="mt-2 text-sm text-amber-100">{recoveryNotice}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -954,7 +952,7 @@ export default function MapperPage() {
               <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Explore the prefilled modules, try changes, and download the result. Example edits are temporary; refreshing restores the original. Your personal draft is kept separate.</p>
               {draftStorageAvailable === false && <p role="status" className="mt-3 max-w-3xl text-sm leading-6 text-amber-100">Browser saving is unavailable. Any unsaved changes to your personal draft will be lost on refresh. Resume your draft and download a copy before leaving.</p>}
             </div>
-            <Button type="button" variant="outline" onClick={resumeDraft} className="shrink-0">Resume your draft<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button>
+            <Button type="button" variant="outline" onClick={resumeDraft} className="shrink-0">{hasPersonalDraft ? "Resume your draft" : "Start your own brief"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button>
           </aside>
         )}
 
@@ -973,7 +971,7 @@ export default function MapperPage() {
         </section>
 
         {activeStep !== "brief" && activeStep !== "export" && (
-          <div className="no-print flex justify-between">
+          <div className="no-print flex flex-wrap justify-between gap-2">
             <Button type="button" variant="ghost" onClick={previous} disabled={currentIndex === 0}>
               <ArrowLeft className="h-4 w-4" />
               Back

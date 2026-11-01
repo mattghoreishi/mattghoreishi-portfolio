@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import {
@@ -20,7 +20,7 @@ export default function ExperiencePage() {
       <main id="main-content" tabIndex={-1} className="portfolio-page">
         <PageIntro
           label="Experience"
-          title="Experience."
+          title="Experience"
         >
           <p>
             I started in product marketing in 2014. Since then, I’ve owned
@@ -29,7 +29,7 @@ export default function ExperiencePage() {
           </p>
           <Link href="/resume" className="portfolio-text-link mt-7">
             Read my CV
-            <ArrowUpRight size={18} aria-hidden="true" />
+            <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </PageIntro>
         <section className="portfolio-wrap pb-20">
