@@ -2,11 +2,11 @@
 
 ## Brief and decisions
 
-The owner asked for an independent design, engineering, product, hiring, and personal-voice review, followed by implementation. Five reviewers examined the existing work separately and exchanged findings. Their common finding was that repeated positioning, large calls to action, and inconsistent older pages made the site feel more promotional than personal.
+Repeated positioning, large calls to action, and inconsistent older pages made the site feel more promotional than personal. This revision simplifies the presentation and brings project evidence forward.
 
 The final direction is a warm editorial site: a direct introduction, a smaller existing portrait, concrete project names, contextual outcomes, and ordinary prose. The approved MG geometry, existing portrait, public CV, original prototype, writing records, and useful tools remain. The employer signpost was removed because it duplicated the career timeline and mixed companies with a discipline.
 
-A voice review removed an additional homepage reflection because it repeated the cases and About page. A hiring review retained visible commercial results and leadership scope, avoiding an excessively understated or empty portfolio. DCB is labelled a shorter project note. Article pages are explicitly notes and frameworks, with links to the original full essays. No private interview, restricted contractor, family, immigration, or health content was added.
+An additional homepage reflection was removed because it repeated the cases and About page. Commercial results and leadership scope remain visible. DCB is labelled a shorter project note. Article pages are explicitly notes and frameworks, with links to the original full essays.
 
 ## Engineering changes
 

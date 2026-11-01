@@ -95,6 +95,6 @@ Application code is reusable only if an applicable license or explicit permissio
 
 See [the October 2026 portfolio revision](docs/personal-portfolio-revision.md) for content sources, validation, and rollback.
 
-The subsequent [editorial review](docs/editorial-review-2026-10-31.md) records the independent review, final design direction, deeper tool fixes, and verification limits.
+The subsequent [editorial review](docs/editorial-review-2026-10-31.md) records the design direction, tool fixes, and verification limits.
 
 The [craft review](docs/craft-review-2026-11-01.md) records the latest interaction, CV, visual, security, and release review.

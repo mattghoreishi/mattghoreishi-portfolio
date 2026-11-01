@@ -2,11 +2,11 @@
 
 ## Review scope
 
-The owner requested a further review of the dark design, the Mapper's example affordance, interaction finish, public code, GitHub versioning, and CV accuracy. Eight independent agents covered art direction and color, interaction design and accessibility, an additional editorial design critique, motion and detail, hiring and portfolio strategy, CV evidence, frontend correctness, and security and release engineering. These are review perspectives, not claims of affiliation with a design company or external certification.
+This revision covers the dark design, Mapper interactions, public code, release workflow, and CV consistency.
 
 ## Design decision
 
-Keep the current charcoal and mint identity. The alternative directions considered were near-black with ice blue, and espresso with sage/brass. The existing direction fits the original portrait, readable long-form work, and the owner's preference. The choice is design judgment, not measured audience preference.
+Keep the current charcoal and mint identity. The alternative directions considered were near-black with ice blue, and espresso with sage/brass. The existing direction fits the portrait and long-form project pages. The choice is design judgment, not measured audience preference.
 
 The issue was repeated visual treatment: status, caution, action, and heuristic scores looked alike. Added a raised neutral surface and restrained amber caution tokens. Mint continues to identify actions/current selection. Added directional arrow and pressed-button feedback only when reduced motion is not requested. Utility icons remain still. Retained the homepage voice, real portrait, and case-study depth.
 
@@ -23,19 +23,17 @@ The issue was repeated visual treatment: status, caution, action, and heuristic 
 
 ## CV and evidence
 
-The CV reviewer checked employer reference documents and the degree translation. Verified dates and titles were preserved, including Sotoon's December 2022 end date, German A1, and cautious contract-project framing. Repeated metrics were replaced by linked product decisions; the concise CV avoids confusing supporting ASR volume with CCAI usage.
+Verified career dates and titles were preserved. Repeated metrics were replaced by linked product decisions; supporting ASR volume remains distinct from CCAI usage.
 
-The career timeline, web CV, and PDF share versioned content records. A tracked generator and source/PDF consistency check prevent silent drift. Both PDF pages were rendered and inspected, and link annotations checked. Private source documents are not committed. See `docs/public-cv.md`.
+The career timeline, web CV, and PDF share versioned content records. A tracked generator and source/PDF consistency check prevent silent drift. Both PDF pages were rendered and inspected, and link annotations checked. See `docs/public-cv.md`.
 
 ## Public code and release discipline
 
-The repository is already public. The read-only review found no credentials using targeted patterns across the inspected historical text blobs; this is not a comprehensive secret audit. No private hosting account settings or historical database contents were inspected.
-
-Unused submission APIs now return 410 without reading request bodies or connecting to storage. Removed their unused client, validation, types, and dependencies. Added modest response protections and regression checks. Framework and compatible dependencies receive security patches; the release PR records the final audit and build result. A dependency audit is not a penetration test or a security guarantee.
+The repository is already public. The read-only review found no credentials using targeted patterns across the inspected historical text blobs; this is not a comprehensive secret audit. Unused submission APIs now return 410 without reading request bodies or connecting to storage. Removed their unused client, validation, types, and dependencies. Added modest response protections and regression checks. Framework and compatible dependencies receive security patches; the release PR records the final audit and build result. A dependency audit is not a penetration test or a security guarantee.
 
 The deprecated Pages adapter remains a documented migration item. No domain, hosting provider, account access, or repository visibility change is included. npm is the single supported package manager. The stale alternative lockfile is removed through ordinary version history.
 
-Main is protected with the `quality` check enforced for non-admins; only squash merging is enabled. Full branch-protection configuration is not accessible through the integration. This release uses a feature branch, PR, checks, preview, and the existing production integration. See `docs/releases.md` and `CHANGELOG.md`.
+Main is protected with the `quality` check enforced for non-admins; only squash merging is enabled. This release uses a feature branch, PR, checks, preview, and the existing production integration. See `docs/releases.md` and `CHANGELOG.md`.
 
 ## Verification record
 

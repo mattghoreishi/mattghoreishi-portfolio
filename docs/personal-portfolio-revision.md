@@ -7,12 +7,12 @@ Make the site useful to someone assessing Matt's actual product work: the proble
 ## Content model and sources
 
 - `data/portfolio.ts` holds the shared career timeline and selected-case summaries.
-- Career dates and responsibilities were compared with the supplied CVs and employment reference letters. Sotoon's employment end date follows the reference letter (December 2022). The public site does not reproduce private source documents.
-- The Inline Apps case uses Matt's account of category-level churn and the decision to focus on video. MAU figures refer to different products and periods, not an experimental before/after lift.
+- Career dates and responsibilities are maintained in shared records so the timeline, case studies, and CV stay consistent.
+- The Inline Apps case explains category-level churn and the decision to focus on video. MAU figures refer to different products and periods, not an experimental before/after lift.
 - Direct Carrier Billing is a concise project overview. The approximately 20% revenue result remains labelled associated growth.
 - CCAI results distinguish daily ASR volume, review throughput, and scoring of low-rated calls. Synthetic demo numbers are not historical product results.
 - Contract AI work uses bounded years rather than implying that a particular assignment is still active.
-- The public CV excludes private identifiers, home address, phone, immigration claims, and reference-letter signatures. Update both `/resume` and `public/assets/Matt-Ghoreishi-CV.pdf` when revising career content.
+- Keep the public CV focused on professional experience. Update both `/resume` and `public/assets/Matt-Ghoreishi-CV.pdf` when revising career content.
 
 ## Experience and implementation
 
