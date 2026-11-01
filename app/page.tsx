@@ -20,7 +20,7 @@ export default function HomePage() {
         <section className="portfolio-wrap portfolio-hero">
           <div className="hero-copy">
             <p className="portfolio-eyebrow">Product work & personal notes</p>
-            <h1>Matt Ghoreishi.</h1>
+            <h1>Matt Ghoreishi</h1>
             <p className="hero-role">Senior Product Manager · Hamburg</p>
             <p className="portfolio-lead">
               I like getting deep into a complicated user journey: how people use
