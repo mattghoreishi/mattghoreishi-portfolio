@@ -67,7 +67,7 @@ export function generateBrief(state: MapperState): AgentProductBrief {
     },
     {
       title: "Risk shape",
-      body: `The risk profile is shaped by ${quick.biggestRisk || "the largest perceived failure mode"} with ${state.riskShape.reversibility.toLowerCase()} outcomes and ${state.riskShape.detectionSpeed.toLowerCase()} detection.`,
+      body: `Primary concern: ${(quick.biggestRisk || "Not defined yet").trim().replace(/[.!?]+$/, "")}. Reversibility: ${state.riskShape.reversibility.toLowerCase()}. Detection: ${state.riskShape.detectionSpeed.toLowerCase()}.`,
       bullets: [
         `Customer impact: ${state.riskShape.customerImpact}`,
         `Financial impact: ${state.riskShape.financialImpact}`,

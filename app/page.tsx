@@ -47,7 +47,7 @@ export default function HomePage() {
         <section id="selected-work" className="portfolio-paper scroll-mt-24">
           <div className="portfolio-wrap">
             <div className="section-heading">
-              <div><p className="portfolio-eyebrow">From my work</p><h2>Selected work.</h2></div>
+              <div><p className="portfolio-eyebrow">From my work</p><h2>Selected work</h2></div>
               <p>The context, my role, and the choices behind each product.</p>
             </div>
             <CaseList source="home" />
@@ -56,7 +56,7 @@ export default function HomePage() {
 
         <section className="portfolio-wrap portfolio-section home-career">
           <div className="section-heading">
-            <div><p className="portfolio-eyebrow">Background</p><h2>My path so far.</h2></div>
+            <div><p className="portfolio-eyebrow">Background</p><h2>My path so far</h2></div>
             <Link href="/experience" className="portfolio-text-link">Full experience <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
           <CareerTimeline compact />
@@ -65,7 +65,7 @@ export default function HomePage() {
         <section className="portfolio-lab">
           <div className="portfolio-wrap">
             <div className="section-heading">
-              <div><p className="portfolio-eyebrow">Independent work</p><h2>Writing & a working tool.</h2></div>
+              <div><p className="portfolio-eyebrow">Independent work</p><h2>Writing & a working tool</h2></div>
               <p>Questions about AI that I’ve been working through in public.</p>
             </div>
             <div className="lab-grid">

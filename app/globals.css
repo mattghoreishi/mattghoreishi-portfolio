@@ -440,7 +440,9 @@ a, button { -webkit-tap-highlight-color: transparent; }
   .story-facts span { font-size: 12px; }
   .story-section { margin-bottom: 40px; }
   .next-story { font-size: 27px; }
-  .resume-sheet { padding: 30px 22px; font-size: 13px; }
+  .resume-sheet { padding: 30px 22px; font-size: 15px; }
+  .resume-sheet header > p:not(.resume-title):not(.resume-summary) { font-size: 13px; overflow-wrap: anywhere; }
+  .resume-role span { font-size: 12px; }
   .resume-tools { align-items: start; flex-direction: column; }
   .resume-page .portfolio-wrap { width: calc(100% - 24px); }
   .resume-sheet h1 { font-size: 30px; }

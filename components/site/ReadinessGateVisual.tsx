@@ -12,9 +12,9 @@ export function ReadinessGateVisual({ compact = false }: { compact?: boolean }) 
     return (
       <div aria-label="Readiness dimensions: behavior, failure, evaluation, and control" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {readinessDimensions.map((dimension, index) => (
-          <div key={dimension.label} className="border-l border-cyan-200/30 pl-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-100">0{index + 1}</p>
-            <p className="mt-1 text-sm font-semibold text-white">{dimension.label}</p>
+          <div key={dimension.label} className="border-l border-primary/30 pl-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">0{index + 1}</p>
+            <p className="mt-1 text-sm font-semibold text-foreground">{dimension.label}</p>
           </div>
         ))}
       </div>
@@ -22,7 +22,7 @@ export function ReadinessGateVisual({ compact = false }: { compact?: boolean }) 
   }
 
   return (
-    <figure aria-label="Product decision moving from demo to readiness to trust" className="relative overflow-hidden rounded-xl border border-cyan-200/20 bg-[#07111f] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] md:p-7">
+    <figure aria-label="Product decision moving from demo to readiness to trust" className="relative overflow-hidden rounded-xl border border-border bg-background p-5 shadow-subtle md:p-7">
       <div className="editorial-grid absolute inset-0 opacity-60" aria-hidden="true" />
       <div className="relative">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -31,29 +31,29 @@ export function ReadinessGateVisual({ compact = false }: { compact?: boolean }) 
             ["Readiness", "Decision evidence"],
             ["Trust", "Launch confidence"]
           ].map(([label, note], index) => (
-            <div key={label} className="flex w-full items-center gap-3 sm:w-auto sm:flex-1">
-              <div className="min-w-0 rounded-md border border-white/10 bg-[#050914]/80 px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-100">{label}</p>
-                <p className="mt-1 text-sm text-slate-400">{note}</p>
+            <div key={label} className="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-1 sm:flex-row sm:items-center">
+              <div className="min-w-0 rounded-md border border-border bg-card px-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{label}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{note}</p>
               </div>
               {index < 2 && (
                 <>
-                  <ArrowRight className="hidden h-5 w-5 shrink-0 text-cyan-200 sm:block" aria-hidden="true" />
-                  <ArrowDown className="h-5 w-5 shrink-0 text-cyan-200 sm:hidden" aria-hidden="true" />
+                  <ArrowRight className="hidden h-5 w-5 shrink-0 text-primary sm:block" aria-hidden="true" />
+                  <ArrowDown className="h-5 w-5 shrink-0 text-primary sm:hidden" aria-hidden="true" />
                 </>
               )}
             </div>
           ))}
         </div>
-        <div className="mt-8 border-t border-white/10 pt-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-100">Readiness gate</p>
+        <div className="mt-8 border-t border-border pt-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Readiness gate</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {readinessDimensions.map((dimension, index) => (
-              <div key={dimension.label} className="flex items-baseline gap-3 border-l border-cyan-200/30 pl-3">
-                <span className="text-xs font-semibold text-cyan-100">0{index + 1}</span>
+              <div key={dimension.label} className="flex items-baseline gap-3 border-l border-primary/30 pl-3">
+                <span className="text-xs font-semibold text-primary">0{index + 1}</span>
                 <div>
-                  <p className="font-semibold text-white">{dimension.label}</p>
-                  <p className="text-sm text-slate-400">{dimension.note}</p>
+                  <p className="font-semibold text-foreground">{dimension.label}</p>
+                  <p className="text-sm text-muted-foreground">{dimension.note}</p>
                 </div>
               </div>
             ))}

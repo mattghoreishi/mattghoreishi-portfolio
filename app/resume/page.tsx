@@ -2,12 +2,11 @@ import Link from "next/link";
 import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { pageMetadata } from "@/components/site/Portfolio";
-import { PrintResume } from "@/components/site/PrintResume";
 import { career } from "@/data/portfolio";
 import resume from "@/data/resume.json";
 export const metadata = pageMetadata(
   "CV",
-  "Matt Ghoreishi’s CV: senior product management across AI, payments, video, and industrial SaaS. View or print a concise career summary.",
+  "Matt Ghoreishi’s CV: senior product management across AI, payments, video, and industrial SaaS. Read the career summary or download the PDF.",
   "/resume",
 );
 export default function ResumePage() {
@@ -32,7 +31,6 @@ export default function ResumePage() {
               >
                 Download CV (PDF)
               </a>
-              <PrintResume />
             </div>
           </div>
           <article className="resume-sheet">

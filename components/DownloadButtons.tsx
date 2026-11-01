@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, FileJson, FileText, Printer } from "lucide-react";
+import { FileJson, FileText, Printer } from "lucide-react";
 import type { AgentProductBrief, MapperState } from "@/types";
 import { Button } from "@/components/ui/button";
 import { exportBriefMarkdown } from "@/lib/exportMarkdown";
@@ -52,7 +52,7 @@ export function DownloadButtons({
         }}
       >
         <FileText className="h-4 w-4" aria-hidden="true" />
-        Markdown
+        Download Markdown
       </Button>
       <Button
         type="button"
@@ -63,11 +63,7 @@ export function DownloadButtons({
         }}
       >
         <FileJson className="h-4 w-4" aria-hidden="true" />
-        JSON
-      </Button>
-      <Button type="button" variant="ghost" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" })}>
-        <ArrowUp className="h-4 w-4" aria-hidden="true" />
-        Back to top
+        Download JSON
       </Button>
     </div>
   );

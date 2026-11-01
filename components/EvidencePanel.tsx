@@ -17,18 +17,13 @@ export function EvidencePanel({ step }: { step: string }) {
       {sources.map((source) => (
         <Card key={source.id} className="shadow-none">
           <CardHeader className="pb-3">
-            <div className="flex items-start justify-between gap-3">
-              <CardTitle className="text-sm">{source.title}</CardTitle>
-              <a
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground transition hover:text-primary"
-                aria-label={`Open ${source.title}`}
-              >
-                <ExternalLink className="h-4 w-4" />
+            <CardTitle className="text-sm">
+              <a href={source.url} target="_blank" rel="noopener noreferrer"
+                className="flex min-h-11 items-center justify-between gap-3 hover:text-primary hover:underline">
+                {source.title}
+                <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
               </a>
-            </div>
+            </CardTitle>
             <div className="flex flex-wrap gap-2">
               <Badge>{source.organization}</Badge>
               <Badge>{source.year}</Badge>
