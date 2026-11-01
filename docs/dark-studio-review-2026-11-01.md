@@ -2,14 +2,14 @@
 
 ## Direction and review
 
-The owner requested another independent committee review, with a preference for a modern dark website and authority to implement the selected direction. Six reviewers covered art direction, accessibility and usability, frontend engineering and performance, product and interaction design, hiring, and personal voice and editing.
+This revision introduces a warm dark visual system and improves navigation, accessibility, project presentation, and Mapper interactions.
 
-The decision was a warm dark portfolio: charcoal surfaces, off-white text, restrained mint accents, and a modern sans-serif hierarchy. Keep the plain name and role, real portrait, MG geometry, specific project titles, and the depth of the previous editorial revision. Retain a white CV sheet and print output. Avoid promotional slogans, decorative score charts, added animation libraries, or fabricated personal anecdotes.
+The decision was a warm dark portfolio: charcoal surfaces, off-white text, restrained mint accents, and a modern sans-serif hierarchy. Keep the plain name and role, real portrait, MG geometry, specific project titles, and the depth of the previous editorial revision. Retain a white CV sheet and print output. Keep the introduction direct and avoid decorative charts or additional animation libraries.
 
 ## Content and structure
 
 - Featured CCAI entry includes the real prototype archive, accurately labelled as a canvas overview rather than a readable product screenshot.
-- Added a short Albatec industrial gas-monitoring note, based on the employment reference and existing CVs. The 16-channel figure describes dashboard/alert scope; no new revenue, deployment-count, or customer-outcome claim was introduced.
+- Added a short Albatec industrial gas-monitoring note, consistent with the published career record. The 16-channel figure describes dashboard/alert scope; no new revenue, deployment-count, or customer-outcome claim was introduced.
 - Moved compact career and leadership context before writing. Kept the cases, article notes and original essay links, interactive tools, CV, and direct contact routes.
 - Added a direct worked-example entry to the Mapper after making example exploration independent of the visitor's personal draft.
 - Preserved existing URLs and redirects. Added the new project to the work index, career links, and sitemap. Updated social image colors to the same design direction.
