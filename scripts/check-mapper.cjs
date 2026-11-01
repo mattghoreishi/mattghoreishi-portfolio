@@ -88,6 +88,21 @@ const utils = loadModule("lib/utils.ts", {
   clsx: require("clsx"),
   "tailwind-merge": require("tailwind-merge"),
 }).exports;
+
+// Parent updates must not erase separators while someone is still typing.
+const { reconcileListText } = loadModule("lib/listInput.ts", { "@/lib/utils": utils }).exports;
+for (const separator of ["\n", ", "]) {
+  let buffer = "";
+  const typed = separator === "\n" ? "Check invoice\nAsk owner\n" : "Customer support, Billing team, ";
+  for (const character of typed) {
+    buffer += character;
+    buffer = reconcileListText(buffer, utils.asList(buffer), separator);
+  }
+  assert.equal(buffer, typed, "Every typed space, comma, and newline must survive a parent round trip");
+  assert.equal(reconcileListText(buffer, ["Suggested answer", "Another answer"], separator),
+    ["Suggested answer", "Another answer"].join(separator), "External suggestions must replace an old buffer");
+  assert.equal(reconcileListText(buffer, [], separator), "", "Reset must clear populated list inputs");
+}
 const { StackDiagram } = loadModule("components/StackDiagram.tsx", {
   "react/jsx-runtime": jsxRuntime,
   "lucide-react": require("lucide-react"),
@@ -99,10 +114,16 @@ const progress = renderToStaticMarkup(React.createElement(StackDiagram, {
 const rows = [...progress.matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/g)]
   .map((match) => match[1].replace(/<[^>]+>/g, ""));
 assert.equal(rows.length, 10);
-assert.ok(rows.includes("Workflow FitNot saved"), "Quick Start must not mark Workflow Fit as saved");
-assert.ok(rows.includes("Runtime Health SignalsSaved"), "An out-of-order health module must show its actual saved state");
-assert.ok(rows.includes("Business Value LoopSaved"), "An out-of-order value module must show its actual saved state");
-assert.equal(rows.filter((row) => !row.includes("Not saved")).length, 2);
+assert.ok(rows.includes("Workflow FitNot reviewed"), "Quick Start must not mark Workflow Fit as reviewed");
+assert.ok(rows.includes("Runtime Health SignalsReviewed"), "An out-of-order health module must show its actual reviewed state");
+assert.ok(rows.includes("Business Value LoopReviewed"), "An out-of-order value module must show its actual reviewed state");
+assert.equal(rows.filter((row) => !row.includes("Not reviewed")).length, 2);
+const exampleProgress = renderToStaticMarkup(React.createElement(StackDiagram, {
+  completed: ["health"], exampleMode: true,
+}));
+assert.ok(exampleProgress.includes("Included in example"));
+assert.ok(exampleProgress.includes("Not included"));
+assert.ok(!exampleProgress.includes("Reviewed"), "Prefilled examples must not imply that a visitor reviewed them");
 
 // Monitoring shows entered thresholds, including unconfigured ones, without a made-up score.
 const { HealthSignalsDashboard } = loadModule("components/HealthSignalsDashboard.tsx", {

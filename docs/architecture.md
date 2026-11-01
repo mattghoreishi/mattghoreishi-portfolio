@@ -16,17 +16,23 @@ GA4 is implemented through the centralized analytics helper and is loaded only a
 
 Cloudflare Web Analytics is injected natively by Cloudflare Pages. It is intentionally independent of GA4 consent and must not be duplicated by application code. See [analytics.md](analytics.md) for the event inventory and verification steps.
 
-## Supabase boundary
+## Local data and retired endpoints
 
-Legacy Supabase API handlers for submissions, events, and feedback remain for compatibility. The current Mapper UI does not call them; drafts and exports stay in the browser. Server route handlers create the client only when the configured environment variables are present; the site and Mapper remain usable when Supabase is unavailable. Service-role credentials stay server-side and must never be imported into client components.
+Mapper drafts and exports stay in the browser. The old `/api/submissions`, `/api/events`, and `/api/feedback` POST routes return HTTP 410 without reading request bodies or initializing storage. Keeping explicit retirement responses gives older clients a clear failure instead of silently accepting submissions. The Supabase client and unused chart library are removed; the database schema remains a historical artifact, not a live dependency.
 
 ## Deployment
 
 Cloudflare Pages is the production deployment system. Its GitHub integration builds the production branch with `npm run build`, which generates the static Pages output configured in `wrangler.toml`. GitHub Actions CI validates changes only; it does not deploy and receives no production secrets.
 
+The `next-on-pages` adapter is deprecated. This release preserves the working deployment while applying framework security patches; a hosting adapter migration is a separate change that needs its own preview and rollback. npm and `package-lock.json` are the supported dependency workflow.
+
+## Response headers
+
+`lib/securityHeaders.ts` defines the response protections used by Next configuration and retired API responses. `public/_headers` supplies the equivalent static-asset policy for Cloudflare Pages. The regression check keeps these aligned. Cloudflare does not apply `_headers` to Pages Function responses, so API responses attach their own headers. The limited CSP permits existing scripts while restricting base URLs, objects, and framing; it is not claimed as full XSS protection.
+
 ## Privacy constraints
 
-Portfolio case studies reconstruct historical workflows with synthetic or sanitized data. Do not add client-sensitive implementation details, credentials, proprietary datasets, or past-employer source code. Analytics, optional submissions, and documentation must preserve that boundary.
+Portfolio case studies reconstruct historical workflows with synthetic or sanitized data. Do not add client-sensitive implementation details, credentials, proprietary datasets, or past-employer source code. Analytics and documentation must preserve that boundary.
 
 ## Test strategy
 

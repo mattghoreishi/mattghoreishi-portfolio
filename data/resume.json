@@ -1,0 +1,46 @@
+{
+  "updated": "November 2026",
+  "name": "Matt Ghoreishi",
+  "title": "Senior Product Manager",
+  "location": "Hamburg, Germany",
+  "email": "sedmgh@gmail.com",
+  "siteUrl": "https://mattghoreishi.com",
+  "linkedinUrl": "https://www.linkedin.com/in/mattghoreishi/",
+  "summary": "Product manager with experience since 2014 across consumer platforms, enterprise AI, payments, and industrial SaaS. Background in individual product ownership, product team leadership, customer discovery, commercialization, and delivery.",
+  "selectedWork": [
+    {
+      "title": "Contact Center AI",
+      "href": "/work/contact-center-ai",
+      "description": "Turned speech and language capabilities into a call-review workflow, connecting customer discovery, product definition, pricing, and delivery."
+    },
+    {
+      "title": "From Inline Apps to video",
+      "href": "/work/inline-apps-to-video",
+      "description": "Used retention by category to question where to keep investing, then narrowed a broad platform to video."
+    },
+    {
+      "title": "Direct Carrier Billing",
+      "href": "/work/direct-carrier-billing",
+      "description": "Led a mobile-account payment initiative across product, operator partnerships, and delivery."
+    }
+  ],
+  "education": "BSc, Electrical Engineering · Sharif University of Technology",
+  "languages": [
+    "English: fluent",
+    "Persian: native",
+    "Arabic: intermediate",
+    "German: A1, actively learning"
+  ],
+  "independentWork": [
+    {
+      "title": "Agentic Product Stack Mapper",
+      "href": "/tools/agentic-product-stack-mapper",
+      "description": "An interactive tool for product briefs covering workflow fit, autonomy, evaluation, and business value."
+    },
+    {
+      "title": "Product writing",
+      "href": "/writing",
+      "description": "Essays on AI evaluation, readiness, and moving from pilots to useful products."
+    }
+  ]
+}

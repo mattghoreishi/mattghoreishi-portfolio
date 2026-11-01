@@ -28,4 +28,6 @@ jobs:
       - run: npm run check:analytics
       - run: npm run check:mapper
       - run: npm run check:scoring
+      - run: npm run check:security
+      - run: npm run check:resume
       - run: npm run next:build

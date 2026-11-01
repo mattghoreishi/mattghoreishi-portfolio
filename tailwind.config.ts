@@ -25,7 +25,11 @@ const config: Config = {
         accent: "hsl(var(--accent))",
         "accent-foreground": "hsl(var(--accent-foreground))",
         destructive: "hsl(var(--destructive))",
-        "destructive-foreground": "hsl(var(--destructive-foreground))"
+        "destructive-foreground": "hsl(var(--destructive-foreground))",
+        warning: "hsl(var(--warning))",
+        "warning-foreground": "hsl(var(--warning-foreground))",
+        "warning-surface": "hsl(var(--warning-surface))",
+        "warning-border": "hsl(var(--warning-border))"
       },
       boxShadow: {
         editorial: "0 24px 80px rgba(21, 35, 48, 0.12)",

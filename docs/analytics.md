@@ -26,7 +26,7 @@ Reading depth measures content exposure, not comprehension or time spent reading
 
 ## Local tool data
 
-Mapper drafts stay in browser local storage when available. Invalid drafts recover safely, and blocked storage does not prevent use. Export produces local files or opens the browser print dialog. The previous email gate and client-side submission/feedback requests have been removed. Legacy API handlers remain for compatibility but are not linked from the UI.
+Mapper drafts stay in browser local storage when available. Invalid drafts recover safely, and blocked storage does not prevent use. Export produces local files or opens the browser print dialog. The previous email gate and client-side submission/feedback requests have been removed. Historical submission, event, and feedback POST endpoints return HTTP 410 without reading request bodies or storing data.
 
 CCAI notes and review actions stay in component state. They reset when a different synthetic call is selected.
 

@@ -71,4 +71,17 @@ assert.equal(automatedTaskCostDifference(expensive), 0, "Invalid rates cannot pr
 const larger = clone(sampleSupportRefundAgent);
 larger.businessValueLoop.monthlyTaskVolume *= 100;
 assert.equal(scoreMapperState(larger).subScores.businessValueConfidence, sample.subScores.businessValueConfidence, "Claiming a larger market does not improve evidence coverage");
+
+const manySignals = clone(sampleSupportRefundAgent);
+manySignals.healthSignals = Array.from({ length: 10 }, (_, index) => ({
+  id: `metric-${index}`,
+  label: `Monitoring metric ${index + 1}`,
+  selected: true,
+  threshold: index === 9 ? "  " : `Threshold ${index + 1}`,
+}));
+manySignals.healthSignals.push({ id: "unselected", label: "Unselected", selected: false, threshold: "Hidden" });
+const healthSection = generateBrief(manySignals).sections.find(section => section.title === "Runtime health signals");
+assert.equal(healthSection.bullets.length, 10, "Brief and exports must include all selected monitoring metrics");
+assert.equal(healthSection.bullets[9], "Monitoring metric 10: Threshold not set");
+assert.ok(!healthSection.bullets.some(bullet => bullet.includes("Unselected")));
 console.log("Scoring and brief regression checks passed.");

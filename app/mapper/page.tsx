@@ -3,11 +3,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Eye, RotateCcw, Save, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Download, Eye, RotateCcw, Save, Sparkles } from "lucide-react";
 import { AutonomyBoundaryMap } from "@/components/AutonomyBoundaryMap";
 import { BriefPreview } from "@/components/BriefPreview";
 import { ExportGate } from "@/components/ExportGate";
 import { HealthSignalsDashboard } from "@/components/HealthSignalsDashboard";
+import { ListInput } from "@/components/ListInput";
 import { ProgressStepper } from "@/components/ProgressStepper";
 import { RiskShapeMatrix } from "@/components/RiskShapeMatrix";
 import { StackDiagram } from "@/components/StackDiagram";
@@ -22,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { domainTemplates, emptyState, sampleSupportRefundAgent } from "@/data/templates";
 import { analyticsEvents, trackEvent } from "@/lib/analytics";
 import { generateBrief } from "@/lib/briefGenerator";
-import { asList } from "@/lib/utils";
 import { clearMapperDraft, persistMapperSession, readMapperDraft } from "@/lib/mapperStorage";
 import type { MapperMode, MapperStorageStatus } from "@/lib/mapperStorage";
 import type { AutonomyLevel, Facing, MapperState } from "@/types";
@@ -50,10 +50,6 @@ const autonomyLevels: AutonomyLevel[] = [
   "Agent must escalate",
   "Agent must never do this"
 ];
-
-function updateList(value: string) {
-  return asList(value);
-}
 
 function TextList({
   label,
@@ -91,7 +87,7 @@ function TextList({
           </Button>
         )}
       </div>
-      <Textarea id={fieldId} aria-describedby={`${fieldId}-hint`} value={value.join("\n")} onChange={(event) => onChange(updateList(event.target.value))} placeholder={placeholder} />
+      <ListInput id={fieldId} aria-describedby={`${fieldId}-hint`} value={value} onChange={onChange} placeholder={placeholder} />
       <p id={`${fieldId}-hint`} className="text-xs text-muted-foreground">Add one per line or separate with commas.</p>
     </div>
   );
@@ -146,7 +142,7 @@ function ModuleActions({
           onNext();
         }}
       >
-        Save and continue
+        Mark reviewed and continue
         <ArrowRight className="h-4 w-4" />
       </Button>
       <Button type="button" variant="outline" onClick={onNext}>
@@ -164,9 +160,13 @@ export default function MapperPage() {
   const [storageStatus, setStorageStatus] = useState<"loading" | MapperStorageStatus>("loading");
   const [draftStorageAvailable, setDraftStorageAvailable] = useState<boolean | null>(null);
   const [recoveryNotice, setRecoveryNotice] = useState("");
+  const [resetPending, setResetPending] = useState(false);
+  const [editorRevision, setEditorRevision] = useState(0);
   const personalDraft = useRef<MapperState>(emptyState);
   const moduleRef = useRef<HTMLElement>(null);
   const focusNextModule = useRef(false);
+  const resetButton = useRef<HTMLButtonElement>(null);
+  const cancelResetButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -207,14 +207,28 @@ export default function MapperPage() {
       moduleRef.current?.focus();
       focusNextModule.current = false;
     }
-  }, [activeStep]);
+  }, [activeStep, resetPending]);
+
+  useEffect(() => {
+    if (!resetPending) return;
+    cancelResetButton.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setResetPending(false);
+        resetButton.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [resetPending]);
 
   const brief = useMemo(() => generateBrief(state), [state]);
   const currentIndex = steps.findIndex((step) => step.id === activeStep);
   const template = domainTemplates[state.quickStart.workflowDomain as keyof typeof domainTemplates] || domainTemplates.other;
 
-  function selectStep(stepId: string, source = "mapper") {
-    if (stepId !== activeStep) focusNextModule.current = true;
+  function selectStep(stepId: string, source = "mapper", focusModule = true) {
+    if (stepId !== activeStep) focusNextModule.current = focusModule;
     setActiveStep(stepId);
     trackEvent(analyticsEvents.switchDemoTab, {
       demo_name: "agentic_product_stack_mapper",
@@ -260,6 +274,7 @@ export default function MapperPage() {
       setDraftStorageAvailable(persistMapperSession(state, "draft") === "saved");
     }
     setMode("sample");
+    setResetPending(false);
     setState(structuredClone(sampleSupportRefundAgent));
     setStorageStatus("sample");
     setRecoveryNotice("");
@@ -281,6 +296,8 @@ export default function MapperPage() {
   }
 
   function reset() {
+    // Also clear raw input buffers when the parsed draft was already empty.
+    setEditorRevision((revision) => revision + 1);
     if (mode === "sample") {
       setState(structuredClone(sampleSupportRefundAgent));
       setRecoveryNotice("Refund example reset. Your draft is unchanged.");
@@ -288,9 +305,16 @@ export default function MapperPage() {
       return;
     }
     clearMapperDraft();
+    setResetPending(false);
     setRecoveryNotice("Draft reset.");
     setState(structuredClone(emptyState));
+    focusNextModule.current = true;
     selectStep("quick", "reset");
+  }
+
+  function cancelReset() {
+    setResetPending(false);
+    resetButton.current?.focus();
   }
 
   const livePreview = (
@@ -420,11 +444,12 @@ export default function MapperPage() {
               selected={state.quickStart.systemsTouched}
               onChange={(value) => patch({ quickStart: { ...state.quickStart, systemsTouched: value } })}
             />
-            <Input id="mapper-systems-or-tools-it-may-touch"
+            <ListInput id="mapper-systems-or-tools-it-may-touch"
+              multiline={false}
               className="mt-2"
-              value={state.quickStart.systemsTouched.join(", ")}
-              onChange={(event) =>
-                patch({ quickStart: { ...state.quickStart, systemsTouched: updateList(event.target.value) } })
+              value={state.quickStart.systemsTouched}
+              onChange={(value) =>
+                patch({ quickStart: { ...state.quickStart, systemsTouched: value } })
               }
               placeholder="CRM, billing, data warehouse"
             />
@@ -472,7 +497,7 @@ export default function MapperPage() {
     ),
     brief: (
       <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
-        <aside className="no-print space-y-4">
+        <aside className="no-print hidden space-y-4 lg:block">
           <Card className="shadow-editorial">
             <CardHeader>
               <CardTitle>Deepen this brief</CardTitle>
@@ -488,14 +513,21 @@ export default function MapperPage() {
           </Card>
           <Card className="shadow-none">
             <CardHeader>
-              <CardTitle className="text-base">Stack progress</CardTitle>
+              <CardTitle className="text-base">{mode === "sample" ? "Example coverage" : "Review progress"}</CardTitle>
             </CardHeader>
             <CardContent>
-              <StackDiagram completed={state.completedModules} />
+              <StackDiagram completed={state.completedModules} exampleMode={mode === "sample"} />
             </CardContent>
           </Card>
         </aside>
         <div className="space-y-5">
+          <div className="no-print flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">Your brief updates as you work. Download it whenever it is useful.</p>
+            <Button type="button" variant="outline" onClick={() => selectStep("export", "brief_header_export")}>
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Download brief
+            </Button>
+          </div>
           <BriefPreview brief={brief} />
           <div className="no-print flex flex-wrap gap-2">
             <Button type="button" onClick={() => selectStep("export", "continue_to_export")}>
@@ -865,32 +897,61 @@ export default function MapperPage() {
             <p className="mt-1 text-muted-foreground">A working draft for your team. Inputs stay in your browser; downloads are free.</p>
             {recoveryNotice && <p role="status" className="mt-2 text-sm text-amber-100">{recoveryNotice}</p>}
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
+          <div className="flex flex-wrap items-center gap-2">
+            {mode === "sample" ? (
+              <Badge className="gap-1.5 px-3 py-2">
+                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                Example mode
+              </Badge>
+            ) : <Button
               type="button"
               variant="outline"
-              disabled={!loaded || mode === "sample"}
+              disabled={!loaded}
               onClick={() => openSample("mapper_header")}
             >
-              <Sparkles className="h-4 w-4" />
-              {mode === "sample" ? "Example mode" : "Load example"}
-            </Button>
-            <Button type="button" variant="outline" disabled={!loaded} onClick={reset}>
-              <RotateCcw className="h-4 w-4" />
+              <Sparkles className="h-4 w-4" aria-hidden="true" />
+              Load example
+            </Button>}
+            <Button
+              ref={resetButton}
+              type="button"
+              variant="outline"
+              disabled={!loaded}
+              aria-expanded={mode === "draft" ? resetPending : undefined}
+              aria-controls={resetPending ? "reset-draft-confirmation" : undefined}
+              onClick={() => mode === "sample" ? reset() : setResetPending(true)}
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden="true" />
               {mode === "sample" ? "Reset example" : "Reset your draft"}
             </Button>
-            <Badge className="bg-primary/10 text-primary">
-              <Save className="mr-1 h-3 w-3" aria-hidden="true" />
-              {storageStatus === "sample" ? "Example edits are temporary" : storageStatus === "saved" ? "Saved in this browser" : storageStatus === "unavailable" ? "Autosave unavailable" : "Loading draft"}
-            </Badge>
+            {mode === "draft" && <span role="status" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Save className="h-3.5 w-3.5" aria-hidden="true" />
+              {storageStatus === "saved" ? "Saved in this browser" : storageStatus === "unavailable" ? "Autosave unavailable" : "Loading draft"}
+            </span>}
           </div>
         </div>
 
+        {resetPending && (
+          <div
+            id="reset-draft-confirmation"
+            role="group"
+            aria-labelledby="reset-draft-title"
+            className="no-print rounded-lg border border-warning-border bg-warning-surface p-5"
+          >
+            <p id="reset-draft-title" className="font-semibold text-warning">Reset your draft?</p>
+            <p className="mt-2 text-sm leading-6 text-warning-foreground">This deletes your saved draft in this browser. Download a copy first if you want to keep it.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button ref={cancelResetButton} type="button" variant="outline" onClick={cancelReset}>Keep my draft</Button>
+              <Button type="button" variant="outline" className="border-warning-border text-warning" onClick={reset}>Delete draft and start over</Button>
+            </div>
+          </div>
+        )}
+
         {mode === "sample" && (
-          <aside className="no-print flex flex-col gap-4 rounded-lg border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between" aria-label="Example mode">
+          <aside className="no-print flex flex-col gap-4 rounded-lg border border-border bg-muted p-5 sm:flex-row sm:items-center sm:justify-between" aria-label="About this example">
             <div>
               <p className="font-semibold">You’re exploring a fictional refund example.</p>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Try changes and download the result. Example edits are temporary; refreshing restores the original example. Your personal draft is kept separate.</p>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Explore the prefilled modules, try changes, and download the result. Example edits are temporary; refreshing restores the original. Your personal draft is kept separate.</p>
               {draftStorageAvailable === false && <p role="status" className="mt-3 max-w-3xl text-sm leading-6 text-amber-100">Browser saving is unavailable. Any unsaved changes to your personal draft will be lost on refresh. Resume your draft and download a copy before leaving.</p>}
             </div>
             <Button type="button" variant="outline" onClick={resumeDraft} className="shrink-0">Resume your draft<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button>
@@ -903,10 +964,11 @@ export default function MapperPage() {
           steps={steps}
           current={activeStep}
           completed={state.completedModules}
-          onSelect={(stepId) => selectStep(stepId, "progress_stepper")}
+          exampleMode={mode === "sample"}
+          onSelect={(stepId, focusModule) => selectStep(stepId, "progress_stepper", focusModule)}
         />
 
-        <section ref={moduleRef} tabIndex={-1} aria-label={`${steps[currentIndex].label} module`}>
+        <section key={`${mode}-${editorRevision}`} ref={moduleRef} tabIndex={-1} aria-label={`${steps[currentIndex].label} module`}>
           {stepContent[activeStep]}
         </section>
 
