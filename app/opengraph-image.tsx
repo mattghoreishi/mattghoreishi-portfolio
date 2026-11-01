@@ -10,7 +10,7 @@ export default function Image() {
         <span>Product work & personal notes</span><span>Hamburg, Germany</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ fontSize: 92, fontWeight: 600, letterSpacing: -4, lineHeight: 1.1 }}>Matt Ghoreishi.</div>
+        <div style={{ fontSize: 92, fontWeight: 600, letterSpacing: -4, lineHeight: 1.1 }}>Matt Ghoreishi</div>
         <div style={{ marginTop: 25, fontSize: 32, color: "#a5dbc9" }}>Senior Product Manager</div>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 25, borderTop: "1px solid #334448", fontSize: 24 }}>
